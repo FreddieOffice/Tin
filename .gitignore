@@ -1,6 +1,8 @@
-build/
+.git/
 .vscode/
 .VSCodeCounter/
+
+build/
+
 *.ini
-*.txt
-.git/
+/*.txt
