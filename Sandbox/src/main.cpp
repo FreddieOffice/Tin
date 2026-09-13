@@ -8,9 +8,12 @@
 #include <iostream>
 
 int main() {
-    Tin::Window win("Hi", glm::vec2(600, 600));
-    win.SetIcon("assets/textures/openglmaze/smiley.png");
-    Tin::Renderer renderer(win);
+    Tin::Window window("Very Happy Smiley Game 2!", glm::vec2(600, 600));
+    window.SetIcon("assets/textures/openglmaze/smiley.png");
+
+    Tin::InputHandler input(window);
+
+    Tin::Renderer renderer(window);
 
     // Set a clear color
     Tin::Color bro(0.2f, 0.3f, 0.6f);
@@ -21,19 +24,23 @@ int main() {
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     ImGui::StyleColorsDark();
-    ImGui_ImplGlfw_InitForOpenGL(win.GetGLFWHandle(), true);
+    ImGui_ImplGlfw_InitForOpenGL(window.GetGLFWHandle(), true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
-    while (win.IsOpen()) {
-        win.PollEvents();
-        win.Update();
+    while (window.IsOpen()) {
+        window.PollEvents();
+        window.Update();
+
+        if (input.IsKeyPressed(Tin::Enum::KEY_J)) {
+            window.SetTitle("Test");
+        }
 
         // Rendering code
         renderer.Clear();
 
-        win.SwapBuffers();
+        window.SwapBuffers();
     }
 
-    win.Destroy();
+    window.Destroy();
     return 0;
 }
