@@ -6,6 +6,17 @@
 #include "imgui/imgui_impl_opengl3.h"
 
 #include <iostream>
+#include <vector>
+
+std::vector<Tin::Vertex> vertices = {
+    Tin::Vertex(glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec2(0.0f, 0.0f)),
+    Tin::Vertex(glm::vec3( 0.5f, -0.5f, 0.0f), glm::vec2(1.0f, 0.0f)),
+    Tin::Vertex(glm::vec3( 0.0f,  0.5f, 0.0f), glm::vec2(0.5f, 1.0f))
+};
+
+std::vector<unsigned int> indices = {
+    0, 1, 2
+};
 
 int main() {
     Tin::Window window("Very Happy Smiley Game 2!", glm::vec2(600, 600));
@@ -27,6 +38,12 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(window.GetGLFWHandle(), true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
+    Tin::Shader shader("assets/shaders/default.vert", "assets/shaders/default.frag");
+
+    Tin::Material material(Tin::Colors::Blue);
+
+    Tin::Mesh mesh(vertices, indices, shader, material);
+
     while (window.IsOpen()) {
         window.PollEvents();
         window.Update();
@@ -34,9 +51,11 @@ int main() {
         if (input.IsKeyPressed(Tin::Enum::KEY_J)) {
             window.SetTitle("Test");
         }
-
+        
         // Rendering code
         renderer.Clear();
+
+        mesh.Draw();
 
         window.SwapBuffers();
     }

@@ -20,7 +20,8 @@ project "Sandbox"
     files {
         "include/**.h",
         "include/**.hpp",
-        "src/**.cpp"
+        "src/**.cpp",
+        "assets/**.**"
     }
 
     -- Configurations
