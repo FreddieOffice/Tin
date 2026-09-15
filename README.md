@@ -6,4 +6,5 @@ This is the start of the 3rd rewrite of the engine (and hopefully the last), so 
 GLFW for creating and managing a window\
 Glad for loading the opengl context\
 glm for math\
-SOIL2 for loading images
+SOIL2 for loading images\
+ImGui for gui
