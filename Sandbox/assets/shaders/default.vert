@@ -8,6 +8,7 @@ out vec2 TexCoord;
 uniform mat4 Model;
 uniform mat4 CamProjection;
 uniform mat4 CamView;
+//uniform vec3 CameraPosition
 
 void main() {
     gl_Position = CamProjection * CamView * Model * vec4(aPos, 1.0);

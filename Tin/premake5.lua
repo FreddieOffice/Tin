@@ -9,8 +9,8 @@ project "Tin"
 
     includedirs {
         "include",
-        "include/vendor",
-        "include/vendor/SOIL2"
+        "include/Vendor",
+        "include/Vendor/SOIL2"
     }
 
     libdirs {
@@ -25,7 +25,7 @@ project "Tin"
     files {
         "include/**.h",
         "include/**.hpp",
-        "include/vendor/**.inl",
+        "include/**.inl",
         "src/**.c",
         "src/**.cpp"
     }
