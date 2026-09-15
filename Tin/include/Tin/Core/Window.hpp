@@ -44,6 +44,8 @@ namespace Tin {
         glm::vec2 GetSize() const;
         // Returns the window position
         glm::vec2 GetPosition() const;
+        // Returns time since initialization
+        double GetTime() const;
 
         // Returns the GLFW window handle
         GLFWwindow* GetGLFWHandle() const;
