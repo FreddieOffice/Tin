@@ -128,6 +128,10 @@ namespace Tin {
         return m_position;
     }
 
+    double Window::GetTime() const {
+        return glfwGetTime();
+    }
+
     GLFWwindow* Window::GetGLFWHandle() const {
         return m_window;
     }

@@ -5,6 +5,8 @@ project "Sandbox"
 
     kind "ConsoleApp"
 
+    defines {"GLM_ENABLE_EXPERIMENTAL"}
+
     includedirs {
         "include/",
         "include/imgui",
