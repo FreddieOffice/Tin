@@ -10,6 +10,7 @@
 namespace Gui {
     void SetupImGui(const Tin::Window& window);
 
+    // For docking
     void MainDockSpace(bool* p_open);
 
     void NewFrame();

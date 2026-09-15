@@ -96,14 +96,46 @@ void cameraInput(Tin::InputHandler& input, Tin::Camera& camera, float deltaTime)
 }
 
 std::vector<Tin::Vertex> vertices = {
-    Tin::Vertex(glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec2(0.0f, 0.0f)),
-    Tin::Vertex(glm::vec3( 0.5f, -0.5f, 0.0f), glm::vec2(1.0f, 0.0f)),
-    Tin::Vertex(glm::vec3( 0.0f,  0.5f, 0.0f), glm::vec2(0.5f, 1.0f))
+    Tin::Vertex(glm::vec3(-0.5f, -0.5f, 0.5f),  glm::vec2(0.0f, 0.0f)),
+    Tin::Vertex(glm::vec3( 0.5f, -0.5f, 0.5f),  glm::vec2(1.0f, 0.0f)),
+    Tin::Vertex(glm::vec3( 0.5f,  0.5f, 0.5f),  glm::vec2(1.0f, 1.0f)),
+    Tin::Vertex(glm::vec3(-0.5f,  0.5f, 0.5f),  glm::vec2(0.0f, 1.0f)),
+
+    Tin::Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(1.0f, 0.0f)),
+    Tin::Vertex(glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f)),
+    Tin::Vertex(glm::vec3( 0.5f,  0.5f, -0.5f), glm::vec2(0.0f, 1.0f)),
+    Tin::Vertex(glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec2(1.0f, 1.0f)),
+
+    Tin::Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f)),
+    Tin::Vertex(glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec2(0.0f, 1.0f)),
+    Tin::Vertex(glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec2(1.0f, 1.0f)),
+    Tin::Vertex(glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec2(1.0f, 0.0f)),
+
+    Tin::Vertex(glm::vec3(0.5f, -0.5f, -0.5f),  glm::vec2(1.0f, 0.0f)),
+    Tin::Vertex(glm::vec3(0.5f,  0.5f, -0.5f),  glm::vec2(1.0f, 1.0f)),
+    Tin::Vertex(glm::vec3(0.5f,  0.5f,  0.5f),  glm::vec2(0.0f, 1.0f)),
+    Tin::Vertex(glm::vec3(0.5f, -0.5f,  0.5f),  glm::vec2(0.0f, 0.0f)),
+
+    Tin::Vertex(glm::vec3(-0.5f, 0.5f,  0.5f),  glm::vec2(0.0f, 0.0f)),
+    Tin::Vertex(glm::vec3( 0.5f, 0.5f,  0.5f),  glm::vec2(1.0f, 0.0f)),
+    Tin::Vertex(glm::vec3( 0.5f, 0.5f, -0.5f),  glm::vec2(1.0f, 1.0f)),
+    Tin::Vertex(glm::vec3(-0.5f, 0.5f, -0.5f),  glm::vec2(0.0f, 1.0f)),
+
+    Tin::Vertex(glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec2(0.0f, 1.0f)),
+    Tin::Vertex(glm::vec3( 0.5f, -0.5f,  0.5f), glm::vec2(1.0f, 1.0f)),
+    Tin::Vertex(glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec2(1.0f, 0.0f)),
+    Tin::Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f))
 };
 
-std::vector<unsigned int> indices = {
-    0, 1, 2
+std::vector<uint32_t> indices = {
+    0, 1, 2, 2, 3, 0,
+    4, 5, 6, 6, 7, 4,
+    8, 9, 10, 10, 11, 8,
+    12, 13, 14, 14, 15, 12,
+    16, 17, 18, 18, 19, 16,
+    20, 21, 22, 22, 23, 20
 };
+
 
 App* App::GetInstance() {
     static App instance; 
@@ -113,7 +145,7 @@ App* App::GetInstance() {
 // main
 
 int App::Run() {
-    Tin::Window window("Very Happy Smiley Game 2!", glm::vec2(600, 600));
+    Tin::Window window("Very Happy Smiley Game 2!", glm::vec2(1000, 600));
     window.SetIcon("assets/textures/openglmaze/smiley.png");
 
     Tin::InputHandler inputHandler(window);
@@ -126,7 +158,7 @@ int App::Run() {
 
     Tin::Shader shader("assets/shaders/default.vert", "assets/shaders/default.frag");
 
-    Tin::Material material(Tin::Colors::White, "assets/textures/metal.png");
+    Tin::Material material(Tin::Colors::White, "assets/textures/crate.png");
 
     Tin::Camera camera(window.GetSize(), glm::vec3(0.0f, 0.0f, -3.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
@@ -136,23 +168,35 @@ int App::Run() {
     Gui::SetupImGui(window);
 
     bool showDockSpace = true;
-    bool backgroundColorWindow = false;
+    bool mainWindow = true;
     bool aboutWindow = false;
 
     bool wireframeMode = false;
 
     float colors[3] = {renderer.ClearColor.r, renderer.ClearColor.g, renderer.ClearColor.b};
 
-    float deltaTime = 0.0f;
-    float lastFrame = 0.0f;
+    float deltaTime = 0.0f, lastFrame = 0.0f, currentFrame = 0.0f; // Delta time
+    float fpsTimer = 0.0f, lastFrame2 = 0.0f; // For fps, idk how else to name these
+    int frameCount = 0;
+    std::string FPSandMS = "0.0 FPS / 0.0 ms";
 
     while (window.IsOpen()) {
         window.PollEvents();
         window.Update();
 
-        float currentFrame = static_cast<float>(window.GetTime());
+        // Getting FPS and delta time
+        currentFrame = static_cast<float>(window.GetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+
+        fpsTimer = currentFrame - lastFrame2;
+        frameCount++;
+
+        if (fpsTimer >= 1.0f) {
+            FPSandMS = std::to_string((1.0f / fpsTimer) * frameCount) + "FPS / " + std::to_string((fpsTimer / frameCount) * 1000.0f) + " ms";
+            lastFrame2 = currentFrame;
+            frameCount = 0;
+        }
 
         if (inputHandler.IsKeyPressed(Tin::Enum::KEY_J)) {
             window.SetTitle("Test");
@@ -198,12 +242,6 @@ int App::Run() {
         }
 
         if (ImGui::BeginMenu("Render")) {
-            if (ImGui::MenuItem("Background color")) {
-                backgroundColorWindow = true;
-            }
-
-            ImGui::Separator();
-
             if (ImGui::MenuItem("Wireframe mode", NULL, &wireframeMode)) {
                 if (wireframeMode == true) {
                     renderer.SetPolygonMode(Tin::Enum::PolygonMode::WIREFRAME);
@@ -216,12 +254,34 @@ int App::Run() {
             ImGui::EndMenu();
         }
 
-        if (backgroundColorWindow == true) {
-            ImGui::Begin("Background color picker", &backgroundColorWindow);
-            ImGui::SetWindowSize(ImVec2(250, 250));
-            ImGui::ColorPicker3("Color", colors);
-            ImGui::End();
+        if (ImGui::BeginMenu("About")) {
+            if (ImGui::MenuItem("About window")) {
+                aboutWindow = true;
+            }
+
+            ImGui::EndMenu();
         }
+
+        // The main gui window
+
+        ImGui::Begin("Tin", &mainWindow);
+
+        ImGui::Text("Tin Engine");
+
+        ImGui::Separator();
+
+        ImGui::Text("Background color picker");
+        ImGui::SetWindowSize(ImVec2(250, 250));
+        ImGui::ColorPicker3("Color", colors);
+
+        ImGui::Separator();
+
+        glm::vec2 mousePos = inputHandler.GetCursorPosition();
+        ImGui::Text("%s", FPSandMS.c_str());
+        ImGui::Text("Mouse pos: %.1f, %.1f", mousePos.x, mousePos.y);
+        ImGui::Text("Camera position: %.1f, %.1f, %.1f", camera.Position.x, camera.Position.y, camera.Position.z);
+
+        ImGui::End();
 
         if (aboutWindow == true) {
             ImGui::Begin("About the Tin Engine", &aboutWindow);
