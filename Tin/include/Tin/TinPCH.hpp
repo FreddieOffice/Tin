@@ -5,7 +5,9 @@
 #include <vector>
 #include <string>
 #include <cstddef>
+#include <map>
 #include <unordered_map>
+#include <optional>
 
 #include <iostream>
 #include <iomanip>
@@ -32,6 +34,6 @@
 #include "glm/gtx/rotate_vector.hpp"
 #include "glm/gtx/vector_angle.hpp"
 
-#include "stb/stb_image.h"
+#include "SOIL2.h"
 
 #endif

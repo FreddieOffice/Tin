@@ -40,7 +40,7 @@ int main() {
 
     Tin::Shader shader("assets/shaders/default.vert", "assets/shaders/default.frag");
 
-    Tin::Material material(Tin::Colors::Blue);
+    Tin::Material material(Tin::Colors::White, "assets/textures/metal.png");
 
     Tin::Mesh mesh(vertices, indices, shader, material);
 

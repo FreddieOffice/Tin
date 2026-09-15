@@ -11,10 +11,13 @@
 #include "Tin/Renderer/Renderer.hpp"
 
 #include "Tin/Renderer/DataStructures/Color.hpp"
+#include "Tin/Renderer/DataStructures/Material.hpp"
+#include "Tin/Renderer/DataStructures/Transform.hpp"
 #include "Tin/Renderer/DataStructures/Vertex.hpp"
 
 #include "Tin/Renderer/Objects/Mesh.hpp"
 
 #include "Tin/Renderer/Resources/Shader.hpp"
+#include "Tin/Renderer/Resources/Texture.hpp"
 
 #endif

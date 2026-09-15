@@ -10,6 +10,7 @@ project "Tin"
     includedirs {
         "include",
         "include/vendor",
+        "include/vendor/SOIL2"
     }
 
     libdirs {

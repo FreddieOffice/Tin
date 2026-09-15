@@ -82,9 +82,9 @@ namespace Tin {
 
     void Window::SetIcon(const std::string& filename) {
         GLFWimage image[1];
-        image[0].pixels = stbi_load(filename.c_str(), &image[0].width, &image[0].height, nullptr, 0);
+        image[0].pixels = SOIL_load_image(filename.c_str(), &image[0].width, &image[0].height, nullptr, 0);
         glfwSetWindowIcon(m_window, 1, image);
-        stbi_image_free(image[0].pixels);
+        SOIL_free_image_data(image[0].pixels);
         m_icon = filename;
     }
 
