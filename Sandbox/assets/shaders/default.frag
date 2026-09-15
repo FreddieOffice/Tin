@@ -6,10 +6,19 @@ out vec4 FragColor;
 
 // Material uniforms
 uniform vec3 Color;
-//uniform sampler2D ColorMap;
+uniform sampler2D ColorMap;
 
-//uniform bool HasColorMap;
+uniform bool HasColorMap;
 
 void main() {
-    FragColor = vec4(Color, 1.0);
+    vec4 FinalColor;
+
+    if (HasColorMap) {
+        FinalColor = texture(ColorMap, TexCoord) * vec4(Color, 1.0);
+    }
+    else {
+        FinalColor = vec4(Color, 1.0);
+    }
+
+    FragColor = FinalColor;
 }
