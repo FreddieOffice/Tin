@@ -29,4 +29,10 @@
 #include "Tin/Renderer/Resources/Shader.hpp"
 #include "Tin/Renderer/Resources/Texture.hpp"
 
+// Scene
+
+#include "Tin/Scene/Component.hpp"
+#include "Tin/Scene/Entity.hpp"
+#include "Tin/Scene/Scene.hpp"
+
 #endif
