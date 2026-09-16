@@ -8,7 +8,7 @@
 namespace Tin {
     namespace Enum {
         // Keyboard keys
-        enum Key {
+        enum class Key : uint32_t {
             KEY_SPACE = 32,
             KEY_APOSTROPHE = 39, /* ' */
             KEY_COMMA = 44, /* , */

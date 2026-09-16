@@ -6,6 +6,8 @@
 #include "Tin/Core/Window.hpp"
 #include "Tin/Core/Logger.hpp"
 
+#include "glm/glm.hpp"
+
 namespace Tin {
     namespace Enum {
 		enum class PolygonMode {
@@ -23,8 +25,8 @@ namespace Tin {
         // Clears the color, depth and stencil buffers
         void Clear() const;
 
-        // Sets the polygon mode for rendering (for example, wireframe)
-        void SetPolygonMode(Enum::PolygonMode mode) const;
+        // Sets the opengl viewport size
+        void SetViewportSize(const glm::vec2& size) const;
     };
 }
 

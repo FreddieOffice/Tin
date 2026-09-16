@@ -32,17 +32,7 @@ namespace Tin {
         glClearColor(ClearColor.r, ClearColor.g, ClearColor.b, ClearColor.a);
     }
 
-    void Renderer::SetPolygonMode(Enum::PolygonMode mode) const {
-        switch (mode) {
-        case Enum::PolygonMode::NORMAL:
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-            break;
-        case Enum::PolygonMode::WIREFRAME:
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            break;
-        case Enum::PolygonMode::POINT:
-            glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-            break;
-        }
+    void Renderer::SetViewportSize(const glm::vec2& size) const {
+        glViewport(0, 0, size.x, size.y);
     }
 }

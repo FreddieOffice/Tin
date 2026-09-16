@@ -15,9 +15,9 @@
 
 // Camera
 void cameraInput(Tin::InputHandler& input, Tin::Camera& camera, float deltaTime) {
-    float speed = 5.0f * deltaTime;
-    float sensitivity = 150.0f;
-    bool firstClick = false;
+    static float speed = 5.0f * deltaTime;
+    static float sensitivity = 150.0f;
+    static bool firstClick = false;
 
     glm::vec2 size = camera.GetViewportSize();
     int32_t width = size.x;
@@ -51,10 +51,10 @@ void cameraInput(Tin::InputHandler& input, Tin::Camera& camera, float deltaTime)
 
     // Camera speed
     if (input.IsKeyPressed(Tin::Enum::Key::KEY_LEFT_SHIFT)) {
-        speed = 0.1f * deltaTime;
+        speed = 15.0f * deltaTime;
     }
     else if (input.IsKeyReleased(Tin::Enum::Key::KEY_LEFT_SHIFT)) {
-        speed = 0.05f * deltaTime;
+        speed = 5.0f * deltaTime;
     }
 
     if (ImGui::GetIO().WantCaptureMouse) {
@@ -136,13 +136,10 @@ std::vector<uint32_t> indices = {
     20, 21, 22, 22, 23, 20
 };
 
-
 App* App::GetInstance() {
     static App instance; 
     return &instance;
 }
-
-// main
 
 int App::Run() {
     Tin::Window window("Very Happy Smiley Game 2!", glm::vec2(1000, 600));
@@ -167,14 +164,12 @@ int App::Run() {
     // ImGui
     Gui::SetupImGui(window);
 
-    bool showDockSpace = true;
-    bool mainWindow = true;
+    bool configWindow = true;
     bool aboutWindow = false;
-
-    bool wireframeMode = false;
 
     float colors[3] = {renderer.ClearColor.r, renderer.ClearColor.g, renderer.ClearColor.b};
 
+    // FPS and delta time stuff
     float deltaTime = 0.0f, lastFrame = 0.0f, currentFrame = 0.0f; // Delta time
     float fpsTimer = 0.0f, lastFrame2 = 0.0f; // For fps, idk how else to name these
     int frameCount = 0;
@@ -183,6 +178,7 @@ int App::Run() {
     while (window.IsOpen()) {
         window.PollEvents();
         window.Update();
+        renderer.SetViewportSize(window.GetSize());
 
         // Getting FPS and delta time
         currentFrame = static_cast<float>(window.GetTime());
@@ -198,10 +194,10 @@ int App::Run() {
             frameCount = 0;
         }
 
-        if (inputHandler.IsKeyPressed(Tin::Enum::KEY_J)) {
+        if (inputHandler.IsKeyPressed(Tin::Enum::Key::KEY_J)) {
             window.SetTitle("Test");
         }
-        
+
         // Rendering code
         renderer.Clear();
         renderer.ClearColor = Tin::Color(colors[0], colors[1], colors[2]);
@@ -213,10 +209,10 @@ int App::Run() {
 
         mesh.Draw();
 
-        // ImGui
+        // Gui
         Gui::NewFrame();
 
-        Gui::MainDockSpace(&showDockSpace);
+        Gui::MainDockSpace(&Gui::showDockSpace);
 
         ImGui::BeginMainMenuBar();
 
@@ -242,14 +238,9 @@ int App::Run() {
         }
 
         if (ImGui::BeginMenu("Render")) {
-            if (ImGui::MenuItem("Wireframe mode", NULL, &wireframeMode)) {
-                if (wireframeMode == true) {
-                    renderer.SetPolygonMode(Tin::Enum::PolygonMode::WIREFRAME);
-                }
-                else {
-                    renderer.SetPolygonMode(Tin::Enum::PolygonMode::NORMAL);
-                }
-            }
+            if (ImGui::MenuItem("Config window")) {
+                configWindow = true;
+            };
 
             ImGui::EndMenu();
         }
@@ -259,45 +250,52 @@ int App::Run() {
                 aboutWindow = true;
             }
 
+            if (ImGui::MenuItem("Visit git repository")) {
+                std::system("start https://github.com/FreddieOffice/Tin/tree/main");
+            }
+
             ImGui::EndMenu();
         }
 
-        // The main gui window
+        ImGui::EndMainMenuBar();
 
-        ImGui::Begin("Tin", &mainWindow);
-        ImGui::SetWindowSize(ImVec2(300, 600));
+        // Config window
 
-        ImGui::Text("Tin Engine");
+        if (configWindow == true) {
+            ImGui::Begin("Tin", &configWindow);
+            ImGui::SetWindowSize(ImVec2(300, 600));
 
-        ImGui::Separator();
+            ImGui::Text("Tin Engine");
+            ImGui::Separator();
 
-        ImGui::Text("Background color picker");
-        ImGui::ColorPicker3("Color", colors);
+            ImGui::Text("Background color picker");
+            ImGui::ColorPicker3("Color", colors);
+            ImGui::Separator();
 
-        ImGui::Separator();
+            // Info
+            glm::vec2 mousePos = inputHandler.GetCursorPosition();
+            ImGui::Text("%s", FPSandMS.c_str());
+            ImGui::Text("Mouse pos: %.1f, %.1f", mousePos.x, mousePos.y);
+            ImGui::Text("Camera position: %.1f, %.1f, %.1f", camera.Position.x, camera.Position.y, camera.Position.z);
+            ImGui::Text("Camera orientation: %.1f, %.1f, %.1f", camera.Orientation.x, camera.Orientation.y, camera.Orientation.z);
 
-        glm::vec2 mousePos = inputHandler.GetCursorPosition();
-        ImGui::Text("%s", FPSandMS.c_str());
-        ImGui::Text("Mouse pos: %.1f, %.1f", mousePos.x, mousePos.y);
-        ImGui::Text("Camera position: %.1f, %.1f, %.1f", camera.Position.x, camera.Position.y, camera.Position.z);
-        ImGui::Text("Camera orientation: %.1f, %.1f, %.1f", camera.Orientation.x, camera.Orientation.y, camera.Orientation.z);
-
-        ImGui::End();
-
-        if (aboutWindow == true) {
-            ImGui::Begin("About the Tin Engine", &aboutWindow);
-            ImGui::SetWindowSize(ImVec2(500, 500));
-            ImGui::TextColored(ImVec4(0.1f, 0.4f, 0.8f, 1.0f), "Tin Engine");
-            ImGui::SeparatorText(" Info ");
-            ImGui::TextWrapped(
-                "4th attempt at making a game engine\n"
-                "The first ever version was called SmileyBox3D\n"
-                "Version: pre-alpha"
-            );
             ImGui::End();
         }
 
-        ImGui::EndMainMenuBar();
+        if (aboutWindow == true) {
+            ImGui::Begin("About Tin Engine", &aboutWindow);
+
+            ImGui::SetWindowSize(ImVec2(500, 500));
+            ImGui::TextColored(ImVec4(0.2f, 0.3f, 0.6f, 1.0f), "Tin Engine");
+            ImGui::SeparatorText(" Info ");
+            ImGui::TextWrapped(
+                "This is my 4th attempt at making a game engine\n"
+                "The first ever version was called SmileyBox3D\n"
+                "Version: pre-alpha"
+            );
+
+            ImGui::End();
+        }
 
         Gui::Render();
 

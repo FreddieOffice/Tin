@@ -5,7 +5,7 @@ namespace Tin {
     InputHandler::InputHandler(const Window& window) : m_handle(window.GetGLFWHandle()) {}
 
     bool InputHandler::IsKeyPressed(Enum::Key key) const {
-        return (glfwGetKey(m_handle, key) == GLFW_PRESS);
+        return (glfwGetKey(m_handle, static_cast<uint32_t>(key)) == GLFW_PRESS);
     }
 
     bool InputHandler::IsMouseButtonPressed(Enum::MouseButton button) const {
@@ -13,7 +13,7 @@ namespace Tin {
     }
 
     bool InputHandler::IsKeyReleased(Enum::Key key) const {
-        return (glfwGetKey(m_handle, key) == GLFW_RELEASE);
+        return (glfwGetKey(m_handle, static_cast<uint32_t>(key)) == GLFW_RELEASE);
     }
 
     bool InputHandler::IsMouseButtonReleased(Enum::MouseButton button) const {
@@ -22,16 +22,16 @@ namespace Tin {
 
     void InputHandler::SetCursorState(Enum::CursorState state) {
         switch (state) {
-        case Tin::Enum::CursorState::NORMAL:
+        case Enum::CursorState::NORMAL:
             glfwSetInputMode(m_handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             break;
-        case Tin::Enum::CursorState::HIDDEN:
+        case Enum::CursorState::HIDDEN:
             glfwSetInputMode(m_handle, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
             break;
-        case Tin::Enum::CursorState::DISABLED:
+        case Enum::CursorState::DISABLED:
             glfwSetInputMode(m_handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             break;
-        case Tin::Enum::CursorState::CONFINED:
+        case Enum::CursorState::CONFINED:
             glfwSetInputMode(m_handle, GLFW_CURSOR, GLFW_CURSOR_CAPTURED);
             break;
         }
