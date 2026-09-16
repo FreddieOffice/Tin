@@ -16,7 +16,7 @@
 // Camera
 void cameraInput(Tin::InputHandler& input, Tin::Camera& camera, float deltaTime) {
     float speed = 5.0f * deltaTime;
-    float sensitivity = 130.0f;
+    float sensitivity = 150.0f;
     bool firstClick = false;
 
     glm::vec2 size = camera.GetViewportSize();
@@ -193,7 +193,7 @@ int App::Run() {
         frameCount++;
 
         if (fpsTimer >= 1.0f) {
-            FPSandMS = std::to_string((1.0f / fpsTimer) * frameCount) + "FPS / " + std::to_string((fpsTimer / frameCount) * 1000.0f) + " ms";
+            FPSandMS = std::to_string((1.0f / fpsTimer) * frameCount) + " FPS / " + std::to_string((fpsTimer / frameCount) * 1000.0f) + " ms";
             lastFrame2 = currentFrame;
             frameCount = 0;
         }
@@ -221,7 +221,7 @@ int App::Run() {
         ImGui::BeginMainMenuBar();
 
         if (ImGui::BeginMenu("File")) {
-            // things will be added here some day
+            // Things will be added here some day
             if (ImGui::MenuItem("New scene")) {
 
             }
@@ -265,13 +265,13 @@ int App::Run() {
         // The main gui window
 
         ImGui::Begin("Tin", &mainWindow);
+        ImGui::SetWindowSize(ImVec2(300, 600));
 
         ImGui::Text("Tin Engine");
 
         ImGui::Separator();
 
         ImGui::Text("Background color picker");
-        ImGui::SetWindowSize(ImVec2(250, 250));
         ImGui::ColorPicker3("Color", colors);
 
         ImGui::Separator();
@@ -280,6 +280,7 @@ int App::Run() {
         ImGui::Text("%s", FPSandMS.c_str());
         ImGui::Text("Mouse pos: %.1f, %.1f", mousePos.x, mousePos.y);
         ImGui::Text("Camera position: %.1f, %.1f, %.1f", camera.Position.x, camera.Position.y, camera.Position.z);
+        ImGui::Text("Camera orientation: %.1f, %.1f, %.1f", camera.Orientation.x, camera.Orientation.y, camera.Orientation.z);
 
         ImGui::End();
 

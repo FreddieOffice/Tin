@@ -9,6 +9,7 @@ project "Sandbox"
 
     includedirs {
         "include/",
+        "include/Sandbox/",
         "include/Vendor/",
         "include/Vendor/imgui",
         "../Tin/include",

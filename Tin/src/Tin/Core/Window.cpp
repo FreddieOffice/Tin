@@ -65,14 +65,12 @@ namespace Tin {
         glfwGetWindowPos(m_window, &x, &y);
 
         if (m_size.x != width || m_size.y != height) {
-            m_size.x = width;
-            m_size.y = height;
+            m_size = glm::vec2(width, height);
             glViewport(0, 0, fWidth, fHeight);
         }
 
         if (m_position.x != x || m_position.y != y) {
-            m_position.x = x;
-            m_position.y = y;
+            m_position = glm::vec2(x, y);
         }
     }
 

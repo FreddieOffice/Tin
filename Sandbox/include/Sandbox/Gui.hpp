@@ -8,9 +8,11 @@
 #include "Tin/Tin.hpp"
 
 namespace Gui {
+    // For docking
+    static bool showDockSpace = true;
+
     void SetupImGui(const Tin::Window& window);
 
-    // For docking
     void MainDockSpace(bool* p_open);
 
     void NewFrame();
