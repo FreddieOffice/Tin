@@ -1,8 +1,10 @@
-.git/
+# Vscode files
 .vscode/
 .VSCodeCounter/
 
+# Build files
 build/
 
+# Other files
 *.ini
 /*.txt
