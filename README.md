@@ -9,4 +9,4 @@ This is the start of the 3rd rewrite of the engine (and hopefully the last), so 
 [glm](https://github.com/g-truc/glm) for math\
 [SOIL2](https://github.com/SpartanJ/SOIL2) for loading images\
 [ImGui](https://github.com/ocornut/imgui) for gui\
-[nlohmann's json](https://github.com/nlohmann/json) for working json files
+[nlohmann's json](https://github.com/nlohmann/json) for working with json files
