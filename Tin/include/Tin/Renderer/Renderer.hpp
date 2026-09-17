@@ -8,6 +8,8 @@
 
 #include "glm/glm.hpp"
 
+#include <string>
+
 namespace Tin {
     class Renderer {
     public:
@@ -16,6 +18,8 @@ namespace Tin {
 
         // Clears the color, depth and stencil buffers
         void Clear() const;
+        // Captures an area and writes it to an image
+        void SaveScreenshot(const std::string& filename, const glm::vec2& position, const glm::vec2& size) const;
 
         // Sets the opengl viewport size
         void SetViewportSize(const glm::vec2& size) const;

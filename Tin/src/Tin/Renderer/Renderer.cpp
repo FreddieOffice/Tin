@@ -1,6 +1,8 @@
 #include "Tin/TinPCH.hpp"
 #include "Tin/Renderer/Renderer.hpp"
 
+#include "Tin/Core/Logger.hpp"
+
 namespace Tin {
     Renderer::Renderer(const Window& window) {
         // Initialize an OpenGL context
@@ -30,6 +32,17 @@ namespace Tin {
     void Renderer::Clear() const {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         glClearColor(ClearColor.r, ClearColor.g, ClearColor.b, ClearColor.a);
+    }
+
+    void Renderer::SaveScreenshot(const std::string& filename, const glm::vec2& position, const glm::vec2& size) const {
+        int32_t result = SOIL_save_screenshot(filename.c_str(), SOIL_SAVE_TYPE_PNG, position.x, position.y, size.x, size.y);
+
+        if (result == 0) {
+			Logger::Log(Logger::Level::Error, "Tin", ("Failed to capture to " + filename + ":\n" + SOIL_last_result()));
+		}
+		else {
+            Logger::Log(Logger::Level::Info, "Tin", ("Successfully saved a capture to " + filename));
+		}
     }
 
     void Renderer::SetViewportSize(const glm::vec2& size) const {

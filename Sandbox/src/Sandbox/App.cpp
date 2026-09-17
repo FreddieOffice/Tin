@@ -51,7 +51,7 @@ static void cameraInput(Tin::InputHandler& input, Tin::Camera& camera, float del
 
     // Camera speed
     if (input.IsKeyPressed(Tin::Enum::Key::KEY_LEFT_SHIFT)) {
-        speed = 15.0f * deltaTime;
+        speed = 30.0f * deltaTime;
     }
     else if (input.IsKeyReleased(Tin::Enum::Key::KEY_LEFT_SHIFT)) {
         speed = 5.0f * deltaTime;
@@ -162,6 +162,7 @@ int App::Run() {
         Tin::Material(Tin::Colors::White, "assets/textures/container.png"),
         Tin::Material(Tin::Colors::White, "assets/textures/container2.png"),
         Tin::Material(Tin::Colors::White, "assets/textures/metal.png"),
+        Tin::Material(Tin::Colors::White, "assets/textures/metal2.png"),
         Tin::Material(Tin::Colors::White, "assets/textures/marble.jpg"),
         Tin::Material(Tin::Colors::White, "assets/textures/brick.png"),
         Tin::Material(Tin::Colors::White, "assets/textures/brick2.jpg")
@@ -216,8 +217,14 @@ int App::Run() {
             frameCount = 0;
         }
 
-        if (inputHandler.IsKeyPressed(Tin::Enum::Key::KEY_J)) {
-            window.SetTitle("Test");
+        static bool firstClick = true;
+
+        if (inputHandler.IsKeyPressed(Tin::Enum::Key::KEY_J) && firstClick == true) {
+            renderer.SaveScreenshot("Screenshot.png", glm::vec2(0, 0), window.GetSize());
+            firstClick = false;
+        }
+        else if (inputHandler.IsKeyReleased(Tin::Enum::Key::KEY_J)) {
+            firstClick = true;
         }
 
         // Rendering code
