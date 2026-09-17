@@ -14,7 +14,7 @@
 #include <glm/gtx/vector_angle.hpp>
 
 // Camera
-void cameraInput(Tin::InputHandler& input, Tin::Camera& camera, float deltaTime) {
+static void cameraInput(Tin::InputHandler& input, Tin::Camera& camera, float deltaTime) {
     static float speed = 5.0f * deltaTime;
     static float sensitivity = 150.0f;
     static bool firstClick = false;
@@ -141,6 +141,7 @@ App* App::GetInstance() {
     return &instance;
 }
 
+// glm::vec2(1000, 600)
 int App::Run() {
     Tin::Window window("Very Happy Smiley Game 2!", glm::vec2(1000, 600));
     window.SetIcon("assets/textures/openglmaze/smiley.png");
@@ -248,6 +249,10 @@ int App::Run() {
         if (ImGui::BeginMenu("About")) {
             if (ImGui::MenuItem("About window")) {
                 aboutWindow = true;
+            }
+
+            if (ImGui::MenuItem("Visit website")) {
+                std::system("start https://maxdisk.github.io/");
             }
 
             if (ImGui::MenuItem("Visit git repository")) {

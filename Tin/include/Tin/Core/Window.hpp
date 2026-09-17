@@ -9,6 +9,7 @@
 namespace Tin {
     class Window {
     public:
+        // Setting size.x or size.y to a negative number will make the window be as big as the screen on that axis
         Window(const std::string& title, const glm::vec2& size, bool vsync = false, bool fullscreen = false);
 
         // Destroys the window

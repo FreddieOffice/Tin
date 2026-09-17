@@ -4,7 +4,7 @@
 #include "Tin/Core/Logger.hpp"
 
 namespace Tin {
-    Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, const Tin::Shader& shader, const Tin::Material& material) : shader(shader), m_vertices(vertices), m_indices(indices), material(material) {
+    Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, const Shader& shader, const Material& material) : shader(shader), m_vertices(vertices), m_indices(indices), material(material) {
         CreateBuffers();
     }
 
@@ -37,7 +37,7 @@ namespace Tin {
         m_vertices.clear();
     }
 
-    void Mesh::Reload(const std::vector<Tin::Vertex>& vertices, const std::vector<uint32_t>& indices) {
+    void Mesh::Reload(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices) {
         m_vertices = vertices;
         m_indices = indices;
         ReloadBuffers(vertices, indices);

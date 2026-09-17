@@ -9,17 +9,9 @@
 #include "glm/glm.hpp"
 
 namespace Tin {
-    namespace Enum {
-		enum class PolygonMode {
-			NORMAL,
-			WIREFRAME,
-			POINT
-		};
-	}
-
     class Renderer {
     public:
-        Tin::Color ClearColor;
+        Color ClearColor;
         Renderer(const Window& window);
 
         // Clears the color, depth and stencil buffers

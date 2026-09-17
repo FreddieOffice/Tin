@@ -28,7 +28,14 @@ namespace Tin {
         GLFWmonitor* monitor = glfwGetPrimaryMonitor();
         const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);
 
-        m_window = glfwCreateWindow(size.x, size.y, title.c_str(), fullscreen ? monitor : nullptr, nullptr);
+        if (size.x < 0) {
+            m_size.x = videoMode->width;
+        }
+        if (size.y < 0) {
+            m_size.y = videoMode->height;
+        }
+
+        m_window = glfwCreateWindow(m_size.x, m_size.y, title.c_str(), fullscreen ? monitor : nullptr, nullptr);
         if (!m_window) {
             Logger::Log(Logger::Level::FatalError, "Tin", "Failed to create window!");
             glfwTerminate();
@@ -59,8 +66,7 @@ namespace Tin {
     }
 
     void Window::Update() {
-        int32_t width, height, fWidth, fHeight, x, y;
-        glfwGetFramebufferSize(m_window, &fWidth, &fHeight);
+        int32_t width, height, x, y;
         glfwGetWindowSize(m_window, &width, &height);
         glfwGetWindowPos(m_window, &x, &y);
 

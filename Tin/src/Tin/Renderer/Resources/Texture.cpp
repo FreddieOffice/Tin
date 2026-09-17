@@ -9,10 +9,10 @@ namespace Tin {
 
 		m_id = SOIL_load_OGL_texture(filename.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS);
         if (m_id == 0) {
-            Tin::Logger::Log(Tin::Logger::Level::Error, "OpenGL", ("Failed to load texture with filename " + filename + ":\n" + SOIL_last_result()));
+            Logger::Log(Logger::Level::Error, "OpenGL", ("Failed to load texture with filename " + filename + ":\n" + SOIL_last_result()));
         }
 		else {
-            Tin::Logger::Log(Tin::Logger::Level::Info, "OpenGL", ("Texture with id " + std::to_string(m_id) + " and filename " + filename + " was successfully created"));
+            Logger::Log(Logger::Level::Info, "OpenGL", ("Texture with id " + std::to_string(m_id) + " and filename " + filename + " was successfully created"));
 		}
 
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -27,7 +27,7 @@ namespace Tin {
 		glDeleteTextures(1, &m_id);
 	}
 
-	void Texture::TextureUnit(Tin::Shader& shader, const std::string& uniform) const {
+	void Texture::TextureUnit(Shader& shader, const std::string& uniform) const {
 		shader.SetUniformInt(uniform, m_slot);
 	}
 

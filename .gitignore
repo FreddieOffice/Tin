@@ -8,3 +8,4 @@ build/
 # Other files
 *.ini
 /*.txt
+.DS_Store

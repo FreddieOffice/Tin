@@ -22,7 +22,7 @@ namespace Tin {
         void Destroy();
 
         // Changes the mesh data
-        void Reload(const std::vector<Tin::Vertex>& vertices, const std::vector<uint32_t>& indices);
+        void Reload(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
 
         // Returns the mesh vertices
         const std::vector<Vertex>& GetVertices() const;
@@ -39,7 +39,7 @@ namespace Tin {
         // Helper function to create the VAO, VBO and EBO buffers
         void CreateBuffers();
         // Helper function to reload the buffers
-        void ReloadBuffers(const std::vector<Tin::Vertex>& vertices, const std::vector<uint32_t>& indices);
+        void ReloadBuffers(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
     };
 }
 
