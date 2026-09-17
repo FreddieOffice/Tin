@@ -22,6 +22,8 @@ namespace Tin {
         void Update();
         // Checks if the window is open
         bool IsOpen() const;
+        // Closes the window
+        void Close() const;
 
         // Sets the window icon
         // To remove the icon, filepath should be ""

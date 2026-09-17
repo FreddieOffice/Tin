@@ -143,6 +143,7 @@ App* App::GetInstance() {
 
 // glm::vec2(1000, 600)
 int App::Run() {
+    srand(time(NULL));
     Tin::Window window("Very Happy Smiley Game 2!", glm::vec2(1000, 600));
     window.SetIcon("assets/textures/openglmaze/smiley.png");
 
@@ -156,11 +157,31 @@ int App::Run() {
 
     Tin::Shader shader("assets/shaders/default.vert", "assets/shaders/default.frag");
 
-    Tin::Material material(Tin::Colors::White, "assets/textures/crate.png");
+    std::vector<Tin::Material> materials = {
+        Tin::Material(Tin::Colors::White, "assets/textures/crate.png"),
+        Tin::Material(Tin::Colors::White, "assets/textures/container.png"),
+        Tin::Material(Tin::Colors::White, "assets/textures/container2.png"),
+        Tin::Material(Tin::Colors::White, "assets/textures/metal.png"),
+        Tin::Material(Tin::Colors::White, "assets/textures/marble.jpg"),
+        Tin::Material(Tin::Colors::White, "assets/textures/brick.png"),
+        Tin::Material(Tin::Colors::White, "assets/textures/brick2.jpg")
+    };
 
     Tin::Camera camera(window.GetSize(), glm::vec3(0.0f, 0.0f, -3.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
-    Tin::Mesh mesh(vertices, indices, shader, material);
+    //Tin::Mesh mesh(vertices, indices, shader, material);
+
+    Tin::Scene scene;
+
+    for (int i = 0; i < 500; i++) {
+        Tin::Mesh mesh(vertices, indices, shader, materials[rand() % materials.size()]);
+
+        mesh.transform.Position = glm::vec3(rand() % 100, rand() % 100, rand() % 100);
+        mesh.transform.Scale = glm::vec3(1 + rand() % 5, 1 + rand() % 5, 1 + rand() % 5);
+        //mesh.material.color = Tin::Color(rand() % 256, rand() % 256, rand() % 256);
+
+        scene.AddMesh(mesh);
+    }
 
     // ImGui
     Gui::SetupImGui(window);
@@ -208,7 +229,7 @@ int App::Run() {
         cameraInput(inputHandler, camera, deltaTime);
         camera.UpdateMatrix(shader);
 
-        mesh.Draw();
+        scene.Draw();
 
         // Gui
         Gui::NewFrame();
@@ -218,7 +239,6 @@ int App::Run() {
         ImGui::BeginMainMenuBar();
 
         if (ImGui::BeginMenu("File")) {
-            // Things will be added here some day
             if (ImGui::MenuItem("New scene")) {
 
             }
@@ -232,7 +252,7 @@ int App::Run() {
             ImGui::Separator();
 
             if (ImGui::MenuItem("Exit")) {
-                window.Destroy();
+                window.Close();
             }
 
             ImGui::EndMenu();

@@ -2,5 +2,5 @@
 #include "Tin/Scene/Entity.hpp"
 
 namespace Tin {
-    
+
 }

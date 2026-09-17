@@ -24,14 +24,21 @@ namespace Tin {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        // For fullscreen
+        // Fullscreen
         GLFWmonitor* monitor = glfwGetPrimaryMonitor();
         const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);
 
-        if (size.x < 0) {
+        if (fullscreen == true) {
+            glfwWindowHint(GLFW_RED_BITS, videoMode->redBits);
+            glfwWindowHint(GLFW_GREEN_BITS, videoMode->greenBits);
+            glfwWindowHint(GLFW_BLUE_BITS, videoMode->blueBits);
+            glfwWindowHint(GLFW_REFRESH_RATE, videoMode->refreshRate);
+        }
+
+        if (fullscreen == true || size.x < 0) {
             m_size.x = videoMode->width;
         }
-        if (size.y < 0) {
+        if (fullscreen == true || size.y < 0) {
             m_size.y = videoMode->height;
         }
 
@@ -81,6 +88,10 @@ namespace Tin {
 
     bool Window::IsOpen() const {
         return !glfwWindowShouldClose(m_window);
+    }
+
+    void Window::Close() const {
+        glfwSetWindowShouldClose(m_window, 1);
     }
 
     void Window::SetIcon(const std::string& filename) {

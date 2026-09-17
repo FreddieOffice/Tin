@@ -31,8 +31,8 @@
 
 // Scene
 
-#include "Tin/Scene/Component.hpp"
-#include "Tin/Scene/Entity.hpp"
+//#include "Tin/Scene/Component.hpp"
+//#include "Tin/Scene/Entity.hpp"
 #include "Tin/Scene/Scene.hpp"
 
 #endif
