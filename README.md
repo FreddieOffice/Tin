@@ -10,3 +10,5 @@ This is the start of the 3rd rewrite of the engine (and hopefully the last), so 
 [SOIL2](https://github.com/SpartanJ/SOIL2) for loading images\
 [ImGui](https://github.com/ocornut/imgui) for gui\
 [nlohmann's json](https://github.com/nlohmann/json) for working with json files
+
+[Tin's website](https://maxdisk.github.io/) (Work in progress)
