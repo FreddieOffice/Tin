@@ -3,10 +3,8 @@
 
 #include <string>
 
-namespace Tin {
-    namespace Utils {
-        std::string ReadFile(const std::string& filepath);
-    }
+namespace Tin::Utils {
+    std::string ReadFile(const std::string& filepath);
 }
 
 #endif
