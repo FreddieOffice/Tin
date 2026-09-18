@@ -1,14 +1,18 @@
 # Tin
 
-OpenGL game engine written in C++17\
-This is the start of the 3rd rewrite of the engine (and hopefully the last), so there isnt much here right now
+OpenGL game engine written in C++17  
+This is my 4th attempt at making a game engine, so there isnt much here right now  
 
-**Uses:**\
-[GLFW](https://github.com/glfw/glfw) for creating and managing a window\
-[Glad2](https://github.com/Dav1dde/glad) for loading the opengl context\
-[glm](https://github.com/g-truc/glm) for math\
-[SOIL2](https://github.com/SpartanJ/SOIL2) for loading images\
-[ImGui](https://github.com/ocornut/imgui) for gui\
-[nlohmann's json](https://github.com/nlohmann/json) for working with json files
+**[Tin's website](https://maxdisk.github.io/)** (Work in progress)
 
-[Tin's website](https://maxdisk.github.io/) (Work in progress)
+### Engine dependencies
+
+**[GLFW](https://github.com/glfw/glfw) - creating and managing a window**  
+**[Glad2](https://github.com/Dav1dde/glad) - creating the OpenGL context**  
+**[glm](https://github.com/g-truc/glm) - math**  
+**[SOIL2](https://github.com/SpartanJ/SOIL2) - loading images**  
+**[nlohmann's json](https://github.com/nlohmann/json) - working with json files**
+
+### Editor dependencies
+
+**[ImGui](https://github.com/ocornut/imgui) - GUI**
