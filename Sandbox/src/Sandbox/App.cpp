@@ -156,6 +156,7 @@ int App::Run() {
     renderer.ClearColor = bro;
 
     Tin::Shader shader("assets/shaders/default.vert", "assets/shaders/default.frag");
+    Tin::Shader skyboxShader("assets/shaders/skybox.vert", "assets/shaders/skybox.frag");
 
     std::vector<Tin::Material> materials = {
         Tin::Material(Tin::Colors::White, "assets/textures/crate.png"),
