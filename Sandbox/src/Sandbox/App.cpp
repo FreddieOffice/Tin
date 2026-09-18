@@ -147,7 +147,7 @@ App* App::GetInstance() {
 int App::Run() {
     srand(time(NULL));
     Tin::WindowConfig config{
-        "Tin", "assets/textures/openglmaze/smiley.png", 
+        "Tin Editor", "assets/textures/openglmaze/smiley.png", 
         glm::vec2(1000, 600), glm::vec2(-1, -1)
     };
     Tin::Window window(config);
@@ -174,13 +174,14 @@ int App::Run() {
         Tin::Material(Tin::Colors::White, "assets/textures/brick2.jpg")
     };
 
-    //Tin::Mesh mesh(vertices, indices, shader, material);
+    // Tin::Mesh mesh(vertices, indices, shader, material);
 
     for (int i = 0; i < 500; i++) {
         Tin::Mesh mesh(vertices, indices, shader, materials[rand() % materials.size()]);
 
         mesh.transform.Position = glm::vec3(rand() % 100, rand() % 100, rand() % 100);
         mesh.transform.Scale = glm::vec3(1 + rand() % 5, 1 + rand() % 5, 1 + rand() % 5);
+        // mesh.transform.Rotation = glm::vec3(rand() % 100, rand() % 100, rand() % 100);
         mesh.material.color = Tin::Color(rand() % 256, rand() % 256, rand() % 256);
 
         scene.AddMesh(mesh);
@@ -293,7 +294,7 @@ int App::Run() {
             };
 
             if (ImGui::MenuItem("Vsync", "", &vsync)) {
-                window.SetSetting(Tin::Enum::WindowSetting::FLOATING, vsync);
+                window.SetSetting(Tin::Enum::WindowSetting::VSYNC, vsync);
             };
 
             ImGui::EndMenu();

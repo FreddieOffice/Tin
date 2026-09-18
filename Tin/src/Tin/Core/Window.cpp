@@ -70,10 +70,13 @@ namespace Tin {
         Logger::Log(Logger::Level::Info, "Tin", "Window created successfully");
 
         // Set icon
-        GLFWimage image[1];
-        image[0].pixels = SOIL_load_image(config.icon.c_str(), &image[0].width, &image[0].height, nullptr, 0);
-        glfwSetWindowIcon(m_GLFWHandle, 1, image);
-        SOIL_free_image_data(image[0].pixels);
+        if (config.icon != "") {
+            GLFWimage image[1];
+            image[0].pixels = SOIL_load_image(config.icon.c_str(), &image[0].width, &image[0].height, nullptr, 0);
+            glfwSetWindowIcon(m_GLFWHandle, 1, image);
+            SOIL_free_image_data(image[0].pixels);
+        }
+
         m_config.icon = config.icon;
 
         glfwMakeContextCurrent(m_GLFWHandle);
@@ -171,10 +174,16 @@ namespace Tin {
     }
 
     void Window::SetIcon(const std::string& filename) {
-        GLFWimage image[1];
-        image[0].pixels = SOIL_load_image(filename.c_str(), &image[0].width, &image[0].height, nullptr, 0);
-        glfwSetWindowIcon(m_GLFWHandle, 1, image);
-        SOIL_free_image_data(image[0].pixels);
+        if (filename == "") {
+            glfwSetWindowIcon(m_GLFWHandle, 0, nullptr);
+        }
+        else {
+            GLFWimage image[1];
+            image[0].pixels = SOIL_load_image(filename.c_str(), &image[0].width, &image[0].height, nullptr, 0);
+            glfwSetWindowIcon(m_GLFWHandle, 1, image);
+            SOIL_free_image_data(image[0].pixels);
+        }
+
         m_config.icon = filename;
     }
 

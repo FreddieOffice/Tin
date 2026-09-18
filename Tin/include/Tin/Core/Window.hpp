@@ -45,7 +45,7 @@ namespace Tin {
         // Closes the window
         void Close() const;
 
-        // Sets a setting of the window
+        // Sets a setting of the window (e.g. vsync, fullscreen, etc)
         void SetSetting(Enum::WindowSetting setting, bool value);
         // Sets the window icon
         // To remove the icon, filename should be ""
