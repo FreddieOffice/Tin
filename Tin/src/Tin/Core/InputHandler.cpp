@@ -9,7 +9,7 @@ namespace Tin {
     }
 
     bool InputHandler::IsMouseButtonPressed(Enum::MouseButton button) const {
-        return (glfwGetMouseButton(m_handle, button) == GLFW_PRESS);
+        return (glfwGetMouseButton(m_handle, static_cast<uint32_t>(button)) == GLFW_PRESS);
     }
 
     bool InputHandler::IsKeyReleased(Enum::Key key) const {
@@ -17,7 +17,7 @@ namespace Tin {
     }
 
     bool InputHandler::IsMouseButtonReleased(Enum::MouseButton button) const {
-        return (glfwGetMouseButton(m_handle, button) == GLFW_RELEASE);
+        return (glfwGetMouseButton(m_handle, static_cast<uint32_t>(button)) == GLFW_RELEASE);
     }
 
     void InputHandler::SetCursorState(Enum::CursorState state) {

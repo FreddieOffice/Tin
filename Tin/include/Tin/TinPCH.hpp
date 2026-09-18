@@ -22,7 +22,7 @@
 
 #include <utility>
 
-#include <Windows.h>
+#include <windows.h>
 
 // Vendor
 #include "glad/gl.h"
@@ -34,6 +34,6 @@
 #include "glm/gtx/rotate_vector.hpp"
 #include "glm/gtx/vector_angle.hpp"
 
-#include "SOIL2.h"
+#include "SOIL2/SOIL2.h"
 
 #endif

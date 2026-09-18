@@ -8,7 +8,7 @@
 namespace Tin {
     namespace Enum {
         // Keyboard keys
-        enum class Key : uint32_t {
+        enum class Key {
             KEY_SPACE = 32,
             KEY_APOSTROPHE = 39, /* ' */
             KEY_COMMA = 44, /* , */
@@ -129,11 +129,10 @@ namespace Tin {
             KEY_RIGHT_ALT = 346,
             KEY_RIGHT_SUPER = 347,
             KEY_MENU = 348,
-            KEY_LAST = KEY_MENU
         };
 
         // Mouse buttons
-        enum MouseButton {
+        enum class MouseButton {
             MOUSE_BUTTON_1 = 0,
             MOUSE_BUTTON_2 = 1,
             MOUSE_BUTTON_3 = 2,
@@ -142,7 +141,6 @@ namespace Tin {
             MOUSE_BUTTON_6 = 5,
             MOUSE_BUTTON_7 = 6,
             MOUSE_BUTTON_8 = 7,
-            MOUSE_BUTTON_LAST = MOUSE_BUTTON_8,
             MOUSE_BUTTON_LEFT = MOUSE_BUTTON_1,
             MOUSE_BUTTON_RIGHT = MOUSE_BUTTON_2,
             MOUSE_BUTTON_MIDDLE = MOUSE_BUTTON_3

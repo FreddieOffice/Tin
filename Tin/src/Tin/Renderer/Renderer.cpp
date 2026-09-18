@@ -8,7 +8,7 @@ namespace Tin {
         // Initialize an OpenGL context
         int32_t version = gladLoadGL(glfwGetProcAddress);
         if (version == 0) {
-            Logger::Log(Logger::Level::FatalError, "Tin", "Failed to intialize OpenGL context!");
+            Logger::Log(Logger::Level::Error, "Tin", "Failed to intialize OpenGL context!");
             glfwTerminate();
             return;
         }

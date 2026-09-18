@@ -4,8 +4,8 @@
 namespace Tin {
     namespace Logger {
         namespace {
-            static constexpr uint32_t typeColors[] = {TIN_GREEN, TIN_YELLOW, TIN_RED, TIN_DARK_RED};
-            static constexpr uint32_t messageColors[] = {TIN_DARK_GREEN, TIN_DARK_YELLOW, TIN_DARK_RED, TIN_DARK_RED};
+            static constexpr uint32_t typeColors[] = {TIN_GREEN, TIN_YELLOW, TIN_RED};
+            static constexpr uint32_t messageColors[] = {TIN_DARK_GREEN, TIN_DARK_YELLOW, TIN_DARK_RED};
 
             std::mutex logMutex;
 
@@ -18,7 +18,6 @@ namespace Tin {
                     case Level::Info: return "Info";
                     case Level::Warning: return "Warning";
                     case Level::Error: return "Error";
-                    case Level::FatalError: return "Fatal Error";
                 }
                 return "";
             }

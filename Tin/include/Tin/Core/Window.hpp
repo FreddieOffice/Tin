@@ -1,16 +1,36 @@
 #ifndef TIN_CORE_WINDOW_HPP
 #define TIN_CORE_WINDOW_HPP
 
-#include <string>
-
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
 
+#include <string>
+
 namespace Tin {
+    namespace Enum {
+        enum class WindowSetting  {
+            VSYNC,
+            FULLSCREEN,
+            MAXIMIZED,
+            RESIZABLE,
+            DECORATED,
+            FLOATING,
+        };
+    }
+
+    struct WindowConfig {
+        std::string title, icon = "";
+        glm::vec2 size, position = glm::vec2(-1, -1);
+
+        bool vsync = false, maximized = false, fullscreen = false,
+        resizable = true, decorated = true, floating = false;
+    };
+
     class Window {
     public:
         // Setting size.x or size.y to a negative number will make the window be as big as the screen on that axis
-        Window(const std::string& title, const glm::vec2& size, bool vsync = false, bool fullscreen = false);
+        // Setting position.x or position.y to a negative number will center the window on that axis
+        Window(const WindowConfig& config);
 
         // Destroys the window
         void Destroy();
@@ -25,11 +45,11 @@ namespace Tin {
         // Closes the window
         void Close() const;
 
+        // Sets a setting of the window
+        void SetSetting(Enum::WindowSetting setting, bool value);
         // Sets the window icon
-        // To remove the icon, filepath should be ""
+        // To remove the icon, filename should be ""
         void SetIcon(const std::string& filename);
-        // Sets vsync
-        void SetVsync(bool vsync);
         // Sets the window title
         void SetTitle(const std::string& title);
         // Sets the window size
@@ -37,10 +57,10 @@ namespace Tin {
         // Sets the window position
         void SetPosition(const glm::vec2& position);
 
+        // Returns the setting's value
+        bool GetSetting(Enum::WindowSetting setting) const;
         // Returns the icon file name
         std::string GetIcon() const;
-        // Returns vsync
-        bool GetVsync() const;
         // Returns the window title
         std::string GetTitle() const;
         // Returns the window size
@@ -53,11 +73,10 @@ namespace Tin {
         // Returns the GLFW window handle
         GLFWwindow* GetGLFWHandle() const;
     private:
-        GLFWwindow* m_window = nullptr;
+        GLFWwindow* m_GLFWHandle = nullptr;
 
-        std::string m_title, m_icon;
-        bool m_vsync;
-        glm::vec2 m_size, m_position;
+        WindowConfig m_config;
+        glm::vec2 m_windowedPosition, m_windowedSize; // For switching in and out of fullscreen
     };
 }
 

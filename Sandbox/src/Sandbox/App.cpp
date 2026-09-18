@@ -142,21 +142,26 @@ App* App::GetInstance() {
 }
 
 // glm::vec2(1000, 600)
+// Very Happy Smiley Game 2!
+
 int App::Run() {
     srand(time(NULL));
-    Tin::Window window("Very Happy Smiley Game 2!", glm::vec2(1000, 600));
-    window.SetIcon("assets/textures/openglmaze/smiley.png");
+    Tin::WindowConfig config{
+        "Tin", "assets/textures/openglmaze/smiley.png", 
+        glm::vec2(1000, 600), glm::vec2(-1, -1)
+    };
+    Tin::Window window(config);
 
     Tin::InputHandler inputHandler(window);
 
     Tin::Renderer renderer(window);
 
-    // Set a clear color
-    Tin::Color bro(0.2f, 0.3f, 0.6f);
-    renderer.ClearColor = bro;
+    Tin::Scene scene;
 
     Tin::Shader shader("assets/shaders/default.vert", "assets/shaders/default.frag");
     Tin::Shader skyboxShader("assets/shaders/skybox.vert", "assets/shaders/skybox.frag");
+
+    Tin::Camera camera(window.GetSize(), glm::vec3(0.0f, 0.0f, -3.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
     std::vector<Tin::Material> materials = {
         Tin::Material(Tin::Colors::White, "assets/textures/crate.png"),
@@ -169,27 +174,31 @@ int App::Run() {
         Tin::Material(Tin::Colors::White, "assets/textures/brick2.jpg")
     };
 
-    Tin::Camera camera(window.GetSize(), glm::vec3(0.0f, 0.0f, -3.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-
     //Tin::Mesh mesh(vertices, indices, shader, material);
-
-    Tin::Scene scene;
 
     for (int i = 0; i < 500; i++) {
         Tin::Mesh mesh(vertices, indices, shader, materials[rand() % materials.size()]);
 
         mesh.transform.Position = glm::vec3(rand() % 100, rand() % 100, rand() % 100);
         mesh.transform.Scale = glm::vec3(1 + rand() % 5, 1 + rand() % 5, 1 + rand() % 5);
-        //mesh.material.color = Tin::Color(rand() % 256, rand() % 256, rand() % 256);
+        mesh.material.color = Tin::Color(rand() % 256, rand() % 256, rand() % 256);
 
         scene.AddMesh(mesh);
     }
+
+    // Set a clear color
+    Tin::Color TinBlue(0.2f, 0.3f, 0.6f);
+    renderer.ClearColor = TinBlue;
 
     // ImGui
     Gui::SetupImGui(window);
 
     bool configWindow = true;
     bool aboutWindow = false;
+
+    // Options
+    bool fullscreen = false;
+    bool vsync = false;
 
     float colors[3] = {renderer.ClearColor.r, renderer.ClearColor.g, renderer.ClearColor.b};
 
@@ -228,6 +237,10 @@ int App::Run() {
             firstClick = true;
         }
 
+        if (inputHandler.IsKeyPressed(Tin::Enum::Key::KEY_LEFT_CONTROL) && inputHandler.IsKeyPressed(Tin::Enum::Key::KEY_X)) {
+            window.Close();
+        }
+
         // Rendering code
         renderer.Clear();
         renderer.ClearColor = Tin::Color(colors[0], colors[1], colors[2]);
@@ -259,7 +272,7 @@ int App::Run() {
 
             ImGui::Separator();
 
-            if (ImGui::MenuItem("Exit")) {
+            if (ImGui::MenuItem("Exit", "CTRL + X")) {
                 window.Close();
             }
 
@@ -269,6 +282,18 @@ int App::Run() {
         if (ImGui::BeginMenu("Render")) {
             if (ImGui::MenuItem("Config window")) {
                 configWindow = true;
+            };
+
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Options")) {
+            if (ImGui::MenuItem("Fullscreen", "", &fullscreen)) {
+                window.SetSetting(Tin::Enum::WindowSetting::FULLSCREEN, fullscreen);
+            };
+
+            if (ImGui::MenuItem("Vsync", "", &vsync)) {
+                window.SetSetting(Tin::Enum::WindowSetting::FLOATING, vsync);
             };
 
             ImGui::EndMenu();
