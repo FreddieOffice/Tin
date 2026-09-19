@@ -22,7 +22,7 @@ namespace Tin {
 	}
 
 	glm::mat4 Camera::GetProjectionMatrix() const {
-		return glm::perspective(glm::radians(FOV), (float)(m_viewportSize.x / m_viewportSize.y), NearPlane, FarPlane);
+		return glm::perspective(glm::radians(FOV), static_cast<float>(m_viewportSize.x) / m_viewportSize.y, NearPlane, FarPlane);
 	}
 
 	glm::mat4 Camera::GetViewMatrix() const {

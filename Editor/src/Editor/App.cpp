@@ -16,7 +16,7 @@
 // Camera
 static void cameraInput(Tin::InputHandler& input, Tin::Camera& camera, float deltaTime) {
     static float speed = 5.0f * deltaTime;
-    static float sensitivity = 150.0f;
+    static float sensitivity = 180.0f;
     static bool firstClick = false;
 
     glm::vec2 size = camera.GetViewportSize();
@@ -180,9 +180,9 @@ int App::Run() {
         Tin::Mesh mesh(vertices, indices, shader, materials[rand() % materials.size()]);
 
         mesh.transform.Position = glm::vec3(rand() % 100, rand() % 100, rand() % 100);
-        mesh.transform.Scale = glm::vec3(1 + rand() % 5, 1 + rand() % 5, 1 + rand() % 5);
+        mesh.transform.Scale = glm::vec3(1 + rand() % 6, 1 + rand() % 6, 1 + rand() % 6);
         // mesh.transform.Rotation = glm::vec3(rand() % 100, rand() % 100, rand() % 100);
-        mesh.material.color = Tin::Color(rand() % 256, rand() % 256, rand() % 256);
+        mesh.material.color = Tin::Color(1 + rand() % 256, 1 + rand() % 256, 1 + rand() % 256);
 
         scene.AddMesh(mesh);
     }

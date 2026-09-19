@@ -1,4 +1,4 @@
-project "Sandbox"
+project "Editor"
     location "%{wks.location}/%{prj.name}"
     objdir ("%{wks.location}/obj/%{prj.name}/"..outputdir)
     targetdir ("%{wks.location}/bin/%{prj.name}/"..outputdir)
@@ -9,7 +9,7 @@ project "Sandbox"
 
     includedirs {
         "include/",
-        "include/Sandbox/",
+        "include/Editor/",
         "include/Vendor/",
         "include/Vendor/imgui",
         "../Tin/include",

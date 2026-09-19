@@ -14,4 +14,4 @@ workspace "Tin"
 
     include "Tin"
 
-    include "Sandbox"
+    include "Editor"
