@@ -8,12 +8,24 @@
 #include "Tin/Renderer/Resources/Shader.hpp"
 
 namespace Tin {
+    namespace Enum {
+		enum class Shape {
+			CUSTOM,
+
+            PLANE,
+			CUBE,
+			PYRAMID,
+		};
+	}
+
     class Mesh {
     public:
         Shader shader;
         Material material;
         Transform transform;
+
         Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, const Shader& shader, const Material& material);
+        Mesh(const Enum::Shape& shape, const Shader& shader, const Material& material);
 
         // Draws the mesh
         // Uniforms required: Model (mat4), Color (vec3), ColorMap (sampler2D), HasColorMap (bool)
@@ -23,11 +35,15 @@ namespace Tin {
 
         // Changes the mesh data
         void Reload(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
+        // Changes the mesh shape
+        void SetShape(const Enum::Shape& shape);
 
         // Returns the mesh vertices
         const std::vector<Vertex>& GetVertices() const;
         // Returns the mesh indices
         const std::vector<uint32_t>& GetIndices() const;
+        // Returns the mesh shape
+        Enum::Shape GetShape() const;
     private:
         // Buffer ids
         uint32_t m_vao, m_vbo, m_ebo;
@@ -35,11 +51,14 @@ namespace Tin {
         // Mesh data
         std::vector<Vertex> m_vertices;
         std::vector<uint32_t> m_indices;
+        Enum::Shape m_shape;
 
         // Helper function to create the VAO, VBO and EBO buffers
         void CreateBuffers();
         // Helper function to reload the buffers
         void ReloadBuffers(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
+        // Helper function to change the shape
+		void ChangeShape(Enum::Shape shape);
     };
 }
 

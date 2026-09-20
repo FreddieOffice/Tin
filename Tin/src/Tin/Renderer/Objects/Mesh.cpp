@@ -4,9 +4,19 @@
 #include "Tin/Core/Logger.hpp"
 
 namespace Tin {
-    Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, const Shader& shader, const Material& material) : shader(shader), m_vertices(vertices), m_indices(indices), material(material) {
+    Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, const Shader& shader, const Material& material) : shader(shader), material(material), m_vertices(vertices), m_indices(indices), m_shape(Enum::Shape::CUSTOM) {
         CreateBuffers();
     }
+
+	Mesh::Mesh(const Enum::Shape& shape, const Shader& shader, const Material& material) : shader(shader), material(material), m_shape(shape) {
+		if (shape == Enum::Shape::CUSTOM) {
+			Logger::Log(Logger::Level::Warning, "Tin", "Cannot make a mesh with shape \"custom\", it is only for meshes that have custom mesh data");
+			return;
+		}
+
+		ChangeShape(shape);
+		CreateBuffers();
+	}
 
     void Mesh::Draw() {
         // Set uniforms
@@ -40,8 +50,20 @@ namespace Tin {
     void Mesh::Reload(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices) {
         m_vertices = vertices;
         m_indices = indices;
+		m_shape = Enum::Shape::CUSTOM;
         ReloadBuffers(vertices, indices);
     }
+
+	void Mesh::SetShape(const Enum::Shape& shape) {
+		if (shape == Enum::Shape::CUSTOM) {
+			Logger::Log(Logger::Level::Warning, "Tin", "Cannot set shape of mesh to be \"custom\", it is only for meshes that have custom mesh data");
+			return;
+		}
+
+		SetShape(shape);
+		m_shape = shape;
+		ReloadBuffers(m_vertices, m_indices);
+	}
 
     const std::vector<Vertex>& Mesh::GetVertices() const {
         return m_vertices;
@@ -50,6 +72,10 @@ namespace Tin {
     const std::vector<uint32_t>& Mesh::GetIndices() const {
         return m_indices;
     }
+
+	Enum::Shape Mesh::GetShape() const {
+		return m_shape;
+	}
 
     void Mesh::CreateBuffers() {
        // Creating the buffers
@@ -87,4 +113,100 @@ namespace Tin {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), nullptr, GL_DYNAMIC_DRAW); // Orphan the buffer
 		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(uint32_t), indices.data());
     }
+
+	void Mesh::ChangeShape(Enum::Shape shape) {
+		switch (shape) {
+		case Enum::Shape::PLANE:
+			m_vertices = {
+            	Vertex(glm::vec3(-1.0f, 0.0f,  1.0f), glm::vec2(0.0f, 0.0f)),
+            	Vertex(glm::vec3( 1.0f, 0.0f,  1.0f), glm::vec2(1.0f, 0.0f)),
+            	Vertex(glm::vec3( 1.0f, 0.0f, -1.0f), glm::vec2(1.0f, 1.0f)),
+            	Vertex(glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec2(0.0f, 1.0f))
+			};
+
+			m_indices = {
+				0, 1, 2,
+				0, 2, 3
+			};
+
+			break;
+		case Enum::Shape::CUBE:
+			m_vertices = {
+				Vertex(glm::vec3(-0.5f, -0.5f, 0.5f),  glm::vec2(0.0f, 0.0f)),
+				Vertex(glm::vec3( 0.5f, -0.5f, 0.5f),  glm::vec2(1.0f, 0.0f)),
+				Vertex(glm::vec3( 0.5f,  0.5f, 0.5f),  glm::vec2(1.0f, 1.0f)),
+				Vertex(glm::vec3(-0.5f,  0.5f, 0.5f),  glm::vec2(0.0f, 1.0f)),
+
+				Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(1.0f, 0.0f)),
+				Vertex(glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f)),
+				Vertex(glm::vec3( 0.5f,  0.5f, -0.5f), glm::vec2(0.0f, 1.0f)),
+				Vertex(glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec2(1.0f, 1.0f)),
+
+				Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f)),
+				Vertex(glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec2(0.0f, 1.0f)),
+				Vertex(glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec2(1.0f, 1.0f)),
+				Vertex(glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec2(1.0f, 0.0f)),
+
+				Vertex(glm::vec3(0.5f, -0.5f, -0.5f),  glm::vec2(1.0f, 0.0f)),
+				Vertex(glm::vec3(0.5f,  0.5f, -0.5f),  glm::vec2(1.0f, 1.0f)),
+				Vertex(glm::vec3(0.5f,  0.5f,  0.5f),  glm::vec2(0.0f, 1.0f)),
+				Vertex(glm::vec3(0.5f, -0.5f,  0.5f),  glm::vec2(0.0f, 0.0f)),
+
+				Vertex(glm::vec3(-0.5f, 0.5f,  0.5f),  glm::vec2(0.0f, 0.0f)),
+				Vertex(glm::vec3( 0.5f, 0.5f,  0.5f),  glm::vec2(1.0f, 0.0f)),
+				Vertex(glm::vec3( 0.5f, 0.5f, -0.5f),  glm::vec2(1.0f, 1.0f)),
+				Vertex(glm::vec3(-0.5f, 0.5f, -0.5f),  glm::vec2(0.0f, 1.0f)),
+
+				Vertex(glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec2(0.0f, 1.0f)),
+				Vertex(glm::vec3( 0.5f, -0.5f,  0.5f), glm::vec2(1.0f, 1.0f)),
+				Vertex(glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec2(1.0f, 0.0f)),
+				Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f))
+			};
+
+			m_indices = {
+				0, 1, 2, 2, 3, 0,
+				4, 5, 6, 6, 7, 4,
+				8, 9, 10, 10, 11, 8,
+				12, 13, 14, 14, 15, 12,
+				16, 17, 18, 18, 19, 16,
+				20, 21, 22, 22, 23, 20
+			};
+
+			break;
+		case Enum::Shape::PYRAMID:
+			m_vertices = {
+				Vertex(glm::vec3(-0.5f, -0.5f, 0.5f),  glm::vec2(0.0f, 0.0f)),
+				Vertex(glm::vec3( 0.5f, -0.5f, 0.5f),  glm::vec2(1.0f, 0.0f)),
+				Vertex(glm::vec3( 0.0f,  0.5f, 0.0f),  glm::vec2(0.5f, 1.0f)),
+
+				Vertex(glm::vec3(0.5f, -0.5f,  0.5f),  glm::vec2(0.0f, 0.0f)),
+				Vertex(glm::vec3(0.5f, -0.5f, -0.5f),  glm::vec2(1.0f, 0.0f)),
+				Vertex(glm::vec3(0.0f,  0.5f,  0.0f),  glm::vec2(0.5f, 1.0f)),
+
+				Vertex(glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f)),
+				Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(1.0f, 0.0f)),
+				Vertex(glm::vec3( 0.0f,  0.5f,  0.0f), glm::vec2(0.5f, 1.0f)),
+
+				Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f)),
+				Vertex(glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec2(1.0f, 0.0f)),
+				Vertex(glm::vec3( 0.0f,  0.5f,  0.0f), glm::vec2(0.5f, 1.0f)),
+
+				Vertex(glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec2(0.0f, 0.0f)),
+				Vertex(glm::vec3( 0.5f, -0.5f,  0.5f), glm::vec2(1.0f, 0.0f)),
+				Vertex(glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec2(1.0f, 1.0f)),
+				Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 1.0f))
+			};
+
+			m_indices = {
+				0, 1, 2,
+				3, 4, 5,
+				6, 7, 8,
+				9, 10, 11,
+				12, 13, 14,
+				14, 15, 12
+			};
+
+			break;
+		}
+	}
 }
