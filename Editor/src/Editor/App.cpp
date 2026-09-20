@@ -155,6 +155,8 @@ int App::Run() {
     Tin::InputHandler inputHandler(window);
 
     Tin::Renderer renderer(window);
+    Tin::Color TinBlue(0.2f, 0.3f, 0.6f); // Tin Blue - a shade of blue endorsed by tin
+    renderer.ClearColor = TinBlue;
 
     Tin::Scene scene;
 
@@ -171,7 +173,8 @@ int App::Run() {
         Tin::Material(Tin::Colors::White, "assets/textures/metal2.png"),
         Tin::Material(Tin::Colors::White, "assets/textures/marble.jpg"),
         Tin::Material(Tin::Colors::White, "assets/textures/brick.png"),
-        Tin::Material(Tin::Colors::White, "assets/textures/brick2.jpg")
+        Tin::Material(Tin::Colors::White, "assets/textures/brick2.jpg"),
+        Tin::Material(Tin::Colors::White, "assets/textures/openglmaze/smiley.png"),
     };
 
     // Tin::Mesh mesh(vertices, indices, shader, material);
@@ -186,10 +189,6 @@ int App::Run() {
 
         scene.AddMesh(mesh);
     }
-
-    // Set a clear color
-    Tin::Color TinBlue(0.2f, 0.3f, 0.6f);
-    renderer.ClearColor = TinBlue;
 
     // ImGui
     Gui::SetupImGui(window);
@@ -231,7 +230,7 @@ int App::Run() {
         static bool firstClick = true;
 
         if (inputHandler.IsKeyPressed(Tin::Enum::Key::KEY_J) && firstClick == true) {
-            renderer.SaveScreenshot("Screenshot.png", glm::vec2(0, 0), window.GetSize());
+            renderer.SaveScreenshot("Screenshot.png", glm::ivec2(0, 0), window.GetSize());
             firstClick = false;
         }
         else if (inputHandler.IsKeyReleased(Tin::Enum::Key::KEY_J)) {
@@ -289,10 +288,6 @@ int App::Run() {
         }
 
         if (ImGui::BeginMenu("Options")) {
-            if (ImGui::MenuItem("Fullscreen", "", &fullscreen)) {
-                window.SetSetting(Tin::Enum::WindowSetting::FULLSCREEN, fullscreen);
-            };
-
             if (ImGui::MenuItem("Vsync", "", &vsync)) {
                 window.SetSetting(Tin::Enum::WindowSetting::VSYNC, vsync);
             };
@@ -350,7 +345,7 @@ int App::Run() {
             ImGui::TextWrapped(
                 "This is my 4th attempt at making a game engine\n"
                 "The first ever version was called SmileyBox3D\n"
-                "Version: pre-alpha"
+                "Version: pre-pre-alpha"
             );
 
             ImGui::End();

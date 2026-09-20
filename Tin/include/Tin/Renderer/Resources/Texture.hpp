@@ -20,15 +20,18 @@ namespace Tin {
 		// Assigns a texture unit to a texture uniform
 		void TextureUnit(Shader& shader, const std::string& uniform) const;
 
-		// Changes the texture to a new one
+		// Changes the texture to a different one
 		void ChangeTexture(const std::string& filename);
 
 		// Returns the filename of the texture
 		std::string GetFilename() const;
+		// Returns the size of the texture
+		glm::ivec2 GetSize() const;
 		// Returns the texture id
 		uint32_t GetID() const;
 	private:
 		std::string m_filename;
+		glm::ivec2 m_size;
 
 		uint32_t m_id;
 		uint32_t m_slot;

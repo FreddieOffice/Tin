@@ -34,6 +34,7 @@
 #include "glm/gtx/rotate_vector.hpp"
 #include "glm/gtx/vector_angle.hpp"
 
-#include "SOIL2/SOIL2.h"
+#include "stb/stb_image.h"
+#include "stb/stb_image_write.h"
 
 #endif

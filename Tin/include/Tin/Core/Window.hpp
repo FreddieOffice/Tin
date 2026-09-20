@@ -10,8 +10,8 @@ namespace Tin {
     namespace Enum {
         enum class WindowSetting  {
             VSYNC,
-            FULLSCREEN,
             MAXIMIZED,
+            VISIBLE,
             RESIZABLE,
             DECORATED,
             FLOATING,
@@ -22,7 +22,7 @@ namespace Tin {
         std::string title, icon = "";
         glm::vec2 size, position = glm::vec2(-1, -1);
 
-        bool vsync = false, maximized = false, fullscreen = false,
+        bool vsync = false, visible = true, maximized = false,
         resizable = true, decorated = true, floating = false;
     };
 
@@ -76,7 +76,6 @@ namespace Tin {
         GLFWwindow* m_GLFWHandle = nullptr;
 
         WindowConfig m_config;
-        glm::vec2 m_windowedPosition, m_windowedSize; // For switching in and out of fullscreen
     };
 }
 

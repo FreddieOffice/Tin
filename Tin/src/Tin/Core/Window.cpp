@@ -24,14 +24,9 @@ namespace Tin {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        // Fullscreen
+        // Get the video mode
         GLFWmonitor* monitor = glfwGetPrimaryMonitor();
         const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);
-
-        if (config.fullscreen == true) {
-            glfwWindowHint(GLFW_REFRESH_RATE, videoMode->refreshRate);
-            m_config.size = glm::vec2(videoMode->width, videoMode->height);
-        }
 
         // Size
         if (config.size.x < 0) {
@@ -50,6 +45,7 @@ namespace Tin {
         }
 
         // Window related hints
+        glfwWindowHint(GLFW_VISIBLE, config.visible);
         glfwWindowHint(GLFW_MAXIMIZED, config.maximized);
         glfwWindowHint(GLFW_RESIZABLE, config.resizable);
         glfwWindowHint(GLFW_DECORATED, config.decorated);
@@ -57,10 +53,6 @@ namespace Tin {
 
         glfwWindowHint(GLFW_POSITION_X, m_config.position.x);
         glfwWindowHint(GLFW_POSITION_Y, m_config.position.y);
-
-        glfwWindowHint(GLFW_RED_BITS, videoMode->redBits);
-        glfwWindowHint(GLFW_GREEN_BITS, videoMode->greenBits);
-        glfwWindowHint(GLFW_BLUE_BITS, videoMode->blueBits);
 
         m_GLFWHandle = glfwCreateWindow(m_config.size.x, m_config.size.y, config.title.c_str(), nullptr, nullptr);
         if (!m_GLFWHandle) {
@@ -70,11 +62,20 @@ namespace Tin {
         Logger::Log(Logger::Level::Info, "Tin", "Window created successfully");
 
         // Set icon
-        if (config.icon != "") {
+        if (!config.icon.empty()) {
             GLFWimage image[1];
-            image[0].pixels = SOIL_load_image(config.icon.c_str(), &image[0].width, &image[0].height, nullptr, 0);
-            glfwSetWindowIcon(m_GLFWHandle, 1, image);
-            SOIL_free_image_data(image[0].pixels);
+
+            stbi_set_flip_vertically_on_load(false); // Just in case
+            image[0].pixels = stbi_load(config.icon.c_str(), &image[0].width, &image[0].height, nullptr, 4);
+
+            if (image[0].pixels == nullptr) {
+                Logger::Log(Logger::Level::Error, "Tin", "Failed to load icon with filename " + config.icon + ":\n" + stbi_failure_reason());
+            }
+            else {
+                glfwSetWindowIcon(m_GLFWHandle, 1, image);
+            }
+
+            stbi_image_free(image[0].pixels);
         }
 
         m_config.icon = config.icon;
@@ -125,29 +126,6 @@ namespace Tin {
             glfwSwapInterval(value ? 1 : 0);
             m_config.vsync = value;
             break;
-        case Enum::WindowSetting::FULLSCREEN:
-            if (value == true) {
-                GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-                const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);
-
-                m_windowedSize = m_config.size;
-                m_windowedPosition = m_config.position;
-
-                glfwSetWindowAttrib(m_GLFWHandle, GLFW_DECORATED, GLFW_FALSE);
-                glfwSetWindowMonitor(m_GLFWHandle, nullptr, 0, 0, videoMode->width, videoMode->height, videoMode->refreshRate);
-                m_config.size = glm::vec2(videoMode->width, videoMode->height);
-                m_config.position = glm::vec2(0, 0);
-            }
-            else {
-                glfwSetWindowAttrib(m_GLFWHandle, GLFW_DECORATED, GLFW_TRUE);
-                glfwSetWindowMonitor(m_GLFWHandle, nullptr, m_windowedPosition.x, m_windowedPosition.y, m_windowedSize.x, m_windowedSize.y, 0);
-                m_config.size = m_windowedSize;
-                m_config.position = m_windowedPosition;
-            }
-
-            m_config.decorated = value;
-            m_config.fullscreen = value;
-            break;
         case Enum::WindowSetting::MAXIMIZED:
             if (value == true) {
                 glfwMaximizeWindow(m_GLFWHandle);
@@ -157,6 +135,17 @@ namespace Tin {
             }
 
             m_config.maximized = value;
+            break;
+        case Enum::WindowSetting::VISIBLE:
+            if (value == true) {
+                glfwShowWindow(m_GLFWHandle);
+                m_config.visible = true;
+            }
+            else {
+                glfwHideWindow(m_GLFWHandle);
+                m_config.visible = false;
+            }
+
             break;
         case Enum::WindowSetting::RESIZABLE:
             glfwSetWindowAttrib(m_GLFWHandle, GLFW_RESIZABLE, value);
@@ -174,14 +163,23 @@ namespace Tin {
     }
 
     void Window::SetIcon(const std::string& filename) {
-        if (filename == "") {
+        if (filename.empty()) {
             glfwSetWindowIcon(m_GLFWHandle, 0, nullptr);
         }
         else {
             GLFWimage image[1];
-            image[0].pixels = SOIL_load_image(filename.c_str(), &image[0].width, &image[0].height, nullptr, 0);
-            glfwSetWindowIcon(m_GLFWHandle, 1, image);
-            SOIL_free_image_data(image[0].pixels);
+
+            stbi_set_flip_vertically_on_load(false);
+            image[0].pixels = stbi_load(filename.c_str(), &image[0].width, &image[0].height, nullptr, 4);
+
+            if (image[0].pixels == nullptr) {
+                Logger::Log(Logger::Level::Error, "Tin", "Failed to load icon with filename " + filename + ":\n" + stbi_failure_reason());
+            }
+            else {
+                glfwSetWindowIcon(m_GLFWHandle, 1, image);
+            }
+            
+            stbi_image_free(image[0].pixels);
         }
 
         m_config.icon = filename;
@@ -207,11 +205,11 @@ namespace Tin {
         case Enum::WindowSetting::VSYNC:
             return m_config.vsync;
             break;
-        case Enum::WindowSetting::FULLSCREEN:
-            return m_config.fullscreen;
-            break;
         case Enum::WindowSetting::MAXIMIZED:
             return m_config.maximized;
+            break;
+        case Enum::WindowSetting::VISIBLE:
+            return m_config.visible;
             break;
         case Enum::WindowSetting::RESIZABLE:
             return m_config.resizable;
