@@ -17,8 +17,6 @@ namespace Gui {
 
     void NewFrame();
 
-    void Render();
-
     void Shutdown();
 }
 

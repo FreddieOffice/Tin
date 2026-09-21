@@ -22,7 +22,7 @@ namespace Tin {
         std::string title, icon = "";
         glm::vec2 size, position = glm::vec2(-1, -1);
 
-        bool vsync = false, visible = true, maximized = false,
+        bool vsync = false, maximized = false, visible = true,
         resizable = true, decorated = true, floating = false;
     };
 

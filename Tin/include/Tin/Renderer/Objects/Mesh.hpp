@@ -13,7 +13,7 @@ namespace Tin {
 			CUSTOM,
 
             PLANE,
-			CUBE,
+			BLOCK,
 			PYRAMID,
 		};
 	}

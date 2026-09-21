@@ -4,11 +4,11 @@
 namespace Tin {
 	Camera::Camera(glm::vec2 viewportSize, glm::vec3 position, glm::vec3 orientation, float fov, float nearPlane, float farPlane) : m_viewportSize(viewportSize), Position(position), Orientation(orientation), FOV(fov), NearPlane(nearPlane), FarPlane(farPlane) {}
 
-	void Camera::UpdateMatrix(Shader& shader) {
+	void Camera::UpdateMatrix(Shader& shader, glm::mat4 projectionMatrix, glm::mat4 viewMatrix) const {
 		shader.Use();
 
-		shader.SetUniformMat4("CamProjection", Camera::GetProjectionMatrix());
-		shader.SetUniformMat4("CamView", Camera::GetViewMatrix());
+		shader.SetUniformMat4("CamProjection", projectionMatrix);
+		shader.SetUniformMat4("CamView", viewMatrix);
 		//shader.SetUniformVec3("CamPosition", Position);
 	}
 

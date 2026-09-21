@@ -15,7 +15,7 @@ namespace Tin {
 
 		// Updates the projection and view matrix
 		// Uniforms required: CamProjection (mat4), CamView (mat4)
-		void UpdateMatrix(Shader& shader);
+		void UpdateMatrix(Shader& shader, glm::mat4 projectionMatrix, glm::mat4 viewMatrix) const;
 
 		// Sets the camera viewport size
 		void SetViewportSize(glm::vec2 size);

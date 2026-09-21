@@ -21,8 +21,9 @@
 
 //// Objects
 
-#include "Tin/Renderer/Objects/Mesh.hpp"
 #include "Tin/Renderer/Objects/Camera.hpp"
+#include "Tin/Renderer/Objects/Framebuffer.hpp"
+#include "Tin/Renderer/Objects/Mesh.hpp"
 
 //// Resources
 

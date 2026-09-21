@@ -130,7 +130,7 @@ namespace Tin {
 			};
 
 			break;
-		case Enum::Shape::CUBE:
+		case Enum::Shape::BLOCK:
 			m_vertices = {
 				Vertex(glm::vec3(-0.5f, -0.5f, 0.5f),  glm::vec2(0.0f, 0.0f)),
 				Vertex(glm::vec3( 0.5f, -0.5f, 0.5f),  glm::vec2(1.0f, 0.0f)),
