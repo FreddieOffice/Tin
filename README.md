@@ -3,8 +3,6 @@
 Tin Engine is a 3D OpenGL game engine written in C++17  
 This is my 4th attempt at making a game engine, so there isnt much here right now  
 
-**[Tin's website](https://maxdisk.github.io/)** (WIP)
-
 ## The engine uses
 
 **[GLFW](https://github.com/glfw/glfw) - creating and managing a window**  
