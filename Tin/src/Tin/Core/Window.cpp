@@ -1,22 +1,11 @@
 #include "Tin/TinPCH.hpp"
 #include "Tin/Core/Window.hpp"
 
+#include "Tin/Core/Context.hpp"
 #include "Tin/Core/Logger.hpp"
 
 namespace Tin {
-    static void GLFWErrorCallback(int32_t error, const char* description) {
-        Logger::Log(Logger::Level::Error, "GLFW", std::string(description));
-    }
-
-    Window::Window(const WindowConfig& config) : m_config(config) {
-        // Initialize glfw
-        if (!glfwInit()) {
-            Logger::Log(Logger::Level::Error, "GLFW", "Failed to initialize GLFW!");
-            return;
-        }
-        Logger::Log(Logger::Level::Info, "GLFW", "GLFW initialized successfully");
-        glfwSetErrorCallback(GLFWErrorCallback);
-        
+    Window::Window(const WindowConfig& config) : m_title(config.title), m_size(config.size), m_position(config.position), m_vsync(config.vsync) {
         glfwDefaultWindowHints();
 
         // OpenGL context related window hints
@@ -30,18 +19,18 @@ namespace Tin {
 
         // Size
         if (config.size.x < 0) {
-            m_config.size.x = videoMode->width;
+            m_size.x = videoMode->width;
         }
         if (config.size.y < 0) {
-            m_config.size.y = videoMode->height;
+            m_size.y = videoMode->height;
         }
 
         // Position
         if (config.position.x < 0) {
-            m_config.position.x = (videoMode->width - m_config.size.x) / 2;
+            m_position.x = static_cast<int32_t>((videoMode->width - m_size.x) / 2);
         }
         if (config.position.y < 0) {
-            m_config.position.y = (videoMode->height - m_config.size.y) / 2;
+            m_position.y = static_cast<int32_t>((videoMode->height - m_size.y) / 2);
         }
 
         // Window related hints
@@ -51,15 +40,18 @@ namespace Tin {
         glfwWindowHint(GLFW_DECORATED, config.decorated);
         glfwWindowHint(GLFW_FLOATING, config.floating);
 
-        glfwWindowHint(GLFW_POSITION_X, m_config.position.x);
-        glfwWindowHint(GLFW_POSITION_Y, m_config.position.y);
+        glfwWindowHint(GLFW_POSITION_X, m_position.x);
+        glfwWindowHint(GLFW_POSITION_Y, m_position.y);
 
-        m_GLFWHandle = glfwCreateWindow(m_config.size.x, m_config.size.y, config.title.c_str(), nullptr, nullptr);
+        m_GLFWHandle = glfwCreateWindow(m_size.x, m_size.y, config.title.c_str(), nullptr, nullptr);
         if (!m_GLFWHandle) {
             Logger::Log(Logger::Level::Error, "Tin", "Failed to create window!");
             return;
         }
         Logger::Log(Logger::Level::Info, "Tin", "Window created successfully");
+
+        // Set framebuffer size
+        glfwGetFramebufferSize(m_GLFWHandle, &m_framebufferSize.x, &m_framebufferSize.y);
 
         // Set icon
         if (!config.icon.empty()) {
@@ -78,7 +70,7 @@ namespace Tin {
             stbi_image_free(image[0].pixels);
         }
 
-        m_config.icon = config.icon;
+        m_icon = config.icon;
 
         glfwMakeContextCurrent(m_GLFWHandle);
         glfwSwapInterval(config.vsync ? 1 : 0);
@@ -86,11 +78,6 @@ namespace Tin {
 
     void Window::Destroy() {
         glfwDestroyWindow(m_GLFWHandle);
-        glfwTerminate();
-    }
-
-    void Window::PollEvents() const {
-        glfwPollEvents();
     }
 
     void Window::SwapBuffers() const {
@@ -98,16 +85,18 @@ namespace Tin {
     }
 
     void Window::Update() {
-        int32_t width, height, x, y;
-        glfwGetWindowSize(m_GLFWHandle, &width, &height);
-        glfwGetWindowPos(m_GLFWHandle, &x, &y);
+        glm::ivec2 size, framebufferSize, position;
+        glfwGetWindowSize(m_GLFWHandle, &size.x, &size.y);
+        glfwGetFramebufferSize(m_GLFWHandle, &framebufferSize.x, &framebufferSize.y);
+        glfwGetWindowPos(m_GLFWHandle, &position.x, &position.y);
 
-        if (m_config.size.x != width || m_config.size.y != height) {
-            m_config.size = glm::vec2(width, height);
+        if (m_size.x != size.x || m_size.y != size.y) {
+            m_size = size;
+            m_framebufferSize = framebufferSize;
         }
 
-        if (m_config.position.x != x || m_config.position.y != y) {
-            m_config.position = glm::vec2(x, y);
+        if (m_position.x != position.x || m_position.y != position.y) {
+            m_position = position;
         }
     }
 
@@ -119,45 +108,39 @@ namespace Tin {
         glfwSetWindowShouldClose(m_GLFWHandle, 1);
     }
 
-    void Window::SetSetting(Enum::WindowSetting setting, bool value) {
-        switch (setting) {
-        case Enum::WindowSetting::VSYNC:
+    void Window::SetAttribute(Enum::WindowAttribute attribute, bool value) {
+        switch (attribute) {
+        case Enum::WindowAttribute::VSYNC:
             glfwMakeContextCurrent(m_GLFWHandle);
             glfwSwapInterval(value ? 1 : 0);
-            m_config.vsync = value;
+            m_vsync = value;
             break;
-        case Enum::WindowSetting::MAXIMIZED:
-            if (value == true) {
+        case Enum::WindowAttribute::MAXIMIZED:
+            if (value) {
                 glfwMaximizeWindow(m_GLFWHandle);
             }
             else {
                 glfwRestoreWindow(m_GLFWHandle);
             }
 
-            m_config.maximized = value;
             break;
-        case Enum::WindowSetting::VISIBLE:
-            if (value == true) {
+        case Enum::WindowAttribute::VISIBLE:
+            if (value) {
                 glfwShowWindow(m_GLFWHandle);
-                m_config.visible = true;
             }
             else {
                 glfwHideWindow(m_GLFWHandle);
-                m_config.visible = false;
             }
 
             break;
-        case Enum::WindowSetting::RESIZABLE:
+        case Enum::WindowAttribute::RESIZABLE:
             glfwSetWindowAttrib(m_GLFWHandle, GLFW_RESIZABLE, value);
-            m_config.resizable = value;
             break;
-        case Enum::WindowSetting::DECORATED:
+        case Enum::WindowAttribute::DECORATED:
             glfwSetWindowAttrib(m_GLFWHandle, GLFW_DECORATED, value);
-            m_config.decorated = value;
             break;
-        case Enum::WindowSetting::FLOATING:
+        case Enum::WindowAttribute::FLOATING:
             glfwSetWindowAttrib(m_GLFWHandle, GLFW_FLOATING, value);
-            m_config.floating = value;
             break;
         }
     }
@@ -182,65 +165,65 @@ namespace Tin {
             stbi_image_free(image[0].pixels);
         }
 
-        m_config.icon = filename;
+        m_icon = filename;
     }
 
     void Window::SetTitle(const std::string& title) {
         glfwSetWindowTitle(m_GLFWHandle, title.c_str());
-        m_config.title = title;
+        m_title = title;
     }
 
-    void Window::SetSize(const glm::vec2& size) {
+    void Window::SetSize(const glm::ivec2& size) {
         glfwSetWindowSize(m_GLFWHandle, size.x, size.y);
-        m_config.size = size;
+        m_size = size;
     }
 
-    void Window::SetPosition(const glm::vec2& position) {
+    void Window::SetPosition(const glm::ivec2& position) {
         glfwSetWindowPos(m_GLFWHandle, position.x, position.y);
-        m_config.position = position;
+        m_position = position;
     }
 
-    bool Window::GetSetting(Enum::WindowSetting setting) const {
-        switch (setting) {
-        case Enum::WindowSetting::VSYNC:
-            return m_config.vsync;
+    bool Window::GetAttribute(Enum::WindowAttribute attribute) const {
+        switch (attribute) {
+        case Enum::WindowAttribute::VSYNC:
+            return m_vsync;
             break;
-        case Enum::WindowSetting::MAXIMIZED:
-            return m_config.maximized;
+        case Enum::WindowAttribute::MAXIMIZED:
+            return glfwGetWindowAttrib(m_GLFWHandle, GLFW_MAXIMIZED);
             break;
-        case Enum::WindowSetting::VISIBLE:
-            return m_config.visible;
+        case Enum::WindowAttribute::VISIBLE:
+            return glfwGetWindowAttrib(m_GLFWHandle, GLFW_VISIBLE);
             break;
-        case Enum::WindowSetting::RESIZABLE:
-            return m_config.resizable;
+        case Enum::WindowAttribute::RESIZABLE:
+            return glfwGetWindowAttrib(m_GLFWHandle, GLFW_RESIZABLE);
             break;
-        case Enum::WindowSetting::DECORATED:
-            return m_config.decorated;
+        case Enum::WindowAttribute::DECORATED:
+            return glfwGetWindowAttrib(m_GLFWHandle, GLFW_DECORATED);
             break;
-        case Enum::WindowSetting::FLOATING:
-            return m_config.floating;
+        case Enum::WindowAttribute::FLOATING:
+            return glfwGetWindowAttrib(m_GLFWHandle, GLFW_FLOATING);
             break;
         }
     }
 
     std::string Window::GetIcon() const {
-        return m_config.icon;
+        return m_icon;
     }
 
     std::string Window::GetTitle() const {
-        return m_config.title;
+        return m_title;
     }
 
-    glm::vec2 Window::GetSize() const {
-        return m_config.size;
+    glm::ivec2 Window::GetSize() const {
+        return m_size;
     }
 
-    glm::vec2 Window::GetPosition() const {
-        return m_config.position;
+    glm::ivec2 Window::GetFramebufferSize() const {
+        return m_framebufferSize;
     }
 
-    double Window::GetTime() const {
-        return glfwGetTime();
+    glm::ivec2 Window::GetPosition() const {
+        return m_position;
     }
 
     GLFWwindow* Window::GetGLFWHandle() const {

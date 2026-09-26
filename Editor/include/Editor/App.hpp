@@ -5,7 +5,7 @@ class App {
 public:
     static App* GetInstance();
 
-    // main
+    // Main
     int Run();
 private:
     App() = default; 

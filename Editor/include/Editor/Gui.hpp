@@ -7,6 +7,8 @@
 
 #include "Tin/Tin.hpp"
 
+#include "IconsFontAwesome7.hpp"
+
 namespace Gui {
     // For docking
     static bool showDockSpace = true;
@@ -16,6 +18,8 @@ namespace Gui {
     void MainDockSpace(bool* p_open);
 
     void NewFrame();
+
+    void Render();
 
     void Shutdown();
 }

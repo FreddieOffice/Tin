@@ -1,5 +1,7 @@
 #include "Gui.hpp"
 
+#include <iostream>
+
 namespace Gui {
     void SetupImGui(const Tin::Window& window) {
         IMGUI_CHECKVERSION();
@@ -13,7 +15,17 @@ namespace Gui {
 
         // Style
         ImGui::StyleColorsDark();
+
+        // Fonts
+        ImFontConfig fontConfig;
+        fontConfig.MergeMode = true;
+        fontConfig.PixelSnapH = true;
+        fontConfig.GlyphOffset = ImVec2(0.0f, 1.0f);
+        static const ImWchar ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+
         io.Fonts->AddFontFromFileTTF("assets/fonts/comic.ttf");
+        io.Fonts->AddFontFromFileTTF("assets/fonts/fa-regular-400.ttf", 1.0f, &fontConfig, ranges); // Regular icons
+        io.Fonts->AddFontFromFileTTF("assets/fonts/fa-solid-900.ttf", 1.0f, &fontConfig, ranges); // Solid icons
 
         // Init
         ImGui_ImplGlfw_InitForOpenGL(window.GetGLFWHandle(), true);
@@ -74,6 +86,11 @@ namespace Gui {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+    }
+
+    void Render() {
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()); 
     }
 
     void Shutdown() {

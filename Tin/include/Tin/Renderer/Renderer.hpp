@@ -22,7 +22,7 @@ namespace Tin {
         void SaveScreenshot(const std::string& filename, const glm::ivec2& position, const glm::ivec2& size) const;
 
         // Sets the opengl viewport size
-        void SetViewportSize(const glm::vec2& size) const;
+        void SetViewportSize(const glm::ivec2& size) const;
     };
 }
 

@@ -9,7 +9,7 @@ namespace Tin {
 		unsigned char* data = stbi_load(filename.c_str(), &m_size.x, &m_size.y, nullptr, 4);
 
 		if (data == nullptr) {
-			Logger::Log(Logger::Level::Error, "OpenGL", ("Failed to load texture with filename " + filename + ":\n" + stbi_failure_reason()));
+			Logger::Log(Logger::Level::Error, "Tin", ("Failed to load texture with filename " + filename + ":\n" + stbi_failure_reason()));
 			return;
 		}
 
@@ -28,7 +28,7 @@ namespace Tin {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_size.x, m_size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
-		Logger::Log(Logger::Level::Info, "OpenGL", ("Texture with id " + std::to_string(m_id) + " and filename " + filename + " was successfully created"));
+		Logger::Log(Logger::Level::Info, "Tin", ("Texture with id " + std::to_string(m_id) + " and filename " + filename + " was successfully created"));
 
 		stbi_image_free(data);
 	}
@@ -48,7 +48,7 @@ namespace Tin {
 
 	void Texture::ChangeTexture(const std::string& filename) {
 		if (m_id == 0) {
-			Logger::Log(Logger::Level::Error, "OpenGL", ("Failed to change texture with id " + std::to_string(m_id) + ":\n" + "Original texture was invalid"));
+			Logger::Log(Logger::Level::Error, "Tin", ("Failed to change texture with id " + std::to_string(m_id) + ":\n" + "Original texture was invalid"));
 			return;
 		}
 
@@ -58,7 +58,7 @@ namespace Tin {
 		unsigned char* data = stbi_load(filename.c_str(), &width, &height, nullptr, 4);
 
 		if (data == nullptr) {
-			Logger::Log(Logger::Level::Error, "OpenGL", ("Failed to load texture with filename " + filename + ":\n" + stbi_failure_reason()));
+			Logger::Log(Logger::Level::Error, "Tin", ("Failed to load texture with filename " + filename + ":\n" + stbi_failure_reason()));
 			return;
 		}
 
@@ -73,7 +73,7 @@ namespace Tin {
 
 		glGenerateMipmap(GL_TEXTURE_2D);
 
-		Logger::Log(Logger::Level::Info, "OpenGL", ("Successfully changed texture with id " + std::to_string(m_id) + " and filename " + m_filename + " to " + filename));
+		Logger::Log(Logger::Level::Info, "Tin", ("Successfully changed texture with id " + std::to_string(m_id) + " and filename " + m_filename + " to " + filename));
 
 		stbi_image_free(data);
 

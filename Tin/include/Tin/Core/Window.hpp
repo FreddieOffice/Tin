@@ -8,7 +8,7 @@
 
 namespace Tin {
     namespace Enum {
-        enum class WindowSetting  {
+        enum class WindowAttribute  {
             VSYNC,
             MAXIMIZED,
             VISIBLE,
@@ -20,7 +20,7 @@ namespace Tin {
 
     struct WindowConfig {
         std::string title, icon = "";
-        glm::vec2 size, position = glm::vec2(-1, -1);
+        glm::ivec2 size, position = glm::ivec2(-1, -1);
 
         bool vsync = false, maximized = false, visible = true,
         resizable = true, decorated = true, floating = false;
@@ -34,48 +34,49 @@ namespace Tin {
 
         // Destroys the window
         void Destroy();
-        // Processes all pending events
-        void PollEvents() const;
         // Swaps the front and back buffers
         void SwapBuffers() const;
-        // Updates the OpenGL viewport size, window size and window position
+        // Updates the window size and window position
         void Update();
         // Checks if the window is open
         bool IsOpen() const;
         // Closes the window
         void Close() const;
 
-        // Sets a setting of the window (e.g. vsync, fullscreen, etc)
-        void SetSetting(Enum::WindowSetting setting, bool value);
+        // Sets an attribute of the window (e.g. vsync, fullscreen, etc)
+        void SetAttribute(Enum::WindowAttribute attribute, bool value);
         // Sets the window icon
         // To remove the icon, filename should be ""
         void SetIcon(const std::string& filename);
         // Sets the window title
         void SetTitle(const std::string& title);
         // Sets the window size
-        void SetSize(const glm::vec2& size);
+        void SetSize(const glm::ivec2& size);
         // Sets the window position
-        void SetPosition(const glm::vec2& position);
+        void SetPosition(const glm::ivec2& position);
 
-        // Returns the setting's value
-        bool GetSetting(Enum::WindowSetting setting) const;
+        // Returns the attribute's value
+        bool GetAttribute(Enum::WindowAttribute attribute) const;
         // Returns the icon file name
         std::string GetIcon() const;
         // Returns the window title
         std::string GetTitle() const;
         // Returns the window size
-        glm::vec2 GetSize() const;
+        glm::ivec2 GetSize() const;
+        // Returns the window's framebuffer size
+        glm::ivec2 GetFramebufferSize() const;
         // Returns the window position
-        glm::vec2 GetPosition() const;
-        // Returns time since initialization
-        double GetTime() const;
+        glm::ivec2 GetPosition() const;
 
         // Returns the GLFW window handle
         GLFWwindow* GetGLFWHandle() const;
     private:
         GLFWwindow* m_GLFWHandle = nullptr;
 
-        WindowConfig m_config;
+        // GLFW does not provide a getter for vsync and icon
+        std::string m_title, m_icon;
+        glm::ivec2 m_size, m_framebufferSize, m_position;
+        bool m_vsync;
     };
 }
 

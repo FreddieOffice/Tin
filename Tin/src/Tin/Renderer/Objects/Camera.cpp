@@ -2,7 +2,7 @@
 #include "Tin/Renderer/Objects/Camera.hpp"
 
 namespace Tin {
-	Camera::Camera(glm::vec2 viewportSize, glm::vec3 position, glm::vec3 orientation, float fov, float nearPlane, float farPlane) : m_viewportSize(viewportSize), Position(position), Orientation(orientation), FOV(fov), NearPlane(nearPlane), FarPlane(farPlane) {}
+	Camera::Camera(glm::ivec2 viewportSize, glm::vec3 position, glm::vec3 orientation, float fov, float nearPlane, float farPlane) : m_viewportSize(viewportSize), Position(position), Orientation(orientation), FOV(fov), NearPlane(nearPlane), FarPlane(farPlane) {}
 
 	void Camera::UpdateMatrix(Shader& shader, glm::mat4 projectionMatrix, glm::mat4 viewMatrix) const {
 		shader.Use();
@@ -12,7 +12,7 @@ namespace Tin {
 		//shader.SetUniformVec3("CamPosition", Position);
 	}
 
-	void Camera::SetViewportSize(glm::vec2 size) {
+	void Camera::SetViewportSize(glm::ivec2 size) {
 		// This is to prevent crashing when minimizing the window
 		if (size.x == 0 || size.y == 0) {
 			return;
@@ -29,7 +29,7 @@ namespace Tin {
 		return glm::lookAt(Position, Position + Orientation, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
-	glm::vec2 Camera::GetViewportSize() const {
+	glm::ivec2 Camera::GetViewportSize() const {
 		return m_viewportSize;
 	}
 }

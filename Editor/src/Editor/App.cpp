@@ -6,19 +6,18 @@
 
 #include "Tin/Tin.hpp"
 
+#include "glm/glm.hpp"
+#include "glm/gtx/rotate_vector.hpp"
+#include "glm/gtx/vector_angle.hpp"
+
 #include <iostream>
 #include <vector>
 
-#include "glm/glm.hpp"
-#include <glm/gtx/rotate_vector.hpp>
-#include <glm/gtx/vector_angle.hpp>
-
-static void cameraInput(Tin::InputHandler& input, Tin::Camera& camera, float deltaTime, bool sceneWindowHovered, glm::vec2 center) {
-    static float speed = 5.0f * deltaTime;
-    static float sensitivity = 180.0f * deltaTime;
+// Too many arguments, will be fixed later
+static void cameraInput(Tin::InputHandler& input, Tin::Camera& camera, float deltaTime, bool sceneWindowHovered, glm::vec2 center, float speed, float sensitivity) {
     static bool firstClick = false;
 
-    if (sceneWindowHovered | !firstClick) {
+    if (sceneWindowHovered || !firstClick) {
         // Camera rotation with mouse
         if (input.IsMouseButtonPressed(Tin::Enum::MouseButton::MOUSE_BUTTON_RIGHT)) {
             input.SetCursorState(Tin::Enum::CursorState::DISABLED);
@@ -31,8 +30,8 @@ static void cameraInput(Tin::InputHandler& input, Tin::Camera& camera, float del
 
             glm::vec2 mousePos = input.GetCursorPosition();
 
-            float rotX = sensitivity * (float)(mousePos.y - center.y) / center.y;
-            float rotY = sensitivity * (float)(mousePos.x - center.x) / center.x;
+            float rotX = sensitivity * (mousePos.y - center.y) / center.y;
+            float rotY = sensitivity * (mousePos.x - center.x) / center.x;
 
             glm::vec3 newOrientation = glm::rotate(camera.Orientation, glm::radians(-rotX), glm::normalize(glm::cross(camera.Orientation, glm::vec3(0.0f, 1.0f, 0.0f))));
 
@@ -50,38 +49,36 @@ static void cameraInput(Tin::InputHandler& input, Tin::Camera& camera, float del
             firstClick = true;
         }
 
+        // Camera speed
+        float velocity = speed * deltaTime;
+        if (input.IsKeyPressed(Tin::Enum::Key::KEY_LEFT_SHIFT)) {
+            velocity = speed * 2.0f * deltaTime;
+        }
+
         // Camera movement in x, z directions
         if (input.IsKeyPressed(Tin::Enum::Key::KEY_W)) {
-            camera.Position += speed * camera.Orientation;
+            camera.Position += velocity * camera.Orientation;
         }
 
         if (input.IsKeyPressed(Tin::Enum::Key::KEY_A)) {
-            camera.Position += speed * -glm::normalize(glm::cross(camera.Orientation, glm::vec3(0.0f, 1.0f, 0.0f)));
+            camera.Position += velocity * -glm::normalize(glm::cross(camera.Orientation, glm::vec3(0.0f, 1.0f, 0.0f)));
         }
 
         if (input.IsKeyPressed(Tin::Enum::Key::KEY_S)) {
-            camera.Position += speed * -camera.Orientation;
+            camera.Position += velocity * -camera.Orientation;
         }
 
         if (input.IsKeyPressed(Tin::Enum::Key::KEY_D)) {
-            camera.Position += speed * glm::normalize(glm::cross(camera.Orientation, glm::vec3(0.0f, 1.0f, 0.0f)));
+            camera.Position += velocity * glm::normalize(glm::cross(camera.Orientation, glm::vec3(0.0f, 1.0f, 0.0f)));
         }
 
         // Camera movement in the y direction
         if (input.IsKeyPressed(Tin::Enum::Key::KEY_E)) {
-            camera.Position += speed * glm::vec3(0.0f, 1.0f, 0.0f);
+            camera.Position += velocity * glm::vec3(0.0f, 1.0f, 0.0f);
         }
 
         if (input.IsKeyPressed(Tin::Enum::Key::KEY_Q)) {
-            camera.Position += speed * glm::vec3(0.0f, -1.0f, 0.0f);
-        }
-
-        // Camera speed
-        if (input.IsKeyPressed(Tin::Enum::Key::KEY_LEFT_SHIFT)) {
-            speed = 30.0f * deltaTime;
-        }
-        else if (input.IsKeyReleased(Tin::Enum::Key::KEY_LEFT_SHIFT)) {
-            speed = 5.0f * deltaTime;
+            camera.Position += velocity * glm::vec3(0.0f, -1.0f, 0.0f);
         }
     }
 }
@@ -94,11 +91,14 @@ App* App::GetInstance() {
 int App::Run() {
     srand(time(NULL));
 
+    Tin::Context& context = Tin::Context::GetInstance();
+    context.Init();
+
     Tin::WindowConfig config{
         "Tin Editor",                            // Title
         "assets/textures/openglmaze/smiley.png", // Icon
-        glm::vec2(1280, 720),                    // Size
-        glm::vec2(-1, -1),                       // Position
+        glm::ivec2(1280, 720),                   // Size
+        glm::ivec2(-1, -1),                      // Position
         false,                                   // Vsync
         true                                     // Maximized
     };
@@ -110,15 +110,18 @@ int App::Run() {
     Tin::Color TinBlue(0.2f, 0.3f, 0.6f); // Tin Blue - a shade of blue endorsed by tin
     renderer.ClearColor = TinBlue;
 
-    Tin::Framebuffer framebuffer(window.GetSize());
+    Tin::Framebuffer framebuffer(window.GetFramebufferSize());
 
     Tin::Scene scene;
 
-    Tin::Shader shader("assets/shaders/default.vert", "assets/shaders/default.frag");
+    Tin::Shader defaultShader(
+        Tin::Utils::ReadFile("assets/shaders/default.vert"), 
+        Tin::Utils::ReadFile("assets/shaders/default.frag")
+    );
     //Tin::Shader skyboxShader("assets/shaders/skybox.vert", "assets/shaders/skybox.frag");
 
     // Editor camera
-    Tin::Camera camera(window.GetSize(), glm::vec3(0.0f, 2.0f, -3.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    Tin::Camera camera(window.GetFramebufferSize(), glm::vec3(0.0f, 2.0f, -3.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
     std::vector<Tin::Material> materials = {
         Tin::Material(Tin::Colors::White, "assets/textures/crate.png"),
@@ -135,7 +138,7 @@ int App::Run() {
     // Tin::Mesh mesh(vertices, indices, shader, material);
 
     for (int i = 0; i < 1000; i++) {
-        Tin::Mesh mesh(static_cast<Tin::Enum::Shape>(1 + rand() % 3), shader, materials[rand() % materials.size()]);
+        Tin::Mesh mesh(static_cast<Tin::Enum::Shape>(1 + rand() % 3), defaultShader, materials[rand() % materials.size()]);
 
         mesh.transform.Position = glm::vec3((rand() % 100) - 50, (rand() % 100) - 50, 100 - (rand() % 100) - 50);
         mesh.transform.Scale = glm::vec3(1 + rand() % 6, 1 + rand() % 6, 1 + rand() % 6);
@@ -144,6 +147,9 @@ int App::Run() {
 
         scene.AddMesh(mesh);
     }
+
+    float cameraSpeed = 10.0f;
+    float cameraSensitivity = 180.0f;
 
     // ImGui
     Gui::SetupImGui(window);
@@ -165,12 +171,12 @@ int App::Run() {
     std::string FPSandMS = "0.0 FPS / 0.0 ms";
 
     while (window.IsOpen()) {
-        window.PollEvents();
+        context.PollEvents();
         window.Update();
         renderer.Clear();
 
         // Getting FPS and delta time
-        currentFrame = static_cast<float>(window.GetTime());
+        currentFrame = static_cast<float>(context.GetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
@@ -192,7 +198,8 @@ int App::Run() {
         Gui::MainDockSpace(&Gui::showDockSpace);
 
         // Scene window
-        ImGui::Begin("Scene");
+        ImGui::Begin(ICON_FA_EYE " Scene");
+        ImGui::SetWindowSize(ImVec2(500, 500), ImGuiCond_FirstUseEver);
 
         ImVec2 windowSize = ImGui::GetContentRegionAvail();
         ImVec2 windowPos = ImGui::GetCursorScreenPos();
@@ -207,7 +214,7 @@ int App::Run() {
         // Get client coordinates
         ImVec2 appCoordinates = ImGui::GetMainViewport()->Pos;
         glm::vec2 localCenter(windowCenter.x - appCoordinates.x, windowCenter.y - appCoordinates.y);
-        cameraInput(inputHandler, camera, deltaTime, sceneWindowHovered, localCenter);
+        cameraInput(inputHandler, camera, deltaTime, sceneWindowHovered, localCenter, cameraSpeed, cameraSensitivity);
 
         sceneWindowHovered = ImGui::IsItemHovered(); // Check if mouse is hovering over the image
 
@@ -229,8 +236,12 @@ int App::Run() {
             glm::vec2 mousePos = inputHandler.GetCursorPosition();
             ImGui::Text("%s", FPSandMS.c_str());
             ImGui::Text("Mouse pos: %.1f, %.1f", mousePos.x, mousePos.y);
+            ImGui::Separator();
+
             ImGui::Text("Camera position: %.1f, %.1f, %.1f", camera.Position.x, camera.Position.y, camera.Position.z);
             ImGui::Text("Camera orientation: %.1f, %.1f, %.1f", camera.Orientation.x, camera.Orientation.y, camera.Orientation.z);
+            ImGui::SliderFloat("Camera speed", &cameraSpeed, 1.0f, 40.0f);
+            ImGui::SliderFloat("Camera sensitivity", &cameraSensitivity, 1.0f, 200.0f);
 
             ImGui::End();
         }
@@ -283,7 +294,7 @@ int App::Run() {
 
         if (ImGui::BeginMenu("Options")) {
             if (ImGui::MenuItem("Vsync", "", &vsync)) {
-                window.SetSetting(Tin::Enum::WindowSetting::VSYNC, vsync);
+                window.SetAttribute(Tin::Enum::WindowAttribute::VSYNC, vsync);
             };
 
             ImGui::EndMenu();
@@ -292,10 +303,6 @@ int App::Run() {
         if (ImGui::BeginMenu("About")) {
             if (ImGui::MenuItem("About window")) {
                 aboutWindow = true;
-            }
-
-            if (ImGui::MenuItem("Visit website")) {
-                std::system("start https://maxdisk.github.io/");
             }
 
             if (ImGui::MenuItem("Visit git repository")) {
@@ -307,8 +314,6 @@ int App::Run() {
 
         ImGui::EndMainMenuBar();
 
-        ImGui::Render();
-
         // Rendering code
         framebuffer.Bind();
         renderer.SetViewportSize(framebuffer.GetSize());
@@ -317,19 +322,19 @@ int App::Run() {
         renderer.ClearColor = Tin::Color(colors[0], colors[1], colors[2]);
 
         // Update camera
-        camera.UpdateMatrix(shader, camera.GetProjectionMatrix(), camera.GetViewMatrix());
+        camera.UpdateMatrix(defaultShader, camera.GetProjectionMatrix(), camera.GetViewMatrix());
 
         scene.Draw();
 
         framebuffer.Unbind();
 
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()); 
+        Gui::Render();
 
         // Save screenshot
         static bool firstClick = true;
 
         if (inputHandler.IsKeyPressed(Tin::Enum::Key::KEY_J) && firstClick) {
-            renderer.SaveScreenshot("Screenshot.png", glm::vec2(0, 0), window.GetSize());
+            renderer.SaveScreenshot("Screenshot.png", glm::ivec2(0, 0), window.GetSize());
             firstClick = false;
         }
         else if (inputHandler.IsKeyReleased(Tin::Enum::Key::KEY_J)) {
@@ -343,5 +348,6 @@ int App::Run() {
     Gui::Shutdown();
 
     window.Destroy();
+    context.Destroy();
     return 0;
 }

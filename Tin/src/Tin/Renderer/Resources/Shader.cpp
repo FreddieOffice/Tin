@@ -6,7 +6,7 @@
 
 namespace Tin {
     Shader::Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath) {
-        CreateProgram(Utils::ReadFile(vertexShaderPath), Utils::ReadFile(fragmentShaderPath));
+        CreateProgram(vertexShaderPath, fragmentShaderPath);
     }
     
     void Shader::Use() const {
@@ -19,7 +19,7 @@ namespace Tin {
 
     void Shader::Reload(const std::string& vertexShaderPath, const std::string& fragmentShaderPath) {
         glDeleteProgram(m_id);
-        CreateProgram(Utils::ReadFile(vertexShaderPath), Utils::ReadFile(fragmentShaderPath));
+        CreateProgram(vertexShaderPath, fragmentShaderPath);
     }
 
     void Shader::SetUniformInt(const std::string& name, int32_t x) const {
@@ -116,11 +116,11 @@ namespace Tin {
             glGetProgramInfoLog(m_id, length-2, nullptr, infoLog.data());
 
             // Output the info log
-            Logger::Log(Logger::Level::Error, "OpenGL", ("Shader program with id " + std::to_string(m_id) + " linking error:\n" + infoLog.data()));
+            Logger::Log(Logger::Level::Error, "Tin", ("Shader program with id " + std::to_string(m_id) + " linking error:\n" + infoLog.data()));
             return;
         }
         else {
-            Logger::Log(Logger::Level::Info, "OpenGL", ("Shader program with id " + std::to_string(m_id) + " was successfully linked"));
+            Logger::Log(Logger::Level::Info, "Tin", ("Shader program with id " + std::to_string(m_id) + " was successfully linked"));
         }
     }
 
@@ -155,10 +155,10 @@ namespace Tin {
             glGetShaderInfoLog(shader, length-2, nullptr, infoLog.data());
 
             // Output the info log
-            Logger::Log(Logger::Level::Error, "OpenGL", ("Shader compilation error for " + name + " with id " + std::to_string(shader) + ":\n" + infoLog.data()));
+            Logger::Log(Logger::Level::Error, "Tin", ("Shader compilation error for " + name + " with id " + std::to_string(shader) + ":\n" + infoLog.data()));
         }
         else {
-            Logger::Log(Logger::Level::Info, "OpenGL", (name + " with id " + std::to_string(shader) + " was successfully compiled"));
+            Logger::Log(Logger::Level::Info, "Tin", (name + " with id " + std::to_string(shader) + " was successfully compiled"));
         }
 
         return shader;
@@ -167,7 +167,7 @@ namespace Tin {
     int32_t Shader::GetUniformLocation(const std::string& name) const {
         int32_t location = glGetUniformLocation(m_id, name.c_str());
         if (location == -1) {
-            Logger::Log(Logger::Level::Error, "OpenGL", ("Failed to get uniform location with name " + name));
+            Logger::Log(Logger::Level::Error, "Tin", ("Failed to get uniform location with name " + name));
         }
 
         return location;

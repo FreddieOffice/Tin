@@ -14,7 +14,7 @@ namespace Tin {
         Logger::Log(Logger::Level::Info, "Tin", "OpenGL context initialized successfully");
 
         // Set up some OpenGL stuff
-        glm::vec2 size = window.GetSize();
+        glm::ivec2 size = window.GetFramebufferSize();
         glViewport(0, 0, size.x, size.y);
 
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -63,7 +63,7 @@ namespace Tin {
 		}
     }
 
-    void Renderer::SetViewportSize(const glm::vec2& size) const {
+    void Renderer::SetViewportSize(const glm::ivec2& size) const {
         glViewport(0, 0, size.x, size.y);
     }
 }
