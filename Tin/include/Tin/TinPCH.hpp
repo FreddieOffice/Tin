@@ -1,9 +1,6 @@
 #ifndef TIN_PCH_HPP
 #define TIN_PCH_HPP
 
-// Platform
-#include <windows.h>
-
 // General
 #include <utility>
 
@@ -33,6 +30,21 @@
 #include <chrono>
 #include <ctime>
 #include <filesystem>
+
+// Platform
+#include "Tin/Core/Platform.hpp"
+
+#ifdef TIN_PLATFORM_WINDOWS
+    #ifndef NOMINMAX
+        #define NOMINMAX
+    #endif
+    
+    #ifndef WIN32_LEAN_AND_MEAN
+        #define WIN32_LEAN_AND_MEAN
+    #endif
+
+    #include <windows.h>
+#endif
 
 // Vendor
 #define GLFW_INCLUDE_NONE
