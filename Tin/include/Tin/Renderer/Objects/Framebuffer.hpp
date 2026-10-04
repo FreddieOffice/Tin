@@ -6,7 +6,7 @@
 namespace Tin {
     class Framebuffer {
     public:
-        Framebuffer(const glm::vec2& size);
+        Framebuffer(const glm::ivec2& size);
 
         // Binds the framebuffer
         void Bind() const;
@@ -16,15 +16,18 @@ namespace Tin {
         void Destroy();
 
         // Resizes the framebuffer
-        void Resize(const glm::vec2& size);
+        void Resize(const glm::ivec2& size);
 
         // Returns the size of the framebuffer
-        glm::vec2 GetSize() const;
+        glm::ivec2 GetSize() const;
         // Returns the texture id
-        uint32_t GetTextureID() const;
+        uint32_t GetTextureId() const;
     private:
-        uint32_t m_id, m_texture, m_rbo;
-        glm::vec2 m_size;
+        uint32_t m_Id = 0;
+        uint32_t m_textureId = 0;
+        uint32_t m_Rbo = 0;
+        
+        glm::ivec2 m_size;
     };
 }
 

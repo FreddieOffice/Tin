@@ -2,7 +2,7 @@
 #include "Tin/Core/InputHandler.hpp"
 
 namespace Tin {
-    InputHandler::InputHandler(const Window& window) : m_handle(window.GetGLFWHandle()) {}
+    InputHandler::InputHandler(const Window& window) : m_handle(window.GetGlfwHandle()) {}
 
     bool InputHandler::IsKeyPressed(Enum::Key key) const {
         return (glfwGetKey(m_handle, static_cast<uint32_t>(key)) == GLFW_PRESS);
@@ -22,16 +22,16 @@ namespace Tin {
 
     void InputHandler::SetCursorState(Enum::CursorState state) {
         switch (state) {
-        case Enum::CursorState::NORMAL:
+        case Enum::CursorState::Normal:
             glfwSetInputMode(m_handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             break;
-        case Enum::CursorState::HIDDEN:
+        case Enum::CursorState::Hidden:
             glfwSetInputMode(m_handle, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
             break;
-        case Enum::CursorState::DISABLED:
+        case Enum::CursorState::Disabled:
             glfwSetInputMode(m_handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             break;
-        case Enum::CursorState::CONFINED:
+        case Enum::CursorState::Confined:
             glfwSetInputMode(m_handle, GLFW_CURSOR, GLFW_CURSOR_CAPTURED);
             break;
         }

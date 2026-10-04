@@ -2,11 +2,9 @@
 #include "Tin/Renderer/DataStructures/Material.hpp"
 
 namespace Tin {
-    Material::Material() : color(Color(0.5f, 0.5f, 0.5f)), colorMap(std::nullopt) {}
+    Material::Material() : colorMap(std::nullopt) {}
 
-    Material::Material(const Color& color, const std::string& colorMapFilename) : color(color) {
-        colorMap = Texture(colorMapFilename, 0);
-    }
+    Material::Material(const Color& color, const Texture& colorMap) : color(color), colorMap(colorMap) {}
 
     bool Material::HasColorMap() const {
         return colorMap.has_value();

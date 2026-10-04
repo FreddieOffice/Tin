@@ -1,6 +1,7 @@
 #include "App.hpp"
 
 int main() {
-    int result = App::GetInstance()->Run();
+    App app;
+    int result = app.Run();
     return result;
 }

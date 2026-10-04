@@ -4,22 +4,29 @@
 namespace Tin {
     namespace Logger {
         namespace {
-            static constexpr uint32_t typeColors[] = {TIN_GREEN, TIN_YELLOW, TIN_RED};
-            static constexpr uint32_t messageColors[] = {TIN_DARK_GREEN, TIN_DARK_YELLOW, TIN_DARK_RED};
+            uint8_t DarkGreen = 2;
+            uint8_t DarkRed = 4;
+            uint8_t DarkYellow = 6;
+            uint8_t Green = 10;
+            uint8_t Red = 12;
+            uint8_t Yellow = 14;
+            uint8_t White = 15;
+
+            std::array<uint8_t, 3> typeColors = {Green, Yellow, Red};
+            std::array<uint8_t, 3> messageColors = {DarkGreen, DarkYellow, DarkRed};
 
             std::mutex logMutex;
 
-            void SetTextColor(uint32_t color) {
+            void SetTextColor(uint8_t color) {
                 SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
             }
 
-            const char* LevelToString(Level level) {
+            std::string LevelToString(Level level) {
                 switch (level) {
                     case Level::Info: return "Info";
                     case Level::Warning: return "Warning";
                     case Level::Error: return "Error";
                 }
-                return "";
             }
 
             std::string CurrentDateTime() {
@@ -41,13 +48,13 @@ namespace Tin {
         void Log(Level level, const std::string& location, const std::string& message) {
             std::lock_guard<std::mutex> lock(logMutex);
 
-            SetTextColor(TIN_WHITE);
+            SetTextColor(White);
             std::cout << CurrentDateTime() << " " << location << ": "; // Location is where the error comes from
-            SetTextColor(typeColors[static_cast<std::uint32_t>(level)]);
+            SetTextColor(typeColors[static_cast<uint8_t>(level)]);
             std::cout << LevelToString(level) << ": ";
-            SetTextColor(messageColors[static_cast<std::uint32_t>(level)]);
+            SetTextColor(messageColors[static_cast<uint8_t>(level)]);
             std::cout << message << "\n";
-            SetTextColor(TIN_WHITE);
+            SetTextColor(White);
         }
     }
 }

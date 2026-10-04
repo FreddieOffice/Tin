@@ -7,8 +7,7 @@ namespace Tin {
     bool Vertex::operator==(const Vertex& other) const {
         if (Position == other.Position && TextureUV == other.TextureUV) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -16,8 +15,7 @@ namespace Tin {
     bool Vertex::operator!=(const Vertex& other) const {
         if (Position != other.Position || TextureUV != other.TextureUV) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }

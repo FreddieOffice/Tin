@@ -18,7 +18,7 @@ namespace Tin {
         // Makes a gray colored material
         Material();
 
-        Material(const Color& color, const std::string& colorMapFilename = ""); 
+        Material(const Color& color, const Texture& colorMap); 
         
         // Checks if the material has a color map
         bool HasColorMap() const;

@@ -5,8 +5,6 @@ project "Editor"
 
     kind "ConsoleApp"
 
-    defines {"GLM_ENABLE_EXPERIMENTAL"}
-
     includedirs {
         "include/",
         "include/Editor/",
@@ -25,7 +23,7 @@ project "Editor"
         "include/**.h",
         "include/**.hpp",
         "src/**.cpp",
-        "assets/**.**"
+        "assets/**.*"
     }
 
     -- Configurations

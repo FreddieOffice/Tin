@@ -9,7 +9,7 @@ namespace Tin {
 	glm::mat4 Transform::GetModelMatrix() const {
 		glm::mat4 transform = glm::mat4(1.0f);
 
-		// Translation
+		// Translate
 		transform = glm::translate(transform, Position);
 
 		// Rotate

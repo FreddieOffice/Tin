@@ -8,7 +8,7 @@ namespace Tin {
         float r, g, b, a;
 
         // Default constructor
-        // Color is black
+        // Color is gray
         Color();
         // Creates a color from floats
         Color(float r, float g, float b, float a = 1.0f);
@@ -36,35 +36,37 @@ namespace Tin {
 
         bool operator==(const Color& other) const;
         bool operator!=(const Color& other) const;
+
+        // Predefined colors
+
+        static Color Transparent;
+        static Color Azure;
+        static Color Beige;
+        static Color Black;
+        static Color Blue;
+        static Color Brown;
+        static Color Crimson;
+        static Color Cyan;
+        static Color DarkGreen;
+        static Color DarkMagenta;
+        static Color Gray;
+        static Color Green;
+        static Color Indigo;
+        static Color Lavender;
+        static Color Magenta;
+        static Color Maroon;
+        static Color Mint;
+        static Color NavyBlue;
+        static Color Olive;
+        static Color Orange;
+        static Color Purple;
+        static Color Red;
+        static Color Teal;
+        static Color Turquoise;
+        static Color Violet;
+        static Color White;
+        static Color Yellow;
 	};
-
-    // Predefined colors
-    namespace Colors {
-        static const Color Black = Color(0.0f, 0.0f, 0.0f);
-
-        static const Color DarkRed = Color(0.5f, 0.0f, 0.0f);
-        static const Color Red = Color(1.0f, 0.0f, 0.0f);
-
-        static const Color DarkGreen = Color(0.0f, 0.5f, 0.0f);
-        static const Color Green = Color(0.0f, 1.0f, 0.0f);
-
-        static const Color DarkBlue = Color(0.0f, 0.0f, 0.5f);
-        static const Color Blue = Color(0.0f, 0.0f, 1.0f);
-
-        static const Color Orange = Color(1.0f, 0.5f, 0.0f);
-        static const Color Brown = Color(0.6f, 0.3f, 0.0f);
-        static const Color DarkYellow = Color(0.5f, 0.5f, 0.0f);
-        static const Color Yellow = Color(1.0f, 1.0f, 0.0f);
-
-        static const Color Purple = Color(0.5f, 0.0f, 0.5f);
-        static const Color Magenta = Color(1.0f, 0.0f, 1.0f);
-
-        static const Color DarkCyan = Color(0.0f, 0.5f, 0.5f);
-        static const Color Cyan = Color(0.0f, 1.0f, 1.0f);
-
-        static const Color Gray = Color(0.5f, 0.5f, 0.5f);
-        static const Color White = Color(1.0f, 1.0f, 1.0f);
-    }
 }
 
 #endif

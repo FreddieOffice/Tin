@@ -8,8 +8,12 @@
 namespace Tin {
 	class Camera {
 	public:
-		glm::vec3 Position, Orientation;
-		float FOV, NearPlane, FarPlane;
+		glm::vec3 Position;
+		glm::vec3 Orientation;
+		
+		float FOV;
+		float NearPlane;
+		float FarPlane;
 
 		Camera(glm::ivec2 viewportSize, glm::vec3 position, glm::vec3 orientation, float fov = 90.0f, float nearPlane = 0.1f, float farPlane = 1000.0f);
 

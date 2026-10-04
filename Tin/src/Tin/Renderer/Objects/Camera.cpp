@@ -14,9 +14,7 @@ namespace Tin {
 
 	void Camera::SetViewportSize(glm::ivec2 size) {
 		// This is to prevent crashing when minimizing the window
-		if (size.x == 0 || size.y == 0) {
-			return;
-		}
+		if (size.x == 0 || size.y == 0) { return; }
 
 		m_viewportSize = size;
 	}

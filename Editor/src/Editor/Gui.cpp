@@ -23,12 +23,12 @@ namespace Gui {
         fontConfig.GlyphOffset = ImVec2(0.0f, 1.0f);
         static const ImWchar ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
 
-        io.Fonts->AddFontFromFileTTF("assets/fonts/comic.ttf");
+        io.Fonts->AddFontFromFileTTF("assets/fonts/Inter_18pt-Regular.ttf"); // Main font
         io.Fonts->AddFontFromFileTTF("assets/fonts/fa-regular-400.ttf", 1.0f, &fontConfig, ranges); // Regular icons
         io.Fonts->AddFontFromFileTTF("assets/fonts/fa-solid-900.ttf", 1.0f, &fontConfig, ranges); // Solid icons
 
         // Init
-        ImGui_ImplGlfw_InitForOpenGL(window.GetGLFWHandle(), true);
+        ImGui_ImplGlfw_InitForOpenGL(window.GetGlfwHandle(), true);
         ImGui_ImplOpenGL3_Init("#version 330");
     }
 

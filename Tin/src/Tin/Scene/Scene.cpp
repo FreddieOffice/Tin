@@ -2,13 +2,20 @@
 #include "Tin/Scene/Scene.hpp"
 
 namespace Tin {
-    Scene::Scene() {
+    Scene::Scene(const Shader& basicShader, const Environment& environment) : m_basicShader(basicShader), environment(environment) {}
 
-    }
-
-    void Scene::Draw() {
+    void Scene::Render(Renderer& renderer, Camera& camera) {
+        // Render meshes
         for (Mesh& mesh : m_meshes) {
-            mesh.Draw();
+            mesh.Render();
+        }
+
+        // Update camera
+        camera.UpdateMatrix(m_basicShader, camera.GetProjectionMatrix(), camera.GetViewMatrix());
+
+        // Render the skybox last (if the sky type is skybox)
+        if (environment.type == Enum::SkyType::Skybox) {
+            renderer.RenderSkybox(camera);
         }
     }
 

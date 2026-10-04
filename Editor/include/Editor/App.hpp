@@ -3,14 +3,11 @@
 
 class App {
 public:
-    static App* GetInstance();
-
+    App();
+    
     // Main
     int Run();
 private:
-    App() = default; 
-    ~App() = default;
-
     App(const App&) = delete;
     App& operator=(const App&) = delete;
 };

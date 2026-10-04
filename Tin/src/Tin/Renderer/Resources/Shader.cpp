@@ -10,15 +10,15 @@ namespace Tin {
     }
     
     void Shader::Use() const {
-        glUseProgram(m_id);
+        glUseProgram(m_Id);
     }
 
     void Shader::Destroy() const {
-        glDeleteProgram(m_id);
+        glDeleteProgram(m_Id);
     }
 
     void Shader::Reload(const std::string& vertexShaderPath, const std::string& fragmentShaderPath) {
-        glDeleteProgram(m_id);
+        glDeleteProgram(m_Id);
         CreateProgram(vertexShaderPath, fragmentShaderPath);
     }
 
@@ -82,8 +82,8 @@ namespace Tin {
 		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(mat4));
 	}
 
-    uint32_t Shader::GetID() const {
-        return m_id;
+    uint32_t Shader::GetId() const {
+        return m_Id;
     }
 
     void Shader::CreateProgram(const std::string& vertexShaderSource, const std::string& fragmentShaderSource) {
@@ -91,42 +91,41 @@ namespace Tin {
         uint32_t fragmentShader = CreateShader(GL_FRAGMENT_SHADER, fragmentShaderSource.c_str());
 
         // Create the shader program
-        m_id = glCreateProgram();
-        glAttachShader(m_id, vertexShader);
-        glAttachShader(m_id, fragmentShader);
-        glLinkProgram(m_id);
+        m_Id = glCreateProgram();
+        glAttachShader(m_Id, vertexShader);
+        glAttachShader(m_Id, fragmentShader);
+        glLinkProgram(m_Id);
 
         // Detach and delete the shaders
-		glDetachShader(m_id, vertexShader);
-		glDetachShader(m_id, fragmentShader);
+		glDetachShader(m_Id, vertexShader);
+		glDetachShader(m_Id, fragmentShader);
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
 
 		// Check link status
 		int32_t linked;
-		glGetProgramiv(m_id, GL_LINK_STATUS, &linked);
+		glGetProgramiv(m_Id, GL_LINK_STATUS, &linked);
 
-        if (linked == GL_FALSE) {
+        if (!linked) {
             // Get info log length
 			int32_t length;
-			glGetProgramiv(m_id, GL_INFO_LOG_LENGTH, &length);
+			glGetProgramiv(m_Id, GL_INFO_LOG_LENGTH, &length);
 
             // Length-2 to remove the random blank lines
             std::vector<char> infoLog(length-2);
-            glGetProgramInfoLog(m_id, length-2, nullptr, infoLog.data());
+            glGetProgramInfoLog(m_Id, length-2, nullptr, infoLog.data());
 
             // Output the info log
-            Logger::Log(Logger::Level::Error, "Tin", ("Shader program with id " + std::to_string(m_id) + " linking error:\n" + infoLog.data()));
+            Logger::Log(Logger::Level::Error, "Tin", ("Shader program with id " + std::to_string(m_Id) + " linking error:\n" + infoLog.data()));
             return;
-        }
-        else {
-            Logger::Log(Logger::Level::Info, "Tin", ("Shader program with id " + std::to_string(m_id) + " was successfully linked"));
+        } else {
+            Logger::Log(Logger::Level::Info, "Tin", ("Shader program with id " + std::to_string(m_Id) + " was successfully linked"));
         }
     }
 
     uint32_t Shader::CreateShader(uint32_t type, const char* source) const {
         uint32_t shader = glCreateShader(type);
-        glShaderSource(shader, 1, &source, NULL);
+        glShaderSource(shader, 1, &source, nullptr);
         glCompileShader(shader);
 
         // The name of the shader that will be printed when an error is found/when shader is successfully created
@@ -145,7 +144,7 @@ namespace Tin {
         int32_t compiled;
         glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
 
-        if (compiled == GL_FALSE) {
+        if (!compiled) {
             // Get info log length
             int32_t length;
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
@@ -156,8 +155,7 @@ namespace Tin {
 
             // Output the info log
             Logger::Log(Logger::Level::Error, "Tin", ("Shader compilation error for " + name + " with id " + std::to_string(shader) + ":\n" + infoLog.data()));
-        }
-        else {
+        } else {
             Logger::Log(Logger::Level::Info, "Tin", (name + " with id " + std::to_string(shader) + " was successfully compiled"));
         }
 
@@ -165,7 +163,7 @@ namespace Tin {
     }
 
     int32_t Shader::GetUniformLocation(const std::string& name) const {
-        int32_t location = glGetUniformLocation(m_id, name.c_str());
+        int32_t location = glGetUniformLocation(m_Id, name.c_str());
         if (location == -1) {
             Logger::Log(Logger::Level::Error, "Tin", ("Failed to get uniform location with name " + name));
         }

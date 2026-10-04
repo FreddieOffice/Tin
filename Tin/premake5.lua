@@ -5,8 +5,6 @@ project "Tin"
 
     kind "StaticLib"
 
-    defines {"GLM_ENABLE_EXPERIMENTAL", "GLFW_INCLUDE_NONE", "NOMINMAX"}
-
     includedirs {
         "include",
         "include/Vendor",

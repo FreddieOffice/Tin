@@ -36,6 +36,8 @@ namespace Tin{
 
     void Context::Destroy() {
         glfwTerminate();
+
+        m_isInitialized = false;
     }
 
     void Context::PollEvents() const {

@@ -9,21 +9,28 @@
 namespace Tin {
     namespace Enum {
         enum class WindowAttribute  {
-            VSYNC,
-            MAXIMIZED,
-            VISIBLE,
-            RESIZABLE,
-            DECORATED,
-            FLOATING,
+            Vsync,
+            Maximized,
+            Visible,
+            Resizable,
+            Decorated,
+            Floating,
         };
     }
 
     struct WindowConfig {
-        std::string title, icon = "";
-        glm::ivec2 size, position = glm::ivec2(-1, -1);
+        std::string title;
+        std::string icon = "";
 
-        bool vsync = false, maximized = false, visible = true,
-        resizable = true, decorated = true, floating = false;
+        glm::ivec2 size;
+        glm::ivec2 position = glm::ivec2(-1, -1);
+
+        bool vsync = false;
+        bool maximized = false; 
+        bool visible = true;
+        bool resizable = true;
+        bool decorated = true;
+        bool floating = false;
     };
 
     class Window {
@@ -55,7 +62,7 @@ namespace Tin {
         // Sets the window position
         void SetPosition(const glm::ivec2& position);
 
-        // Returns the attribute's value
+        // Returns the selected attribute's value
         bool GetAttribute(Enum::WindowAttribute attribute) const;
         // Returns the icon file name
         std::string GetIcon() const;
@@ -69,14 +76,18 @@ namespace Tin {
         glm::ivec2 GetPosition() const;
 
         // Returns the GLFW window handle
-        GLFWwindow* GetGLFWHandle() const;
+        GLFWwindow* GetGlfwHandle() const;
     private:
-        GLFWwindow* m_GLFWHandle = nullptr;
+        GLFWwindow* m_GlfwHandle = nullptr;
 
-        // GLFW does not provide a getter for vsync and icon
-        std::string m_title, m_icon;
-        glm::ivec2 m_size, m_framebufferSize, m_position;
-        bool m_vsync;
+        std::string m_title;
+        std::string m_icon; // GLFW does not provide a getter for icon
+
+        glm::ivec2 m_size;
+        glm::ivec2 m_framebufferSize;
+        glm::ivec2 m_position;
+
+        bool m_vsync; // GLFW does not provide a getter for vsync
     };
 }
 

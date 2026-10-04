@@ -3,9 +3,9 @@
 #include "Gui.hpp"
 
 // Everything else
-
 #include "Tin/Tin.hpp"
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include "glm/glm.hpp"
 #include "glm/gtx/rotate_vector.hpp"
 #include "glm/gtx/vector_angle.hpp"
@@ -14,13 +14,13 @@
 #include <vector>
 
 // Too many arguments, will be fixed later
-static void cameraInput(Tin::InputHandler& input, Tin::Camera& camera, float deltaTime, bool sceneWindowHovered, glm::vec2 center, float speed, float sensitivity) {
+static void CameraInput(Tin::InputHandler& input, Tin::Camera& camera, float deltaTime, bool sceneWindowHovered, glm::vec2 center, float speed, float sensitivity) {
     static bool firstClick = false;
 
     if (sceneWindowHovered || !firstClick) {
         // Camera rotation with mouse
-        if (input.IsMouseButtonPressed(Tin::Enum::MouseButton::MOUSE_BUTTON_RIGHT)) {
-            input.SetCursorState(Tin::Enum::CursorState::DISABLED);
+        if (input.IsMouseButtonPressed(Tin::Enum::MouseButton::RightButton)) {
+            input.SetCursorState(Tin::Enum::CursorState::Disabled);
 
             if (firstClick)
             {
@@ -44,57 +44,55 @@ static void cameraInput(Tin::InputHandler& input, Tin::Camera& camera, float del
 
             input.SetCursorPosition(center);
         }
-        else if (input.IsMouseButtonReleased(Tin::Enum::MouseButton::MOUSE_BUTTON_RIGHT)) {
-            input.SetCursorState(Tin::Enum::CursorState::NORMAL);
+        else if (input.IsMouseButtonReleased(Tin::Enum::MouseButton::RightButton)) {
+            input.SetCursorState(Tin::Enum::CursorState::Normal);
             firstClick = true;
         }
 
         // Camera speed
         float velocity = speed * deltaTime;
-        if (input.IsKeyPressed(Tin::Enum::Key::KEY_LEFT_SHIFT)) {
+        if (input.IsKeyPressed(Tin::Enum::Key::LeftShift)) {
             velocity = speed * 2.0f * deltaTime;
         }
 
         // Camera movement in x, z directions
-        if (input.IsKeyPressed(Tin::Enum::Key::KEY_W)) {
+        if (input.IsKeyPressed(Tin::Enum::Key::W)) {
             camera.Position += velocity * camera.Orientation;
         }
 
-        if (input.IsKeyPressed(Tin::Enum::Key::KEY_A)) {
+        if (input.IsKeyPressed(Tin::Enum::Key::A)) {
             camera.Position += velocity * -glm::normalize(glm::cross(camera.Orientation, glm::vec3(0.0f, 1.0f, 0.0f)));
         }
 
-        if (input.IsKeyPressed(Tin::Enum::Key::KEY_S)) {
+        if (input.IsKeyPressed(Tin::Enum::Key::S)) {
             camera.Position += velocity * -camera.Orientation;
         }
 
-        if (input.IsKeyPressed(Tin::Enum::Key::KEY_D)) {
+        if (input.IsKeyPressed(Tin::Enum::Key::D)) {
             camera.Position += velocity * glm::normalize(glm::cross(camera.Orientation, glm::vec3(0.0f, 1.0f, 0.0f)));
         }
 
         // Camera movement in the y direction
-        if (input.IsKeyPressed(Tin::Enum::Key::KEY_E)) {
+        if (input.IsKeyPressed(Tin::Enum::Key::E)) {
             camera.Position += velocity * glm::vec3(0.0f, 1.0f, 0.0f);
         }
 
-        if (input.IsKeyPressed(Tin::Enum::Key::KEY_Q)) {
+        if (input.IsKeyPressed(Tin::Enum::Key::Q)) {
             camera.Position += velocity * glm::vec3(0.0f, -1.0f, 0.0f);
         }
     }
 }
 
-App* App::GetInstance() {
-    static App instance; 
-    return &instance;
-}
+App::App() {}
 
 int App::Run() {
-    srand(time(NULL));
+    srand(time(nullptr));
 
+    // Context creation
     Tin::Context& context = Tin::Context::GetInstance();
     context.Init();
 
-    Tin::WindowConfig config{
+    Tin::WindowConfig config {
         "Tin Editor",                            // Title
         "assets/textures/openglmaze/smiley.png", // Icon
         glm::ivec2(1280, 720),                   // Size
@@ -103,52 +101,96 @@ int App::Run() {
         true                                     // Maximized
     };
     Tin::Window window(config);
-
     Tin::InputHandler inputHandler(window);
 
+    // Renderer setup
     Tin::Renderer renderer(window);
-    Tin::Color TinBlue(0.2f, 0.3f, 0.6f); // Tin Blue - a shade of blue endorsed by tin
-    renderer.ClearColor = TinBlue;
+
+    Tin::Color TinBlue(51, 77, 153); // Tin Blue - a shade of blue endorsed by tin
+    Tin::Color EngineBgColor(42, 46, 51);
 
     Tin::Framebuffer framebuffer(window.GetFramebufferSize());
 
-    Tin::Scene scene;
-
-    Tin::Shader defaultShader(
-        Tin::Utils::ReadFile("assets/shaders/default.vert"), 
-        Tin::Utils::ReadFile("assets/shaders/default.frag")
+    // Create scene
+    Tin::Shader basicShader(
+        Tin::Utils::ReadFile("assets/shaders/basicVert.glsl"), 
+        Tin::Utils::ReadFile("assets/shaders/basicFrag.glsl")
     );
-    //Tin::Shader skyboxShader("assets/shaders/skybox.vert", "assets/shaders/skybox.frag");
 
-    // Editor camera
-    Tin::Camera camera(window.GetFramebufferSize(), glm::vec3(0.0f, 2.0f, -3.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    /*std::vector<std::string> faces = {
+        "assets/textures/skybox/BlueSky/right.jpg",
+        "assets/textures/skybox/BlueSky/left.jpg",
+        "assets/textures/skybox/BlueSky/top.jpg",
+        "assets/textures/skybox/BlueSky/bottom.jpg",
+        "assets/textures/skybox/BlueSky/front.jpg",
+        "assets/textures/skybox/BlueSky/back.jpg"
+    };*/
 
-    std::vector<Tin::Material> materials = {
-        Tin::Material(Tin::Colors::White, "assets/textures/crate.png"),
-        Tin::Material(Tin::Colors::White, "assets/textures/container.png"),
-        Tin::Material(Tin::Colors::White, "assets/textures/container2.png"),
-        Tin::Material(Tin::Colors::White, "assets/textures/metal.png"),
-        Tin::Material(Tin::Colors::White, "assets/textures/metal2.png"),
-        Tin::Material(Tin::Colors::White, "assets/textures/marble.jpg"),
-        Tin::Material(Tin::Colors::White, "assets/textures/brick.png"),
-        Tin::Material(Tin::Colors::White, "assets/textures/brick2.jpg"),
-        Tin::Material(Tin::Colors::White, "assets/textures/openglmaze/smiley.png"),
+    std::vector<std::string> faces = {
+        "assets/textures/skybox/Clear/vz_clear_right.png",
+        "assets/textures/skybox/Clear/vz_clear_left.png",
+        "assets/textures/skybox/Clear/vz_clear_up.png",
+        "assets/textures/skybox/Clear/vz_clear_down.png",
+        "assets/textures/skybox/Clear/vz_clear_front.png",
+        "assets/textures/skybox/Clear/vz_clear_back.png"
     };
 
-    // Tin::Mesh mesh(vertices, indices, shader, material);
+    Tin::Environment environment{Tin::Enum::SkyType::Skybox, faces, TinBlue};
+    Tin::Scene scene(basicShader, environment);
 
+    // Editor camera
+    Tin::Camera camera(window.GetFramebufferSize(), glm::vec3(0.0f, 2.0f, -3.0f), glm::vec3(0.0f, 0.0f, 1.0f), 90.0f, 0.1f, 10000.0f);
+
+    // Create textures and materials
+    Tin::Texture planksTex("assets/textures/planks.png", Tin::Enum::TextureType::ColorMap);
+    Tin::Texture crateTex("assets/textures/crate.png", Tin::Enum::TextureType::ColorMap);
+    Tin::Texture containerTex("assets/textures/container.png", Tin::Enum::TextureType::ColorMap);
+    Tin::Texture container2Tex("assets/textures/container2.png", Tin::Enum::TextureType::ColorMap);
+    Tin::Texture metalTex("assets/textures/metal.png", Tin::Enum::TextureType::ColorMap);
+    Tin::Texture metal2Tex("assets/textures/metal2.png", Tin::Enum::TextureType::ColorMap);
+    Tin::Texture marbleTex("assets/textures/marble.jpg", Tin::Enum::TextureType::ColorMap);
+    Tin::Texture brickTex("assets/textures/brick.png", Tin::Enum::TextureType::ColorMap);
+    Tin::Texture brick2Tex("assets/textures/brick2.jpg", Tin::Enum::TextureType::ColorMap);
+
+    std::vector<Tin::Material> materials = {
+        Tin::Material(Tin::Color::White, planksTex),
+        Tin::Material(Tin::Color::White, crateTex),
+        Tin::Material(Tin::Color::White, containerTex),
+        Tin::Material(Tin::Color::White, container2Tex),
+        Tin::Material(Tin::Color::White, metalTex),
+        Tin::Material(Tin::Color::White, metal2Tex),
+        Tin::Material(Tin::Color::White, marbleTex),
+        Tin::Material(Tin::Color::White, brickTex),
+        Tin::Material(Tin::Color::White, brick2Tex)
+    };
+
+    Tin::Mesh plane(Tin::Enum::Shape::Block, basicShader, materials[0]);
+    plane.transform.Scale = glm::vec3(20.0f, 0.1f, 20.0f);
+
+    Tin::Mesh box(Tin::Enum::Shape::Block, basicShader, materials[1]);
+    box.transform.Scale = glm::vec3(5.0f, 5.0f, 5.0f);
+    box.transform.Position = glm::vec3(0.0f, 7.0f, 0.0f);
+
+    scene.AddMesh(plane);
+    scene.AddMesh(box);
+
+    int32_t scale = 20000;
     for (int i = 0; i < 1000; i++) {
-        Tin::Mesh mesh(static_cast<Tin::Enum::Shape>(1 + rand() % 3), defaultShader, materials[rand() % materials.size()]);
+        Tin::Mesh mesh(Tin::Enum::Shape::Block, basicShader, materials[rand() % materials.size()]);
 
-        mesh.transform.Position = glm::vec3((rand() % 100) - 50, (rand() % 100) - 50, 100 - (rand() % 100) - 50);
-        mesh.transform.Scale = glm::vec3(1 + rand() % 6, 1 + rand() % 6, 1 + rand() % 6);
-        // mesh.transform.Rotation = glm::vec3(rand() % 100, rand() % 100, rand() % 100);
-        mesh.material.color = Tin::Color(1 + rand() % 256, 1 + rand() % 256, 1 + rand() % 256);
+        mesh.transform.Position = glm::vec3((rand() % scale) - scale / 2, (rand() % scale) - scale / 2, (rand() % scale) - scale / 2);
+        mesh.transform.Scale = glm::vec3(1 + rand() % 50, 1 + rand() % 50, 1 + rand() % 50);
+        mesh.transform.Rotation = glm::vec3(rand() % 100, rand() % 100, rand() % 100);
+        mesh.material.color = Tin::Color(2 * (1 + rand() % 256), 2 * (1 + rand() % 256), 2 * (1 + rand() % 256));
 
         scene.AddMesh(mesh);
     }
 
-    float cameraSpeed = 10.0f;
+    // Create skybox
+    Tin::Skybox skybox(faces);
+    renderer.SetSkybox(std::make_shared<Tin::Skybox>(skybox));
+
+    float cameraSpeed = 20.0f;
     float cameraSensitivity = 180.0f;
 
     // ImGui
@@ -156,24 +198,27 @@ int App::Run() {
 
     bool configWindow = true;
     bool aboutWindow = false;
-    float sceneWindowHovered = false;
+    bool sceneWindowHovered = false;
+    bool sceneWindowShown = true;
 
     // Options
     bool fullscreen = false;
     bool vsync = false;
 
-    float colors[3] = {renderer.ClearColor.r, renderer.ClearColor.g, renderer.ClearColor.b};
+    float colors[3] = {environment.solidColor.r, environment.solidColor.g, environment.solidColor.b};
 
     // FPS and delta time stuff
-    float deltaTime = 0.0f, lastFrame = 0.0f, currentFrame = 0.0f; // Delta time
-    float fpsTimer = 0.0f, lastFrame2 = 0.0f; // For fps, idk how else to name these
+    float deltaTime = 0.0f;
+    float lastFrame = static_cast<float>(context.GetTime());
+    float currentFrame = 0.0f;
+    float fpsTimer = 0.0f;
+    float lastFrame2 = 0.0f;
     int frameCount = 0;
     std::string FPSandMS = "0.0 FPS / 0.0 ms";
 
     while (window.IsOpen()) {
         context.PollEvents();
         window.Update();
-        renderer.Clear();
 
         // Getting FPS and delta time
         currentFrame = static_cast<float>(context.GetTime());
@@ -189,41 +234,44 @@ int App::Run() {
             frameCount = 0;
         }
 
-        if (inputHandler.IsKeyPressed(Tin::Enum::Key::KEY_LEFT_CONTROL) && inputHandler.IsKeyPressed(Tin::Enum::Key::KEY_X)) {
+        if (inputHandler.IsKeyPressed(Tin::Enum::Key::LeftControl) && inputHandler.IsKeyPressed(Tin::Enum::Key::X)) {
             window.Close();
         }
 
-        // Gui
+        // Render background with a gray color
+        renderer.SetClearColor(EngineBgColor);
+        renderer.Clear();
+
         Gui::NewFrame();
         Gui::MainDockSpace(&Gui::showDockSpace);
 
         // Scene window
-        ImGui::Begin(ICON_FA_EYE " Scene");
-        ImGui::SetWindowSize(ImVec2(500, 500), ImGuiCond_FirstUseEver);
+        sceneWindowShown = ImGui::Begin(ICON_FA_EYE " Scene");
 
         ImVec2 windowSize = ImGui::GetContentRegionAvail();
         ImVec2 windowPos = ImGui::GetCursorScreenPos();
         ImVec2 windowCenter(windowPos.x + windowSize.x * 0.5f, windowPos.y + windowSize.y * 0.5f);
+        glm::ivec2 framebufferSize = framebuffer.GetSize();
         
-        framebuffer.Resize(glm::vec2(windowSize.x, windowSize.y));
-        camera.SetViewportSize(glm::vec2(windowSize.x, windowSize.y));
+        if (windowSize.x != framebufferSize.x || windowSize.y != framebufferSize.y) {
+            framebuffer.Resize(glm::ivec2(windowSize.x, windowSize.y));
+            camera.SetViewportSize(glm::ivec2(windowSize.x, windowSize.y));
+        }
 
         // Draw scene to imgui window
-        ImGui::Image((void*)(uintptr_t)framebuffer.GetTextureID(), ImVec2(windowSize.x, windowSize.y), ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+        ImGui::Image(static_cast<ImTextureID>(framebuffer.GetTextureId()), windowSize, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+        sceneWindowHovered = ImGui::IsItemHovered(); // Check if mouse is hovering over the image
 
         // Get client coordinates
         ImVec2 appCoordinates = ImGui::GetMainViewport()->Pos;
         glm::vec2 localCenter(windowCenter.x - appCoordinates.x, windowCenter.y - appCoordinates.y);
-        cameraInput(inputHandler, camera, deltaTime, sceneWindowHovered, localCenter, cameraSpeed, cameraSensitivity);
-
-        sceneWindowHovered = ImGui::IsItemHovered(); // Check if mouse is hovering over the image
+        CameraInput(inputHandler, camera, deltaTime, sceneWindowHovered, localCenter, cameraSpeed, cameraSensitivity);
 
         ImGui::End();
 
         // Config window
-        if (configWindow == true) {
-            ImGui::Begin("Tin", &configWindow);
-            ImGui::SetWindowSize(ImVec2(300, 600));
+        if (configWindow) {
+            ImGui::Begin(ICON_FA_GEAR " Tin", &configWindow);
 
             ImGui::Text("Tin Engine");
             ImGui::Separator();
@@ -240,16 +288,15 @@ int App::Run() {
 
             ImGui::Text("Camera position: %.1f, %.1f, %.1f", camera.Position.x, camera.Position.y, camera.Position.z);
             ImGui::Text("Camera orientation: %.1f, %.1f, %.1f", camera.Orientation.x, camera.Orientation.y, camera.Orientation.z);
-            ImGui::SliderFloat("Camera speed", &cameraSpeed, 1.0f, 40.0f);
+            ImGui::SliderFloat("Camera speed", &cameraSpeed, 1.0f, 100.0f);
             ImGui::SliderFloat("Camera sensitivity", &cameraSensitivity, 1.0f, 200.0f);
 
             ImGui::End();
         }
 
-        if (aboutWindow == true) {
-            ImGui::Begin("About Tin Engine", &aboutWindow);
+        if (aboutWindow) {
+            ImGui::Begin(ICON_FA_CIRCLE_INFO " About Tin Engine", &aboutWindow);
 
-            ImGui::SetWindowSize(ImVec2(500, 500));
             ImGui::TextColored(ImVec4(0.2f, 0.3f, 0.6f, 1.0f), "Tin Engine");
             ImGui::SeparatorText(" Info ");
             ImGui::TextWrapped(
@@ -294,7 +341,7 @@ int App::Run() {
 
         if (ImGui::BeginMenu("Options")) {
             if (ImGui::MenuItem("Vsync", "", &vsync)) {
-                window.SetAttribute(Tin::Enum::WindowAttribute::VSYNC, vsync);
+                window.SetAttribute(Tin::Enum::WindowAttribute::Vsync, vsync);
             };
 
             ImGui::EndMenu();
@@ -315,29 +362,33 @@ int App::Run() {
         ImGui::EndMainMenuBar();
 
         // Rendering code
-        framebuffer.Bind();
-        renderer.SetViewportSize(framebuffer.GetSize());
+        // Only render if the scene window is shown
+        if (sceneWindowShown) {
+            // Bind the framebuffer, everything is now being rendered to a texture
+            framebuffer.Bind();
 
-        renderer.Clear();
-        renderer.ClearColor = Tin::Color(colors[0], colors[1], colors[2]);
+            renderer.SetViewportSize(framebuffer.GetSize());
+            renderer.SetClearColor(environment.solidColor);
+            renderer.Clear();
 
-        // Update camera
-        camera.UpdateMatrix(defaultShader, camera.GetProjectionMatrix(), camera.GetViewMatrix());
-
-        scene.Draw();
-
-        framebuffer.Unbind();
+            // Render
+            scene.environment.solidColor = Tin::Color(colors[0], colors[1], colors[2]);
+            scene.Render(renderer, camera);
+            
+            // Unbind framebuffer, everything is now being rendered to the window
+            framebuffer.Unbind();
+        }
 
         Gui::Render();
 
         // Save screenshot
         static bool firstClick = true;
 
-        if (inputHandler.IsKeyPressed(Tin::Enum::Key::KEY_J) && firstClick) {
+        if (inputHandler.IsKeyPressed(Tin::Enum::Key::J) && firstClick) {
             renderer.SaveScreenshot("Screenshot.png", glm::ivec2(0, 0), window.GetSize());
             firstClick = false;
         }
-        else if (inputHandler.IsKeyReleased(Tin::Enum::Key::KEY_J)) {
+        else if (inputHandler.IsKeyReleased(Tin::Enum::Key::J)) {
             firstClick = true;
         }
 

@@ -3,16 +3,31 @@
 
 #include "Tin/Renderer/Objects/Mesh.hpp"
 #include "Tin/Renderer/Objects/Camera.hpp"
+#include "Tin/Renderer/Renderer.hpp"
 
 #include <vector>
 
 namespace Tin {
+    namespace Enum {
+        enum class SkyType {
+            Skybox,
+            SolidColor
+        };
+    }
+
+    struct Environment {
+        Enum::SkyType type;
+        std::vector<std::string> skyboxFaces;
+        Color solidColor;
+    };
+
     class Scene {
     public:
-        Scene();
+        Environment environment;
+        Scene(const Shader& basicShader, const Environment& environment);
 
         // Renders the scene
-        void Draw();
+        void Render(Renderer& renderer, Camera& camera);
         // Destroys the scene
         void Destroy();
 
@@ -29,6 +44,7 @@ namespace Tin {
         std::vector<Mesh>& GetMeshes();
     private:
         std::vector<Mesh> m_meshes;
+        Shader m_basicShader;
     };
 }
 

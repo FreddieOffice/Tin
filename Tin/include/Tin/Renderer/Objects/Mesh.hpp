@@ -10,11 +10,10 @@
 namespace Tin {
     namespace Enum {
 		enum class Shape {
-			CUSTOM,
+			Custom,
 
-            PLANE,
-			BLOCK,
-			PYRAMID,
+			Block,
+			Pyramid,
 		};
 	}
 
@@ -25,11 +24,12 @@ namespace Tin {
         Transform transform;
 
         Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, const Shader& shader, const Material& material);
+
         Mesh(const Enum::Shape& shape, const Shader& shader, const Material& material);
 
-        // Draws the mesh
+        // Renders the mesh
         // Uniforms required: Model (mat4), Color (vec3), ColorMap (sampler2D), HasColorMap (bool)
-        void Draw();
+        void Render();
         // Destroys the mesh
         void Destroy();
 
@@ -46,7 +46,9 @@ namespace Tin {
         Enum::Shape GetShape() const;
     private:
         // Buffer ids
-        uint32_t m_vao, m_vbo, m_ebo;
+        uint32_t m_Vao = 0;
+        uint32_t m_Vbo = 0;
+        uint32_t m_Ebo = 0;
 
         // Mesh data
         std::vector<Vertex> m_vertices;
