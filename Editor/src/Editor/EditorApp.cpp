@@ -1,11 +1,10 @@
-// Project files
-#include "App.hpp"
-#include "Gui.hpp"
+// Editor files
+#include "Editor/EditorApp.hpp"
+#include "Editor/Gui.hpp"
 
 // Everything else
-#include "Tin/Tin.hpp"
+#include "Tin/Core/EntryPoint.hpp"
 
-#define GLM_ENABLE_EXPERIMENTAL
 #include "glm/glm.hpp"
 #include "glm/gtx/rotate_vector.hpp"
 #include "glm/gtx/vector_angle.hpp"
@@ -22,8 +21,7 @@ static void CameraInput(Tin::InputHandler& input, Tin::Camera& camera, float del
         if (input.IsMouseButtonPressed(Tin::Enum::MouseButton::RightButton)) {
             input.SetCursorState(Tin::Enum::CursorState::Disabled);
 
-            if (firstClick)
-            {
+            if (firstClick) {
                 input.SetCursorPosition(center);
                 firstClick = false;
             }
@@ -35,16 +33,14 @@ static void CameraInput(Tin::InputHandler& input, Tin::Camera& camera, float del
 
             glm::vec3 newOrientation = glm::rotate(camera.Orientation, glm::radians(-rotX), glm::normalize(glm::cross(camera.Orientation, glm::vec3(0.0f, 1.0f, 0.0f))));
 
-            if (abs(glm::angle(newOrientation, glm::vec3(0.0f, 1.0f, 0.0f)) - glm::radians(90.0f)) <= glm::radians(85.0f))
-            {
+            if (abs(glm::angle(newOrientation, glm::vec3(0.0f, 1.0f, 0.0f)) - glm::radians(90.0f)) <= glm::radians(85.0f)) {
                 camera.Orientation = newOrientation;
             }
 
             camera.Orientation = glm::rotate(camera.Orientation, glm::radians(-rotY), glm::vec3(0.0f, 1.0f, 0.0f));
 
             input.SetCursorPosition(center);
-        }
-        else if (input.IsMouseButtonReleased(Tin::Enum::MouseButton::RightButton)) {
+        } else if (input.IsMouseButtonReleased(Tin::Enum::MouseButton::RightButton)) {
             input.SetCursorState(Tin::Enum::CursorState::Normal);
             firstClick = true;
         }
@@ -83,14 +79,16 @@ static void CameraInput(Tin::InputHandler& input, Tin::Camera& camera, float del
     }
 }
 
-App::App() {}
+EditorApp::EditorApp() : Application() {
 
-int App::Run() {
+}
+
+EditorApp::~EditorApp() {
+
+}
+
+void EditorApp::Run() {
     srand(time(nullptr));
-
-    // Context creation
-    Tin::Context& context = Tin::Context::GetInstance();
-    context.Init();
 
     Tin::WindowConfig config {
         "Tin Editor",                            // Title
@@ -110,6 +108,8 @@ int App::Run() {
     Tin::Color EngineBgColor(42, 46, 51);
 
     Tin::Framebuffer framebuffer(window.GetFramebufferSize());
+
+    Tin::SceneManager sceneManager;
 
     // Create scene
     Tin::Shader basicShader(
@@ -136,21 +136,22 @@ int App::Run() {
     };
 
     Tin::Environment environment{Tin::Enum::SkyType::Skybox, faces, TinBlue};
-    Tin::Scene scene(basicShader, environment);
+    auto scene = std::make_shared<Tin::Scene>("Scene1", basicShader, environment);
+    sceneManager.SetActiveScene(scene);
 
     // Editor camera
     Tin::Camera camera(window.GetFramebufferSize(), glm::vec3(0.0f, 2.0f, -3.0f), glm::vec3(0.0f, 0.0f, 1.0f), 90.0f, 0.1f, 10000.0f);
 
     // Create textures and materials
-    Tin::Texture planksTex("assets/textures/planks.png", Tin::Enum::TextureType::ColorMap);
-    Tin::Texture crateTex("assets/textures/crate.png", Tin::Enum::TextureType::ColorMap);
-    Tin::Texture containerTex("assets/textures/container.png", Tin::Enum::TextureType::ColorMap);
-    Tin::Texture container2Tex("assets/textures/container2.png", Tin::Enum::TextureType::ColorMap);
-    Tin::Texture metalTex("assets/textures/metal.png", Tin::Enum::TextureType::ColorMap);
-    Tin::Texture metal2Tex("assets/textures/metal2.png", Tin::Enum::TextureType::ColorMap);
-    Tin::Texture marbleTex("assets/textures/marble.jpg", Tin::Enum::TextureType::ColorMap);
-    Tin::Texture brickTex("assets/textures/brick.png", Tin::Enum::TextureType::ColorMap);
-    Tin::Texture brick2Tex("assets/textures/brick2.jpg", Tin::Enum::TextureType::ColorMap);
+    auto planksTex = std::make_shared<Tin::Texture>("assets/textures/planks.png", Tin::Enum::TextureType::ColorMap);
+    auto crateTex = std::make_shared<Tin::Texture>("assets/textures/crate.png", Tin::Enum::TextureType::ColorMap);
+    auto containerTex = std::make_shared<Tin::Texture>("assets/textures/container.png", Tin::Enum::TextureType::ColorMap);
+    auto container2Tex = std::make_shared<Tin::Texture>("assets/textures/container2.png", Tin::Enum::TextureType::ColorMap);
+    auto metalTex = std::make_shared<Tin::Texture>("assets/textures/metal.png", Tin::Enum::TextureType::ColorMap);
+    auto metal2Tex = std::make_shared<Tin::Texture>("assets/textures/metal2.png", Tin::Enum::TextureType::ColorMap);
+    auto marbleTex = std::make_shared<Tin::Texture>("assets/textures/marble.jpg", Tin::Enum::TextureType::ColorMap);
+    auto brickTex = std::make_shared<Tin::Texture>("assets/textures/brick.png", Tin::Enum::TextureType::ColorMap);
+    auto brick2Tex = std::make_shared<Tin::Texture>("assets/textures/brick2.jpg", Tin::Enum::TextureType::ColorMap);
 
     std::vector<Tin::Material> materials = {
         Tin::Material(Tin::Color::White, planksTex),
@@ -164,26 +165,26 @@ int App::Run() {
         Tin::Material(Tin::Color::White, brick2Tex)
     };
 
-    Tin::Mesh plane(Tin::Enum::Shape::Block, basicShader, materials[0]);
+    Tin::Mesh plane(Tin::Enum::Shape::Block, materials[0]);
     plane.transform.Scale = glm::vec3(20.0f, 0.1f, 20.0f);
 
-    Tin::Mesh box(Tin::Enum::Shape::Block, basicShader, materials[1]);
+    Tin::Mesh box(Tin::Enum::Shape::Block, materials[1]);
     box.transform.Scale = glm::vec3(5.0f, 5.0f, 5.0f);
     box.transform.Position = glm::vec3(0.0f, 7.0f, 0.0f);
 
-    scene.AddMesh(plane);
-    scene.AddMesh(box);
+    scene->AddMesh(plane);
+    scene->AddMesh(box);
 
     int32_t scale = 20000;
-    for (int i = 0; i < 1000; i++) {
-        Tin::Mesh mesh(Tin::Enum::Shape::Block, basicShader, materials[rand() % materials.size()]);
+    for (int i = 0; i < 1000; ++i) {
+        Tin::Mesh mesh(Tin::Enum::Shape::Block, materials[rand() % materials.size()]);
 
         mesh.transform.Position = glm::vec3((rand() % scale) - scale / 2, (rand() % scale) - scale / 2, (rand() % scale) - scale / 2);
         mesh.transform.Scale = glm::vec3(1 + rand() % 50, 1 + rand() % 50, 1 + rand() % 50);
         mesh.transform.Rotation = glm::vec3(rand() % 100, rand() % 100, rand() % 100);
-        mesh.material.color = Tin::Color(2 * (1 + rand() % 256), 2 * (1 + rand() % 256), 2 * (1 + rand() % 256));
+        //mesh.material.color = Tin::Color(2 * (1 + rand() % 256), 2 * (1 + rand() % 256), 2 * (1 + rand() % 256));
 
-        scene.AddMesh(mesh);
+        scene->AddMesh(mesh);
     }
 
     // Create skybox
@@ -209,7 +210,7 @@ int App::Run() {
 
     // FPS and delta time stuff
     float deltaTime = 0.0f;
-    float lastFrame = static_cast<float>(context.GetTime());
+    float lastFrame = static_cast<float>(GetTime());
     float currentFrame = 0.0f;
     float fpsTimer = 0.0f;
     float lastFrame2 = 0.0f;
@@ -217,16 +218,16 @@ int App::Run() {
     std::string FPSandMS = "0.0 FPS / 0.0 ms";
 
     while (window.IsOpen()) {
-        context.PollEvents();
+        PollEvents();
         window.Update();
 
         // Getting FPS and delta time
-        currentFrame = static_cast<float>(context.GetTime());
+        currentFrame = static_cast<float>(GetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
         fpsTimer = currentFrame - lastFrame2;
-        frameCount++;
+        ++frameCount;
 
         if (fpsTimer >= 1.0f) {
             FPSandMS = std::to_string((1.0f / fpsTimer) * frameCount) + " FPS / " + std::to_string((fpsTimer / frameCount) * 1000.0f) + " ms";
@@ -284,6 +285,8 @@ int App::Run() {
             glm::vec2 mousePos = inputHandler.GetCursorPosition();
             ImGui::Text("%s", FPSandMS.c_str());
             ImGui::Text("Mouse pos: %.1f, %.1f", mousePos.x, mousePos.y);
+            ImGui::Text("Draw calls: %d", renderer.GetDrawCalls());
+            ImGui::Text("Triangle count: %d", renderer.GetTriangleCount());
             ImGui::Separator();
 
             ImGui::Text("Camera position: %.1f, %.1f, %.1f", camera.Position.x, camera.Position.y, camera.Position.z);
@@ -372,10 +375,15 @@ int App::Run() {
             renderer.Clear();
 
             // Render
-            scene.environment.solidColor = Tin::Color(colors[0], colors[1], colors[2]);
-            scene.Render(renderer, camera);
+            std::shared_ptr<Tin::Scene> activeScene = sceneManager.GetActiveScene();
+            if (activeScene) {
+                activeScene->environment.solidColor = Tin::Color(colors[0], colors[1], colors[2]);
+                renderer.BeginScene(camera);
+                activeScene->Render(renderer);
+                renderer.EndScene();
+            }
             
-            // Unbind framebuffer, everything is now being rendered to the window
+            // Unbind framebuffer, everything is now being rendered to the normal window (for imgui)
             framebuffer.Unbind();
         }
 
@@ -398,7 +406,11 @@ int App::Run() {
     // Cleanup
     Gui::Shutdown();
 
+    sceneManager.Destroy();
     window.Destroy();
-    context.Destroy();
-    return 0;
+}
+
+// Send the editor app over to Tin
+std::unique_ptr<Tin::Application> Tin::CreateApplication() {
+    return std::make_unique<EditorApp>();
 }

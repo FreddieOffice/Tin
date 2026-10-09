@@ -1,6 +1,13 @@
 #ifndef TIN_PCH_HPP
 #define TIN_PCH_HPP
 
+// Platform
+#include "Tin/Core/Platform.hpp"
+
+#ifdef TIN_PLATFORM_WINDOWS
+    #include <windows.h>
+#endif
+
 // General
 #include <utility>
 
@@ -11,6 +18,7 @@
 #include <array>
 #include <vector>
 #include <string>
+#include <tuple>
 
 // Streams and I/O
 #include <iostream>
@@ -20,7 +28,6 @@
 
 // Functional and logic
 #include <algorithm>
-#include <optional>
 
 // Memory
 #include <mutex>
@@ -31,27 +38,10 @@
 #include <ctime>
 #include <filesystem>
 
-// Platform
-#include "Tin/Core/Platform.hpp"
-
-#ifdef TIN_PLATFORM_WINDOWS
-    #ifndef NOMINMAX
-        #define NOMINMAX
-    #endif
-    
-    #ifndef WIN32_LEAN_AND_MEAN
-        #define WIN32_LEAN_AND_MEAN
-    #endif
-
-    #include <windows.h>
-#endif
-
 // Vendor
-#define GLFW_INCLUDE_NONE
 #include "glad/gl.h"
 #include "GLFW/glfw3.h"
 
-#define GLM_ENABLE_EXPERIMENTAL
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"

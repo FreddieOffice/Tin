@@ -21,6 +21,7 @@ namespace Tin::Utils {
         }
         else {
             Logger::Log(Logger::Level::Error, "Tin", ("Failed to get file " + filepath));
+            return "";
         }
     }
 }

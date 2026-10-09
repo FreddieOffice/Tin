@@ -46,7 +46,7 @@ namespace Tin {
         }
 
         void Log(Level level, const std::string& location, const std::string& message) {
-            std::lock_guard<std::mutex> lock(logMutex);
+            std::scoped_lock<std::mutex> lock(logMutex);
 
             SetTextColor(White);
             std::cout << CurrentDateTime() << " " << location << ": "; // Location is where the error comes from

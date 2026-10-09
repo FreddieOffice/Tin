@@ -7,7 +7,7 @@ namespace Tin {
 	Texture::Texture(const std::string& filename, Enum::TextureType type) : m_filename(filename), m_slot(static_cast<uint32_t>(type)) {
 		stbi_set_flip_vertically_on_load(true);
 
-		unsigned char* data = stbi_load(filename.c_str(), &m_size.x, &m_size.y, &m_channels, STBI_default);
+		uint8_t* data = stbi_load(filename.c_str(), &m_size.x, &m_size.y, &m_channels, STBI_default);
 		if (!data) {
 			Logger::Log(Logger::Level::Error, "Tin", ("Failed to load texture with filename " + filename + ":\n" + stbi_failure_reason()));
 			return;
@@ -47,9 +47,9 @@ namespace Tin {
 		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_size.x, m_size.y, 0, format, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
-		Logger::Log(Logger::Level::Info, "Tin", ("Texture with id " + std::to_string(m_Id) + " and filename " + filename + " was successfully created"));
-
 		stbi_image_free(data);
+
+		Logger::Log(Logger::Level::Info, "Tin", ("Texture with id " + std::to_string(m_Id) + " and filename " + filename + " was successfully created"));
 	}
 
 	void Texture::Bind() const {
@@ -73,7 +73,7 @@ namespace Tin {
 
 		stbi_set_flip_vertically_on_load(true);
 
-		unsigned char* data = stbi_load(filename.c_str(), &m_size.x, &m_size.y, &m_channels, STBI_default);
+		uint8_t* data = stbi_load(filename.c_str(), &m_size.x, &m_size.y, &m_channels, STBI_default);
 		if (!data) {
 			Logger::Log(Logger::Level::Error, "Tin", ("Failed to load texture with filename " + filename + ":\n" + stbi_failure_reason()));
 			return;
@@ -104,9 +104,9 @@ namespace Tin {
 		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_size.x, m_size.y, 0, format, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
-		Logger::Log(Logger::Level::Info, "Tin", ("Successfully changed texture with id " + std::to_string(m_Id) + " and filename " + m_filename + " to " + filename));
-
 		stbi_image_free(data);
+
+		Logger::Log(Logger::Level::Info, "Tin", ("Successfully changed texture with id " + std::to_string(m_Id) + " and filename " + m_filename + " to " + filename));
 
 		m_filename = filename;
 	}

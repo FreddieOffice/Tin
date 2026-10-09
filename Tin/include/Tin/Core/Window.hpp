@@ -74,20 +74,12 @@ namespace Tin {
         glm::ivec2 GetFramebufferSize() const;
         // Returns the window position
         glm::ivec2 GetPosition() const;
-
         // Returns the GLFW window handle
         GLFWwindow* GetGlfwHandle() const;
     private:
         GLFWwindow* m_GlfwHandle = nullptr;
-
-        std::string m_title;
-        std::string m_icon; // GLFW does not provide a getter for icon
-
-        glm::ivec2 m_size;
+        WindowConfig m_config;
         glm::ivec2 m_framebufferSize;
-        glm::ivec2 m_position;
-
-        bool m_vsync; // GLFW does not provide a getter for vsync
     };
 }
 

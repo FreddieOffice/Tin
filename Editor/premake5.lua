@@ -26,20 +26,22 @@ project "Editor"
         "assets/**.*"
     }
 
+    -- Global Defines
+    defines {"GLM_ENABLE_EXPERIMENTAL"}
+
     -- Configurations
     filter {"configurations:Debug"}
         symbols "On"
         staticruntime "Off"
 
     filter {"configurations:Release"}
-        optimize "On"
+        optimize "Speed"
         staticruntime "On"
 
     filter {}
     
     -- Platforms
     filter {"platforms:x64"}
-        system "Windows"
         architecture "x86_64"
 
     filter {}

@@ -20,12 +20,12 @@ namespace Tin {
         // Create textures for the faces
         stbi_set_flip_vertically_on_load(false);
 
-        for (int32_t i = 0; i < faces.size(); i++) {
+        for (int32_t i = 0; i < faces.size(); ++i) {
             int32_t width, height;
-            unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, nullptr, 3);
+            uint8_t* data = stbi_load(faces[i].c_str(), &width, &height, nullptr, STBI_rgb);
 
             if (data) {
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
                 Logger::Log(Logger::Level::Info, "Tin", ("Image for skybox with filename " + faces[i] + " was successfully created"));
             } else {
                 Logger::Log(Logger::Level::Error, "Tin", ("Failed to load image for skybox with filename " + faces[i] + ":\n" + stbi_failure_reason()));

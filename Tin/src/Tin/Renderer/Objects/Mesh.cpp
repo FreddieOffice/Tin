@@ -4,11 +4,11 @@
 #include "Tin/Core/Logger.hpp"
 
 namespace Tin {
-    Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, const Shader& shader, const Material& material) : shader(shader), material(material), m_vertices(vertices), m_indices(indices), m_shape(Enum::Shape::Custom) {
+    Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Material& material) : material(&material), m_vertices(vertices), m_indices(indices), m_shape(Enum::Shape::Custom) {
         CreateBuffers();
     }
 
-	Mesh::Mesh(const Enum::Shape& shape, const Shader& shader, const Material& material) : shader(shader), material(material), m_shape(shape) {
+	Mesh::Mesh(const Enum::Shape& shape, Material& material) : material(&material), m_shape(shape) {
 		if (shape == Enum::Shape::Custom) {
 			Logger::Log(Logger::Level::Warning, "Tin", "Cannot make a mesh with shape \"custom\", it is only for meshes that have custom mesh data");
 			return;
@@ -17,26 +17,6 @@ namespace Tin {
 		ChangeShape(shape);
 		CreateBuffers();
 	}
-
-    void Mesh::Render() {
-        // Set uniforms
-        shader.Use();
-		shader.SetUniformMat4("Model", transform.GetModelMatrix());
-
-		shader.SetUniformVec3("Color", glm::vec3(material.color.r, material.color.g, material.color.b));
-		// Check if the material has a color map
-		if (!material.HasColorMap()) {
-			shader.SetUniformInt("HasColorMap", 0);
-		} else {
-			shader.SetUniformInt("HasColorMap", 1);
-			material.colorMap.value().TextureUnit(shader, "ColorMap");
-			material.colorMap.value().Bind();
-		}
-
-		// Render
-        glBindVertexArray(m_Vao);
-		glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, nullptr);
-    }
 
     void Mesh::Destroy() {
         glDeleteVertexArrays(1, &m_Vao);
@@ -68,13 +48,27 @@ namespace Tin {
         return m_vertices;
     }
 
+	uint32_t Mesh::GetVerticesCount() const {
+		return m_vertices.size();
+	}
+
     const std::vector<uint32_t>& Mesh::GetIndices() const {
         return m_indices;
     }
 
+	uint32_t Mesh::GetIndicesCount() const {
+		return m_indices.size();
+	}
+
 	Enum::Shape Mesh::GetShape() const {
 		return m_shape;
 	}
+
+	uint32_t Mesh::GetVao() const {
+		return m_Vao;
+	}
+
+	// Helper functions
 
     void Mesh::CreateBuffers() {
        // Creating the buffers
@@ -93,11 +87,11 @@ namespace Tin {
 
 		// Link attributes to the VAO
 		// Position
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Position));
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, Position)));
 		glEnableVertexAttribArray(0);
 
 		// Texture coordinates
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TextureUV));
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, TextureUV)));
 		glEnableVertexAttribArray(1);
     }
 
@@ -117,65 +111,76 @@ namespace Tin {
 		switch (shape) {
 		case Enum::Shape::Block:
 			m_vertices = {
-				Vertex(glm::vec3(-0.5f, -0.5f, 0.5f),  glm::vec2(0.0f, 0.0f)),
-				Vertex(glm::vec3( 0.5f, -0.5f, 0.5f),  glm::vec2(1.0f, 0.0f)),
-				Vertex(glm::vec3( 0.5f,  0.5f, 0.5f),  glm::vec2(1.0f, 1.0f)),
-				Vertex(glm::vec3(-0.5f,  0.5f, 0.5f),  glm::vec2(0.0f, 1.0f)),
-
-				Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(1.0f, 0.0f)),
-				Vertex(glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f)),
-				Vertex(glm::vec3( 0.5f,  0.5f, -0.5f), glm::vec2(0.0f, 1.0f)),
-				Vertex(glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec2(1.0f, 1.0f)),
-
+				// Front face
 				Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f)),
-				Vertex(glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec2(0.0f, 1.0f)),
-				Vertex(glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec2(1.0f, 1.0f)),
-				Vertex(glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec2(1.0f, 0.0f)),
-
 				Vertex(glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec2(1.0f, 0.0f)),
 				Vertex(glm::vec3( 0.5f,  0.5f, -0.5f), glm::vec2(1.0f, 1.0f)),
-				Vertex(glm::vec3( 0.5f,  0.5f,  0.5f), glm::vec2(0.0f, 1.0f)),
-				Vertex(glm::vec3( 0.5f, -0.5f,  0.5f), glm::vec2(0.0f, 0.0f)),
-
-				Vertex(glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec2(0.0f, 0.0f)),
-				Vertex(glm::vec3( 0.5f,  0.5f,  0.5f), glm::vec2(1.0f, 0.0f)),
-				Vertex(glm::vec3( 0.5f,  0.5f, -0.5f), glm::vec2(1.0f, 1.0f)),
 				Vertex(glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec2(0.0f, 1.0f)),
 
+				// Back face
+				Vertex(glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec2(0.0f, 0.0f)),
+				Vertex(glm::vec3( 0.5f, -0.5f,  0.5f), glm::vec2(1.0f, 0.0f)),
+				Vertex(glm::vec3( 0.5f,  0.5f,  0.5f), glm::vec2(1.0f, 1.0f)),
+				Vertex(glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec2(0.0f, 1.0f)),
+
+				// Left face
+				Vertex(glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec2(0.0f, 0.0f)),
+				Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(1.0f, 0.0f)),
+				Vertex(glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec2(1.0f, 1.0f)),
+				Vertex(glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec2(0.0f, 1.0f)),
+
+				// Right face
+				Vertex(glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f)),
+				Vertex(glm::vec3( 0.5f,  0.5f, -0.5f), glm::vec2(1.0f, 0.0f)),
+				Vertex(glm::vec3( 0.5f,  0.5f,  0.5f), glm::vec2(1.0f, 1.0f)),
+				Vertex(glm::vec3( 0.5f, -0.5f,  0.5f), glm::vec2(0.0f, 1.0f)),
+
+				// Bottom face
+				Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f)),
+				Vertex(glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec2(1.0f, 0.0f)), 
+				Vertex(glm::vec3( 0.5f, -0.5f,  0.5f), glm::vec2(1.0f, 1.0f)), 
 				Vertex(glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec2(0.0f, 1.0f)),
-				Vertex(glm::vec3( 0.5f, -0.5f,  0.5f), glm::vec2(1.0f, 1.0f)),
-				Vertex(glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec2(1.0f, 0.0f)),
-				Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f))
+
+				// Top face
+				Vertex(glm::vec3( 0.5f,  0.5f, -0.5f), glm::vec2(0.0f, 0.0f)),
+				Vertex(glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec2(1.0f, 0.0f)),
+				Vertex(glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec2(1.0f, 1.0f)),
+				Vertex(glm::vec3( 0.5f,  0.5f,  0.5f), glm::vec2(0.0f, 1.0f))
 			};
 
 			m_indices = {
-				 0,  1,  2,  2,  3,  0,
-				 4,  5,  6,  6,  7,  4,
-				 8,  9, 10, 10, 11,  8,
-				12, 13, 14, 14, 15, 12,
-				16, 17, 18, 18, 19, 16,
-				20, 21, 22, 22, 23, 20
+				 0,  3,  2,  2,  1,  0, // Front
+				 4,  5,  6,  6,  7,  4, // Back
+				11,  8,  9,  9, 10, 11, // Left
+				12, 13, 14, 14, 15, 12, // Right
+				16, 17, 18, 18, 19, 16, // Bottom
+				20, 21, 22, 22, 23, 20  // Top
 			};
 
 			break;
 		case Enum::Shape::Pyramid:
 			m_vertices = {
-				Vertex(glm::vec3(-0.5f, -0.5f, 0.5f),  glm::vec2(0.0f, 0.0f)),
-				Vertex(glm::vec3( 0.5f, -0.5f, 0.5f),  glm::vec2(1.0f, 0.0f)),
-				Vertex(glm::vec3( 0.0f,  0.5f, 0.0f),  glm::vec2(0.5f, 1.0f)),
+				// Front face
+				Vertex(glm::vec3( 0.0f,  0.5f,  0.0f),  glm::vec2(0.5f, 1.0f)),
+				Vertex(glm::vec3(-0.5f, -0.5f,  0.5f),  glm::vec2(0.0f, 0.0f)),
+				Vertex(glm::vec3( 0.5f, -0.5f,  0.5f),  glm::vec2(1.0f, 0.0f)),
 
+				// Right face
+				Vertex(glm::vec3( 0.0f,  0.5f,  0.0f), glm::vec2(0.5f, 1.0f)),
 				Vertex(glm::vec3( 0.5f, -0.5f,  0.5f), glm::vec2(0.0f, 0.0f)),
 				Vertex(glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec2(1.0f, 0.0f)),
-				Vertex(glm::vec3( 0.0f,  0.5f,  0.0f), glm::vec2(0.5f, 1.0f)),
 
+				// Back face
+				Vertex(glm::vec3( 0.0f,  0.5f,  0.0f), glm::vec2(0.5f, 1.0f)),
 				Vertex(glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f)),
 				Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(1.0f, 0.0f)),
-				Vertex(glm::vec3( 0.0f,  0.5f,  0.0f), glm::vec2(0.5f, 1.0f)),
 
+				// Left face
+				Vertex(glm::vec3( 0.0f,  0.5f,  0.0f), glm::vec2(0.5f, 1.0f)),
 				Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f)),
 				Vertex(glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec2(1.0f, 0.0f)),
-				Vertex(glm::vec3( 0.0f,  0.5f,  0.0f), glm::vec2(0.5f, 1.0f)),
 
+				// Bottom face (square base)
 				Vertex(glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec2(0.0f, 0.0f)),
 				Vertex(glm::vec3( 0.5f, -0.5f,  0.5f), glm::vec2(1.0f, 0.0f)),
 				Vertex(glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec2(1.0f, 1.0f)),
@@ -187,8 +192,8 @@ namespace Tin {
 				 3,  4,  5,
 				 6,  7,  8,
 				 9, 10, 11,
-				12, 13, 14,
-				14, 15, 12
+				12, 14, 13,
+				12, 15, 14
 			};
 
 			break;

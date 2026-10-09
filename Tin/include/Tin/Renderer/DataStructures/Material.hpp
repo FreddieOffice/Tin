@@ -7,23 +7,20 @@
 #include "Tin/Renderer/DataStructures/Color.hpp"
 
 #include <string>
-#include <optional>
 
 namespace Tin {
     struct Material {
-        Color color;
-        std::optional<Texture> colorMap;
+        Color color = Color(0.5f, 0.5f, 0.5f);
+        std::shared_ptr<Texture> colorMap = nullptr;
 
         // Default constructor
         // Makes a gray colored material
-        Material();
+        Material() = default;
 
-        Material(const Color& color, const Texture& colorMap); 
+        Material(const Color& color, std::shared_ptr<Texture> colorMap); 
         
-        // Checks if the material has a color map
-        bool HasColorMap() const;
+        void Bind(Shader& shader) const;
     };
-
 }
 
 #endif

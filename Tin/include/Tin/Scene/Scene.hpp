@@ -23,25 +23,25 @@ namespace Tin {
 
     class Scene {
     public:
+        std::string name;
         Environment environment;
-        Scene(const Shader& basicShader, const Environment& environment);
+
+        Scene(const std::string& name, const Shader& basicShader, const Environment& environment);
 
         // Renders the scene
-        void Render(Renderer& renderer, Camera& camera);
+        void Render(Renderer& renderer);
         // Destroys the scene
         void Destroy();
 
         // Adds a mesh to the scene
         void AddMesh(const Mesh& mesh);
-        // Adds meshes to the scene
-        void AddMeshes(const std::vector<Mesh>& meshes);
         // Deletes a mesh from the scene
         //void DeleteMesh(const Mesh& mesh);
 
         // Retrieves a mesh from the scene
         //Mesh& GetMesh(const Mesh& mesh);
         // Returns the meshes that are in the scene
-        std::vector<Mesh>& GetMeshes();
+        //std::vector<Mesh>& GetMeshes();
     private:
         std::vector<Mesh> m_meshes;
         Shader m_basicShader;

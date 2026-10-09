@@ -91,22 +91,27 @@ namespace Tin {
 
         Logger::Log(Logger::Level::Info, "Tin", "OpenGL context created successfully");
 
-        // Set up some OpenGL stuff
-        glm::ivec2 size = window.GetFramebufferSize();
-        glViewport(0, 0, size.x, size.y);
-
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-        //glEnable(GL_MULTISAMPLE);
-        glEnable(GL_DEPTH_TEST);
-
         // Print OpenGL info
 		Logger::Log(Logger::Level::Info, "OpenGL", ("OpenGL version: "  + std::string(reinterpret_cast<const char*>(glGetString(GL_VERSION)))));
 		Logger::Log(Logger::Level::Info, "OpenGL", ("GLSL version: "    + std::string(reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION)))));
 		Logger::Log(Logger::Level::Info, "OpenGL", ("OpenGL vendor: "   + std::string(reinterpret_cast<const char*>(glGetString(GL_VENDOR)))));
 		Logger::Log(Logger::Level::Info, "OpenGL", ("OpenGL renderer: " + std::string(reinterpret_cast<const char*>(glGetString(GL_RENDERER)))));
     
+        // Set up some OpenGL stuff
+        glm::ivec2 size = window.GetFramebufferSize();
+        glViewport(0, 0, size.x, size.y);
+
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        // Enable essentials
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+        
+        // Enable face culling
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CCW);
+
         // Create skybox shader
         m_skyboxShader = std::make_unique<Shader>(skyboxVertShader, skyboxFragShader);
 
@@ -120,7 +125,7 @@ namespace Tin {
         glBufferData(GL_ARRAY_BUFFER, skyboxVertices.size() * sizeof(float), skyboxVertices.data(), GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
     }
 
     void Renderer::Destroy() {
@@ -135,7 +140,7 @@ namespace Tin {
     }
 
     void Renderer::SaveScreenshot(const std::string& filename, const glm::ivec2& position, const glm::ivec2& size) const {
-        std::vector<unsigned char*> pixelData(size.x * size.y * 3);
+        std::vector<uint8_t> pixelData(size.x * size.y * 3);
         int32_t packAlignment;
 
         glGetIntegerv(GL_PACK_ALIGNMENT, &packAlignment);
@@ -155,10 +160,57 @@ namespace Tin {
         int32_t result = stbi_write_png(filename.c_str(), size.x, size.y, 3, pixelData.data(), size.x * 3);
 
         if (result == 0) {
-			Logger::Log(Logger::Level::Error, "Tin", ("Failed to capture to " + filename + ":\n" + stbi_failure_reason()));
+			Logger::Log(Logger::Level::Error, "Tin", ("Failed to capture to " + filename));
 		} else {
             Logger::Log(Logger::Level::Info, "Tin", ("Successfully saved a capture to " + filename));
 		}
+    }
+
+    void Renderer::BeginScene(const Camera& camera) {
+        m_projectionMatrix = camera.GetProjectionMatrix();
+        m_viewMatrix = camera.GetViewMatrix();
+        m_drawCalls = 0;
+        m_triangles = 0;
+    }
+
+    void Renderer::Submit(Mesh& mesh, Material& material, const glm::mat4& transform, Shader& shader) {
+        m_queue.push_back({&mesh, &material, transform, &shader});
+    }
+
+    void Renderer::EndScene() {
+        // Sort by shader and material
+        std::sort(m_queue.begin(), m_queue.end(), [](const RenderQueue& a, const RenderQueue& b) {
+            return std::tie(a.shader, a.material) < std::tie(b.shader, b.material);
+        });
+
+        Shader* currentShader = nullptr;
+        Material* currentMaterial = nullptr;
+
+        for (auto& cmd : m_queue) {
+            // Use shader
+            if (cmd.shader != currentShader) {
+                currentShader = cmd.shader;
+                currentShader->Use();
+                currentShader->SetUniformMat4("CamProjection", m_projectionMatrix);
+                currentShader->SetUniformMat4("CamView", m_viewMatrix);
+            }
+
+            // Bind material
+            if (cmd.material != currentMaterial) {
+                currentMaterial = cmd.material;
+                currentMaterial->Bind(*currentShader);
+            }
+
+            // Render the mesh
+            glBindVertexArray(cmd.mesh->GetVao());
+            currentShader->SetUniformMat4("Model", cmd.transform);
+		    glDrawElements(GL_TRIANGLES, cmd.mesh->GetIndicesCount(), GL_UNSIGNED_INT, nullptr);
+
+            ++m_drawCalls;
+            m_triangles += cmd.mesh->GetIndicesCount() / 3;
+        }
+
+        m_queue.clear();
     }
 
     void Renderer::SetClearColor(const Color& clearColor) const {
@@ -170,7 +222,7 @@ namespace Tin {
     }
 
     void Renderer::SetSkybox(std::shared_ptr<Skybox> skybox) {
-        m_skybox = skybox;
+        m_skybox = std::move(skybox);
     }
 
     std::shared_ptr<Skybox> Renderer::GetSkybox() const {
@@ -178,18 +230,17 @@ namespace Tin {
     }
 
     void Renderer::RemoveSkybox() {
-        if (m_skybox) {
-            m_skybox = nullptr;
-        }
+        if (m_skybox) { m_skybox = nullptr; }
     }
 
-    void Renderer::RenderSkybox(Camera& camera) {
+    void Renderer::RenderSkybox() {
         if (!m_skybox) { return; }
 
         glDepthFunc(GL_LEQUAL);
 
         m_skyboxShader->Use();
-        camera.UpdateMatrix(*m_skyboxShader, camera.GetProjectionMatrix(), glm::mat4(glm::mat3(camera.GetViewMatrix()))); // Remove the translation
+        m_skyboxShader->SetUniformMat4("CamProjection", m_projectionMatrix);
+        m_skyboxShader->SetUniformMat4("CamView", glm::mat4(glm::mat3(m_viewMatrix))); // Remove translation
 
         // Bind the cubemap
         glActiveTexture(GL_TEXTURE0);
@@ -200,5 +251,17 @@ namespace Tin {
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         glDepthFunc(GL_LESS);
+ 
+        // Add an additional draw call and 12 triangles (which is how many triangles a cube has) for the skybox
+        ++m_drawCalls;
+        m_triangles += 12;
+    }
+
+    uint32_t Renderer::GetDrawCalls() const {
+        return m_drawCalls;
+    }
+
+    uint32_t Renderer::GetTriangleCount() const {
+        return m_triangles;
     }
 }

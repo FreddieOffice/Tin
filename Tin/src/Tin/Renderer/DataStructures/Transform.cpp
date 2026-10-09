@@ -2,8 +2,6 @@
 #include "Tin/Renderer/DataStructures/Transform.hpp"
 
 namespace Tin {
-	Transform::Transform() : Position(glm::vec3(0.0f)), Rotation(glm::vec3(0.0f)), Scale(glm::vec3(1.0f)) {}
-
 	Transform::Transform(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale) : Position(position), Rotation(rotation), Scale(scale) {}
 
 	glm::mat4 Transform::GetModelMatrix() const {

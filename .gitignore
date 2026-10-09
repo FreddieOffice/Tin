@@ -5,7 +5,11 @@
 # Build files
 build/
 
+# Visual studio files
+.vs/
+*.sln
+*.vcxproj*
+
 # Other files
 *.ini
-/*.txt
 .DS_Store

@@ -2,11 +2,18 @@
 #include "Tin/Renderer/DataStructures/Material.hpp"
 
 namespace Tin {
-    Material::Material() : colorMap(std::nullopt) {}
+    Material::Material(const Color& color, std::shared_ptr<Texture> colorMap) : color(color), colorMap(colorMap) {}
 
-    Material::Material(const Color& color, const Texture& colorMap) : color(color), colorMap(colorMap) {}
+    void Material::Bind(Shader& shader) const {
+        shader.SetUniformVec3("Color", glm::vec3(color.r, color.g, color.b));
 
-    bool Material::HasColorMap() const {
-        return colorMap.has_value();
+		// Check if the material has a color map
+		if (!colorMap) {
+			shader.SetUniformInt("HasColorMap", 0);
+		} else {
+			shader.SetUniformInt("HasColorMap", 1);
+            colorMap->Bind();
+	        colorMap->TextureUnit(shader, "ColorMap");
+		}
     }
 }

@@ -10,7 +10,7 @@
 namespace Tin {
 	namespace Enum {
 		enum class TextureType {
-			ColorMap
+			ColorMap = 0,
 		};
 	}
 

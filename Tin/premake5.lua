@@ -39,13 +39,22 @@ project "Tin"
 
     filter {}
 
+    -- Global Defines
+    defines {"GLFW_INCLUDE_NONE", "GLM_ENABLE_EXPERIMENTAL"}
+
+    -- Windows defines
+    filter "system:Windows"
+        defines {"NOMINMAX", "WIN32_LEAN_AND_MEAN"}
+
+    filter {}
+
     -- Configurations
     filter {"configurations:Debug"}
         symbols "On"
         staticruntime "Off"
 
     filter {"configurations:Release"}
-        optimize "On"
+        optimize "Speed"
         staticruntime "On"
 
     filter {}

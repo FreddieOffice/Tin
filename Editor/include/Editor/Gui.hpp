@@ -1,5 +1,5 @@
-#ifndef GUI_HPP
-#define GUI_HPP
+#ifndef TINEDITOR_GUI_HPP
+#define TINEDITOR_GUI_HPP
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"

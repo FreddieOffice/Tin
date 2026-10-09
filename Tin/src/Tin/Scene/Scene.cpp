@@ -2,20 +2,17 @@
 #include "Tin/Scene/Scene.hpp"
 
 namespace Tin {
-    Scene::Scene(const Shader& basicShader, const Environment& environment) : m_basicShader(basicShader), environment(environment) {}
+    Scene::Scene(const std::string& name, const Shader& basicShader, const Environment& environment) : name(name), m_basicShader(basicShader), environment(environment) {}
 
-    void Scene::Render(Renderer& renderer, Camera& camera) {
-        // Render meshes
+    void Scene::Render(Renderer& renderer) {
+        // Submit meshes to the renderer
         for (Mesh& mesh : m_meshes) {
-            mesh.Render();
+            renderer.Submit(mesh, *mesh.material, mesh.transform.GetModelMatrix(), m_basicShader);
         }
-
-        // Update camera
-        camera.UpdateMatrix(m_basicShader, camera.GetProjectionMatrix(), camera.GetViewMatrix());
 
         // Render the skybox last (if the sky type is skybox)
         if (environment.type == Enum::SkyType::Skybox) {
-            renderer.RenderSkybox(camera);
+            renderer.RenderSkybox();
         }
     }
 
@@ -29,10 +26,6 @@ namespace Tin {
 
     void Scene::AddMesh(const Mesh& mesh) {
         m_meshes.push_back(mesh);
-    }
-
-    void Scene::AddMeshes(const std::vector<Mesh>& meshes) {
-        m_meshes.insert(m_meshes.end(), meshes.begin(), meshes.end());
     }
 
     /*void Scene::DeleteMesh(const Mesh& mesh) { 
@@ -50,7 +43,7 @@ namespace Tin {
         }
     }*/
 
-    std::vector<Mesh>& Scene::GetMeshes() {
+    /*std::vector<Mesh>& Scene::GetMeshes() {
         return m_meshes;
-    }
+    }*/
 }

@@ -17,10 +17,6 @@ namespace Tin {
 
 		Camera(glm::ivec2 viewportSize, glm::vec3 position, glm::vec3 orientation, float fov = 90.0f, float nearPlane = 0.1f, float farPlane = 1000.0f);
 
-		// Updates the projection and view matrix
-		// Uniforms required: CamProjection (mat4), CamView (mat4)
-		void UpdateMatrix(Shader& shader, glm::mat4 projectionMatrix, glm::mat4 viewMatrix) const;
-
 		// Sets the camera viewport size
 		void SetViewportSize(glm::ivec2 size);
 

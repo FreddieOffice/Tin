@@ -4,7 +4,8 @@ workspace "Tin"
     platforms {"x64"}
     architecture "x86_64"
 
-    system "Windows"
+    exceptionhandling "Off"
+    rtti "Off"
 
     language "C++"
     cppdialect "C++17"

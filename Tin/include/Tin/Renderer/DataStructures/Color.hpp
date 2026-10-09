@@ -4,12 +4,15 @@
 #include <cstdint>
 
 namespace Tin {
-	struct Color {
-        float r, g, b, a;
+    struct Color {
+        float r = 0.0f;
+        float g = 0.0f;
+        float b = 0.0f;
+        float a = 1.0f;
 
         // Default constructor
-        // Color is gray
-        Color();
+        // Color is black
+        Color() = default;
         // Creates a color from floats
         Color(float r, float g, float b, float a = 1.0f);
         // Creates a color from RGB values
@@ -66,7 +69,7 @@ namespace Tin {
         static Color Violet;
         static Color White;
         static Color Yellow;
-	};
+    };
 }
 
 #endif
