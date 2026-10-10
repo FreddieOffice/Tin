@@ -26,7 +26,7 @@ namespace Tin {
         glm::ivec2 position = glm::ivec2(-1, -1);
 
         bool vsync = false;
-        bool maximized = false; 
+        bool maximized = false;
         bool visible = true;
         bool resizable = true;
         bool decorated = true;

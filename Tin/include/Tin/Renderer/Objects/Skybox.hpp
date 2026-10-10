@@ -14,7 +14,7 @@ namespace Tin {
         // Faces must be in this order:
         // +X (right),
         // -X (left),
-        // +Y (top), 
+        // +Y (top),
         // -Y (bottom),
         // +Z (front),
         // -Z (back)

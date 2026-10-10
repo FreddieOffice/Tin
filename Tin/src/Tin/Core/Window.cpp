@@ -167,7 +167,7 @@ namespace Tin {
             } else {
                 glfwSetWindowIcon(m_GlfwHandle, 1, image);
             }
-            
+
             stbi_image_free(image[0].pixels);
         }
 

@@ -39,7 +39,7 @@ project "Editor"
         staticruntime "On"
 
     filter {}
-    
+
     -- Platforms
     filter {"platforms:x64"}
         architecture "x86_64"

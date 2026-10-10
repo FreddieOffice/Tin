@@ -32,7 +32,7 @@ namespace Tin {
             std::string CurrentDateTime() {
                 auto now = std::chrono::system_clock::now();
                 std::time_t time = std::chrono::system_clock::to_time_t(now);
-                
+
                 // Get time in the local timezone
                 std::tm local_tm;
                 localtime_s(&local_tm, &time);

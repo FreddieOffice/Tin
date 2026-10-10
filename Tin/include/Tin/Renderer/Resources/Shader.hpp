@@ -10,7 +10,7 @@ namespace Tin {
         void Use() const;
         // Destroys the shader
         void Destroy() const;
-        
+
         // Changes the shader to have new vertex and fragment code
         void Reload(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
 

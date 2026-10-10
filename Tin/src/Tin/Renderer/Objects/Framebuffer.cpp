@@ -29,14 +29,14 @@ namespace Tin {
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 			Logger::Log(Logger::Level::Error, "Tin", "Failed to create framebuffer: framebuffer incomplete");
-			
+
 			glDeleteFramebuffers(1, &m_Id);
 			glDeleteTextures(1, &m_textureId);
 			glDeleteRenderbuffers(1, &m_Rbo);
 		} else {
 			Logger::Log(Logger::Level::Info, "Tin", "Framebuffer with id " + std::to_string(m_Id) + " successfully created");
 		}
-        
+
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glBindTexture(GL_TEXTURE_2D, 0);
         glBindRenderbuffer(GL_RENDERBUFFER, 0);

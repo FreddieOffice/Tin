@@ -10,7 +10,7 @@ namespace Tin {
 	public:
 		glm::vec3 Position;
 		glm::vec3 Orientation;
-		
+
 		float FOV;
 		float NearPlane;
 		float FarPlane;

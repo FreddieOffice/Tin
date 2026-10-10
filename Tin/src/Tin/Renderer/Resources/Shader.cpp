@@ -8,7 +8,7 @@ namespace Tin {
     Shader::Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath) {
         CreateProgram(vertexShaderPath, fragmentShaderPath);
     }
-    
+
     void Shader::Use() const {
         glUseProgram(m_Id);
     }

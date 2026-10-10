@@ -26,7 +26,7 @@ namespace Tin {
         uint32_t m_Id = 0;
         uint32_t m_textureId = 0;
         uint32_t m_Rbo = 0;
-        
+
         glm::ivec2 m_size;
     };
 }

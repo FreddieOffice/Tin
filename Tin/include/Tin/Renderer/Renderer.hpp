@@ -19,7 +19,7 @@
 #include <string>
 
 namespace Tin {
-    struct RenderQueue {
+    struct RenderPacket {
         Mesh* mesh;
         Material* material;
         glm::mat4 transform;
@@ -62,7 +62,7 @@ namespace Tin {
         uint32_t GetTriangleCount() const;
     private:
         // Render queue
-        std::vector<RenderQueue> m_queue;
+        std::vector<RenderPacket> m_commandQueue;
         glm::mat4 m_projectionMatrix{};
         glm::mat4 m_viewMatrix{};
         uint32_t m_drawCalls = 0;

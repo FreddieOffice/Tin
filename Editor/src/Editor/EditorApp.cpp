@@ -92,7 +92,7 @@ void EditorApp::Run() {
 
     Tin::WindowConfig config {
         "Tin Editor",                            // Title
-        "assets/textures/openglmaze/smiley.png", // Icon
+        "assets/textures/smiley.png",            // Icon
         glm::ivec2(1280, 720),                   // Size
         glm::ivec2(-1, -1),                      // Position
         false,                                   // Vsync
@@ -111,30 +111,31 @@ void EditorApp::Run() {
 
     Tin::SceneManager sceneManager;
 
-    // Create scene
+    // Create shaders
     Tin::Shader basicShader(
-        Tin::Utils::ReadFile("assets/shaders/basicVert.glsl"), 
-        Tin::Utils::ReadFile("assets/shaders/basicFrag.glsl")
+        Tin::Utils::ReadFile("assets/shaders/basic.vert.glsl"),
+        Tin::Utils::ReadFile("assets/shaders/basic.frag.glsl")
     );
 
-    /*std::vector<std::string> faces = {
-        "assets/textures/skybox/BlueSky/right.jpg",
-        "assets/textures/skybox/BlueSky/left.jpg",
-        "assets/textures/skybox/BlueSky/top.jpg",
-        "assets/textures/skybox/BlueSky/bottom.jpg",
-        "assets/textures/skybox/BlueSky/front.jpg",
-        "assets/textures/skybox/BlueSky/back.jpg"
-    };*/
-
     std::vector<std::string> faces = {
+        "assets/textures/skybox/BlueSky2/right.jpg",
+        "assets/textures/skybox/BlueSky2/left.jpg",
+        "assets/textures/skybox/BlueSky2/top.jpg",
+        "assets/textures/skybox/BlueSky2/bottom.jpg",
+        "assets/textures/skybox/BlueSky2/front.jpg",
+        "assets/textures/skybox/BlueSky2/back.jpg"
+    };
+
+    /*std::vector<std::string> faces = {
         "assets/textures/skybox/Clear/vz_clear_right.png",
         "assets/textures/skybox/Clear/vz_clear_left.png",
         "assets/textures/skybox/Clear/vz_clear_up.png",
         "assets/textures/skybox/Clear/vz_clear_down.png",
         "assets/textures/skybox/Clear/vz_clear_front.png",
         "assets/textures/skybox/Clear/vz_clear_back.png"
-    };
+    };*/
 
+    // Create scene
     Tin::Environment environment{Tin::Enum::SkyType::Skybox, faces, TinBlue};
     auto scene = std::make_shared<Tin::Scene>("Scene1", basicShader, environment);
     sceneManager.SetActiveScene(scene);
@@ -253,7 +254,7 @@ void EditorApp::Run() {
         ImVec2 windowPos = ImGui::GetCursorScreenPos();
         ImVec2 windowCenter(windowPos.x + windowSize.x * 0.5f, windowPos.y + windowSize.y * 0.5f);
         glm::ivec2 framebufferSize = framebuffer.GetSize();
-        
+
         if (windowSize.x != framebufferSize.x || windowSize.y != framebufferSize.y) {
             framebuffer.Resize(glm::ivec2(windowSize.x, windowSize.y));
             camera.SetViewportSize(glm::ivec2(windowSize.x, windowSize.y));
@@ -382,7 +383,7 @@ void EditorApp::Run() {
                 activeScene->Render(renderer);
                 renderer.EndScene();
             }
-            
+
             // Unbind framebuffer, everything is now being rendered to the normal window (for imgui)
             framebuffer.Unbind();
         }

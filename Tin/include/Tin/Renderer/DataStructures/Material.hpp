@@ -17,8 +17,8 @@ namespace Tin {
         // Makes a gray colored material
         Material() = default;
 
-        Material(const Color& color, std::shared_ptr<Texture> colorMap); 
-        
+        Material(const Color& color, std::shared_ptr<Texture> colorMap);
+
         void Bind(Shader& shader) const;
     };
 }

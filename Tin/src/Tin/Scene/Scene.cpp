@@ -28,7 +28,7 @@ namespace Tin {
         m_meshes.push_back(mesh);
     }
 
-    /*void Scene::DeleteMesh(const Mesh& mesh) { 
+    /*void Scene::DeleteMesh(const Mesh& mesh) {
         auto it = std::find(m_meshes.begin(), m_meshes.end(), mesh);
         if (it != m_meshes.end()) {
             m_meshes.erase(it);

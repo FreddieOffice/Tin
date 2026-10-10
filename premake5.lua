@@ -9,7 +9,7 @@ workspace "Tin"
 
     language "C++"
     cppdialect "C++17"
- 
+
     location "build"
     outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 

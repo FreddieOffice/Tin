@@ -4,7 +4,7 @@
 namespace Tin {
     namespace {
         // Cube vertices for skybox
-        const std::vector<float> skyboxVertices = {    
+        const std::vector<float> skyboxVertices = {
             -1.0f,  1.0f, -1.0f,
             -1.0f, -1.0f, -1.0f,
              1.0f, -1.0f, -1.0f,
@@ -62,7 +62,7 @@ namespace Tin {
                 TexCoords = aPos;
                 vec4 pos = CamProjection * CamView * vec4(aPos, 1.0);
                 gl_Position = pos.xyww;
-            }  
+            }
         )";
 
         const std::string skyboxFragShader = R"(
@@ -74,7 +74,7 @@ namespace Tin {
             uniform samplerCube skybox;
 
             void main()
-            {    
+            {
                 FragColor = texture(skybox, TexCoords);
             }
         )";
@@ -96,7 +96,7 @@ namespace Tin {
 		Logger::Log(Logger::Level::Info, "OpenGL", ("GLSL version: "    + std::string(reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION)))));
 		Logger::Log(Logger::Level::Info, "OpenGL", ("OpenGL vendor: "   + std::string(reinterpret_cast<const char*>(glGetString(GL_VENDOR)))));
 		Logger::Log(Logger::Level::Info, "OpenGL", ("OpenGL renderer: " + std::string(reinterpret_cast<const char*>(glGetString(GL_RENDERER)))));
-    
+
         // Set up some OpenGL stuff
         glm::ivec2 size = window.GetFramebufferSize();
         glViewport(0, 0, size.x, size.y);
@@ -106,7 +106,7 @@ namespace Tin {
         // Enable essentials
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-        
+
         // Enable face culling
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
@@ -174,19 +174,19 @@ namespace Tin {
     }
 
     void Renderer::Submit(Mesh& mesh, Material& material, const glm::mat4& transform, Shader& shader) {
-        m_queue.push_back({&mesh, &material, transform, &shader});
+        m_commandQueue.push_back({&mesh, &material, transform, &shader});
     }
 
     void Renderer::EndScene() {
         // Sort by shader and material
-        std::sort(m_queue.begin(), m_queue.end(), [](const RenderQueue& a, const RenderQueue& b) {
+        std::sort(m_commandQueue.begin(), m_commandQueue.end(), [](const RenderPacket& a, const RenderPacket& b) {
             return std::tie(a.shader, a.material) < std::tie(b.shader, b.material);
         });
 
         Shader* currentShader = nullptr;
         Material* currentMaterial = nullptr;
 
-        for (auto& cmd : m_queue) {
+        for (auto& cmd : m_commandQueue) {
             // Use shader
             if (cmd.shader != currentShader) {
                 currentShader = cmd.shader;
@@ -210,7 +210,7 @@ namespace Tin {
             m_triangles += cmd.mesh->GetIndicesCount() / 3;
         }
 
-        m_queue.clear();
+        m_commandQueue.clear();
     }
 
     void Renderer::SetClearColor(const Color& clearColor) const {
@@ -251,7 +251,7 @@ namespace Tin {
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         glDepthFunc(GL_LESS);
- 
+
         // Add an additional draw call and 12 triangles (which is how many triangles a cube has) for the skybox
         ++m_drawCalls;
         m_triangles += 12;

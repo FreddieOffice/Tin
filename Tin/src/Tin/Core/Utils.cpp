@@ -10,7 +10,7 @@ namespace Tin::Utils {
         if (in)
         {
             std::string contents;
-            
+
             in.seekg(0, std::ios::end);
             contents.resize(in.tellg());
             in.seekg(0, std::ios::beg);

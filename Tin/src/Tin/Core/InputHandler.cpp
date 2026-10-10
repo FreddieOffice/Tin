@@ -50,7 +50,7 @@ namespace Tin {
     glm::vec2 InputHandler::GetCursorPosition() const {
         double xPos, yPos;
         glfwGetCursorPos(m_handle, &xPos, &yPos);
-        
+
         return glm::vec2(xPos, yPos);
     }
 }
