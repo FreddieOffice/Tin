@@ -37,7 +37,7 @@ namespace Tin {
     public:
         // Setting size.x or size.y to a negative number will make the window be as big as the screen on that axis
         // Setting position.x or position.y to a negative number will center the window on that axis
-        Window(const WindowConfig& config);
+        explicit Window(const WindowConfig& config);
 
         // Destroys the window
         void Destroy();

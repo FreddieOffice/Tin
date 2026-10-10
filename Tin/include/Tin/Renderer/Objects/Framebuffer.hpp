@@ -6,7 +6,7 @@
 namespace Tin {
     class Framebuffer {
     public:
-        Framebuffer(const glm::ivec2& size);
+        explicit Framebuffer(const glm::ivec2& size);
 
         // Binds the framebuffer
         void Bind() const;

@@ -28,7 +28,7 @@ namespace Tin {
 
     class Renderer {
     public:
-        Renderer(const Window& window);
+        explicit Renderer(const Window& window);
 
         // Destroys the renderer
         void Destroy();

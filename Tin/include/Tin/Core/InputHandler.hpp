@@ -153,7 +153,7 @@ namespace Tin {
 
 	class InputHandler {
 	public:
-		InputHandler(const Window& window);
+		explicit InputHandler(const Window& window);
 
         // Checks if a key has been pressed
         bool IsKeyPressed(Enum::Key key) const;

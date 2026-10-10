@@ -18,7 +18,7 @@ namespace Tin {
         // -Y (bottom),
         // +Z (front),
         // -Z (back)
-        Skybox(const std::vector<std::string>& faces);
+        explicit Skybox(const std::vector<std::string>& faces);
 
         // Destroys the skybox
         void Destroy();
