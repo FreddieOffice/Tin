@@ -14,7 +14,7 @@ namespace Tin {
         void PollEvents() const;
 
         // Returns time passed since initialization in seconds
-        float GetTime() const;
+        [[nodiscard]] float GetTime() const;
     };
 
     // To be defined in client

@@ -8,7 +8,7 @@ workspace "Tin"
     rtti "Off"
 
     language "C++"
-    cppdialect "C++17"
+    cppdialect "C++20"
 
     location "build"
     outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"

@@ -30,13 +30,13 @@ namespace Tin {
 		void ChangeTexture(const std::string& filename);
 
 		// Returns the filename of the texture
-		std::string GetFilename() const;
+		[[nodiscard]] std::string GetFilename() const;
 		// Returns the size of the texture
-		glm::ivec2 GetSize() const;
+		[[nodiscard]] glm::ivec2 GetSize() const;
 		// Returns the textures channels
-		int32_t GetChannels() const;
+		[[nodiscard]] int32_t GetChannels() const;
 		// Returns the texture id
-		uint32_t GetId() const;
+		[[nodiscard]] uint32_t GetId() const;
 	private:
 		std::string m_filename;
 		glm::ivec2 m_size;

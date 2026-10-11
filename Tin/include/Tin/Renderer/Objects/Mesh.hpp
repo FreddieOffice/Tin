@@ -35,17 +35,17 @@ namespace Tin {
         void SetShape(const Enum::Shape& shape);
 
         // Returns the mesh vertices
-        const std::vector<Vertex>& GetVertices() const;
+        [[nodiscard]] const std::vector<Vertex>& GetVertices() const;
         // Returns the amount of vertices the mesh has
-        uint32_t GetVerticesCount() const;
+        [[nodiscard]] uint32_t GetVerticesCount() const;
         // Returns the mesh indices
-        const std::vector<uint32_t>& GetIndices() const;
+        [[nodiscard]] const std::vector<uint32_t>& GetIndices() const;
         // Returns the amount of indices the mesh has
-        uint32_t GetIndicesCount() const;
+        [[nodiscard]] uint32_t GetIndicesCount() const;
         // Returns the mesh shape
-        Enum::Shape GetShape() const;
+        [[nodiscard]] Enum::Shape GetShape() const;
         // Returns the mesh vertex array buffer object
-        uint32_t GetVao() const;
+        [[nodiscard]] uint32_t GetVao() const;
     private:
         // Buffer ids
         uint32_t m_Vao = 0;

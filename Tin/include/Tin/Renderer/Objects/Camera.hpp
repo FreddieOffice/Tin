@@ -21,11 +21,11 @@ namespace Tin {
 		void SetViewportSize(glm::ivec2 size);
 
 		// Returns the projection matrix
-		glm::mat4 GetProjectionMatrix() const;
+		[[nodiscard]] glm::mat4 GetProjectionMatrix() const;
 		// Returns the view matrix
-		glm::mat4 GetViewMatrix() const;
+		[[nodiscard]] glm::mat4 GetViewMatrix() const;
 		// Returns the camera viewport size
-		glm::ivec2 GetViewportSize() const;
+		[[nodiscard]] glm::ivec2 GetViewportSize() const;
 	private:
 		glm::ivec2 m_viewportSize;
 	};

@@ -49,7 +49,7 @@ namespace Tin {
 		void SetUniformMat4(const std::string& name, const glm::mat4& mat4) const;
 
         // Returns the shader id
-        uint32_t GetId() const;
+        [[nodiscard]] uint32_t GetId() const;
     private:
         uint32_t m_Id = 0;
 

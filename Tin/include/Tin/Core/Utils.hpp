@@ -4,7 +4,7 @@
 #include <string>
 
 namespace Tin::Utils {
-    std::string ReadFile(const std::string& filepath);
+    [[nodiscard]] std::string ReadFile(const std::string& filepath);
 }
 
 #endif

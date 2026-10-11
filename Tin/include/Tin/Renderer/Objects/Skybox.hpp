@@ -24,9 +24,9 @@ namespace Tin {
         void Destroy();
 
         // Returns the skyboxes faces
-        std::vector<std::string> GetFaces() const;
+        [[nodiscard]] std::vector<std::string> GetFaces() const;
         // Returns the skybox's cubemap texture id
-        uint32_t GetCubemapId() const;
+        [[nodiscard]] uint32_t GetCubemapId() const;
     private:
         uint32_t m_cubemapId;
         std::vector<std::string> m_faces;

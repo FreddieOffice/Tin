@@ -156,14 +156,14 @@ namespace Tin {
 		explicit InputHandler(const Window& window);
 
         // Checks if a key has been pressed
-        bool IsKeyPressed(Enum::Key key) const;
+        [[nodiscard]] bool IsKeyPressed(Enum::Key key) const;
         // Checks if a mouse button has been pressed
-        bool IsMouseButtonPressed(Enum::MouseButton button) const;
+        [[nodiscard]] bool IsMouseButtonPressed(Enum::MouseButton button) const;
 
         // Checks if a key has been released
-        bool IsKeyReleased(Enum::Key key) const;
+        [[nodiscard]] bool IsKeyReleased(Enum::Key key) const;
         // Checks if a mouse button has been released
-        bool IsMouseButtonReleased(Enum::MouseButton button) const;
+        [[nodiscard]] bool IsMouseButtonReleased(Enum::MouseButton button) const;
 
         // Sets the cursors state
         void SetCursorState(Enum::CursorState state);
@@ -171,9 +171,9 @@ namespace Tin {
         void SetCursorPosition(glm::vec2 position) const;
 
         // Returns the cursor state
-        Enum::CursorState GetCursorState() const;
+        [[nodiscard]] Enum::CursorState GetCursorState() const;
         // Returns the cursor position
-        glm::vec2 GetCursorPosition() const;
+        [[nodiscard]] glm::dvec2 GetCursorPosition() const;
 	private:
 		GLFWwindow* m_handle;
         Enum::CursorState m_cursorState = Enum::CursorState::Normal;

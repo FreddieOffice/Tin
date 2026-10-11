@@ -47,10 +47,10 @@ namespace Tin {
         return m_cursorState;
     }
 
-    glm::vec2 InputHandler::GetCursorPosition() const {
-        double xPos, yPos;
-        glfwGetCursorPos(m_handle, &xPos, &yPos);
+    glm::dvec2 InputHandler::GetCursorPosition() const {
+        glm::dvec2 pos;
+        glfwGetCursorPos(m_handle, &pos.x, &pos.y);
 
-        return glm::vec2(xPos, yPos);
+        return pos;
     }
 }

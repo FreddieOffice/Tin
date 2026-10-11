@@ -63,19 +63,19 @@ namespace Tin {
         void SetPosition(const glm::ivec2& position);
 
         // Returns the selected attribute's value
-        bool GetAttribute(Enum::WindowAttribute attribute) const;
+        [[nodiscard]] bool GetAttribute(Enum::WindowAttribute attribute) const;
         // Returns the icon file name
-        std::string GetIcon() const;
+        [[nodiscard]] std::string GetIcon() const;
         // Returns the window title
-        std::string GetTitle() const;
+        [[nodiscard]] std::string GetTitle() const;
         // Returns the window size
-        glm::ivec2 GetSize() const;
+        [[nodiscard]] glm::ivec2 GetSize() const;
         // Returns the window's framebuffer size
-        glm::ivec2 GetFramebufferSize() const;
+        [[nodiscard]] glm::ivec2 GetFramebufferSize() const;
         // Returns the window position
-        glm::ivec2 GetPosition() const;
+        [[nodiscard]] glm::ivec2 GetPosition() const;
         // Returns the GLFW window handle
-        GLFWwindow* GetGlfwHandle() const;
+        [[nodiscard]] GLFWwindow* GetGlfwHandle() const;
     private:
         GLFWwindow* m_GlfwHandle = nullptr;
         WindowConfig m_config;

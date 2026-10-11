@@ -16,7 +16,7 @@ namespace Tin {
 		Transform(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale);
 
 		// Returns the model matrix of the transform
-		glm::mat4 GetModelMatrix() const;
+		[[nodiscard]] glm::mat4 GetModelMatrix() const;
 	};
 }
 

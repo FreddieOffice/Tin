@@ -19,9 +19,9 @@ namespace Tin {
         void Resize(const glm::ivec2& size);
 
         // Returns the size of the framebuffer
-        glm::ivec2 GetSize() const;
+        [[nodiscard]] glm::ivec2 GetSize() const;
         // Returns the texture id
-        uint32_t GetTextureId() const;
+        [[nodiscard]] uint32_t GetTextureId() const;
     private:
         uint32_t m_Id = 0;
         uint32_t m_textureId = 0;

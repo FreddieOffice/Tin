@@ -11,6 +11,11 @@
 
 #include <iostream>
 #include <vector>
+#include <array>
+
+// Dedicated GPU preference
+//extern "C" __declspec(dllexport) unsigned long NvOptimusEnablement                  = 1;
+//extern "C" __declspec(dllexport) unsigned long AmdPowerXpressRequestHighPerformance = 1;
 
 // Too many arguments, will be fixed later
 static void CameraInput(Tin::InputHandler& input, Tin::Camera& camera, float deltaTime, bool sceneWindowHovered, glm::vec2 center, float speed, float sensitivity) {
@@ -79,7 +84,7 @@ static void CameraInput(Tin::InputHandler& input, Tin::Camera& camera, float del
     }
 }
 
-EditorApp::EditorApp() : Application() {
+EditorApp::EditorApp() {
 
 }
 
@@ -207,11 +212,11 @@ void EditorApp::Run() {
     bool fullscreen = false;
     bool vsync = false;
 
-    float colors[3] = {environment.solidColor.r, environment.solidColor.g, environment.solidColor.b};
+    std::array<float, 3> colors{environment.solidColor.r, environment.solidColor.g, environment.solidColor.b};
 
     // FPS and delta time stuff
     float deltaTime = 0.0f;
-    float lastFrame = static_cast<float>(GetTime());
+    float lastFrame = GetTime();
     float currentFrame = 0.0f;
     float fpsTimer = 0.0f;
     float lastFrame2 = 0.0f;
@@ -223,7 +228,7 @@ void EditorApp::Run() {
         window.Update();
 
         // Getting FPS and delta time
-        currentFrame = static_cast<float>(GetTime());
+        currentFrame = GetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
@@ -231,7 +236,10 @@ void EditorApp::Run() {
         ++frameCount;
 
         if (fpsTimer >= 1.0f) {
-            FPSandMS = std::to_string((1.0f / fpsTimer) * frameCount) + " FPS / " + std::to_string((fpsTimer / frameCount) * 1000.0f) + " ms";
+            float fps = (1.0f / fpsTimer) * frameCount;
+            float ms = fpsTimer / frameCount * 1000.0f;
+
+            FPSandMS = std::to_string(fps) + " FPS / " + std::to_string(ms) + " ms";
             lastFrame2 = currentFrame;
             frameCount = 0;
         }
@@ -279,13 +287,13 @@ void EditorApp::Run() {
             ImGui::Separator();
 
             ImGui::Text("Background color picker");
-            ImGui::ColorPicker3("Color", colors);
+            ImGui::ColorPicker3("Color", colors.data());
             ImGui::Separator();
 
             // Info
-            glm::vec2 mousePos = inputHandler.GetCursorPosition();
+            glm::dvec2 mousePos = inputHandler.GetCursorPosition();
             ImGui::Text("%s", FPSandMS.c_str());
-            ImGui::Text("Mouse pos: %.1f, %.1f", mousePos.x, mousePos.y);
+            ImGui::Text("Mouse pos: %.1d, %.1d", mousePos.x, mousePos.y);
             ImGui::Text("Draw calls: %d", renderer.GetDrawCalls());
             ImGui::Text("Triangle count: %d", renderer.GetTriangleCount());
             ImGui::Separator();

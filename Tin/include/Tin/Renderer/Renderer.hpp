@@ -52,14 +52,16 @@ namespace Tin {
         // Sets the skybox
         void SetSkybox(std::shared_ptr<Skybox> skybox);
         // Returns the skybox
-        std::shared_ptr<Skybox> GetSkybox() const;
+        [[nodiscard]] std::shared_ptr<Skybox> GetSkybox() const;
         // Removes the skybox
         void RemoveSkybox();
         // Renders the skybox
         void RenderSkybox();
 
-        uint32_t GetDrawCalls() const;
-        uint32_t GetTriangleCount() const;
+        // Returns the current amount of draw calls
+        [[nodiscard]] uint32_t GetDrawCalls() const;
+        // Returns the current amount of triangles being rendered
+        [[nodiscard]] uint32_t GetTriangleCount() const;
     private:
         // Render queue
         std::vector<RenderPacket> m_commandQueue;
