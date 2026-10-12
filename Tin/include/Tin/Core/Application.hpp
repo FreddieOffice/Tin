@@ -1,5 +1,4 @@
-#ifndef TIN_CORE_APPLICATION_HPP
-#define TIN_CORE_APPLICATION_HPP
+#pragma once
 
 #include <memory>
 
@@ -20,5 +19,3 @@ namespace Tin {
     // To be defined in client
     extern std::unique_ptr<Tin::Application> CreateApplication();
 }
-
-#endif

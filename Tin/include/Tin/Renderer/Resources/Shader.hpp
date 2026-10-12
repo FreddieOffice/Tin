@@ -1,5 +1,4 @@
-#ifndef TIN_RENDERER_RESOURCES_SHADER_HPP
-#define TIN_RENDERER_RESOURCES_SHADER_HPP
+#pragma once
 
 namespace Tin {
     class Shader {
@@ -61,5 +60,3 @@ namespace Tin {
         int32_t GetUniformLocation(const std::string& name) const;
     };
 }
-
-#endif

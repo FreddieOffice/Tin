@@ -1,5 +1,4 @@
-#ifndef TIN_RENDERER_DATASTRUCTURES_MATERIAL_HPP
-#define TIN_RENDERER_DATASTRUCTURES_MATERIAL_HPP
+#pragma once
 
 #include "Tin/Renderer/Resources/Shader.hpp"
 #include "Tin/Renderer/Resources/Texture.hpp"
@@ -22,5 +21,3 @@ namespace Tin {
         void Bind(Shader& shader) const;
     };
 }
-
-#endif

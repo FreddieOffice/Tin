@@ -1,5 +1,4 @@
-#ifndef TIN_RENDERER_OBJECTS_CAMERA_HPP
-#define TIN_RENDERER_OBJECTS_CAMERA_HPP
+#pragma once
 
 #include "Tin/Renderer/Resources/Shader.hpp"
 
@@ -30,5 +29,3 @@ namespace Tin {
 		glm::ivec2 m_viewportSize;
 	};
 }
-
-#endif

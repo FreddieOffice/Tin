@@ -1,5 +1,4 @@
-#ifndef TIN_RENDERER_OBJECTS_MESH_HPP
-#define TIN_RENDERER_OBJECTS_MESH_HPP
+#pragma once
 
 #include "Tin/Renderer/DataStructures/Vertex.hpp"
 #include "Tin/Renderer/DataStructures/Material.hpp"
@@ -65,5 +64,3 @@ namespace Tin {
 		void ChangeShape(Enum::Shape shape);
     };
 }
-
-#endif

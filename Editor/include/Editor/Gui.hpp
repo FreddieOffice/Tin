@@ -1,5 +1,4 @@
-#ifndef TINEDITOR_GUI_HPP
-#define TINEDITOR_GUI_HPP
+#pragma once
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -23,5 +22,3 @@ namespace Gui {
 
     void Shutdown();
 }
-
-#endif

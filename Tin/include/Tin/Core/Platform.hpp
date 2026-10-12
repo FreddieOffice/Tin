@@ -1,5 +1,4 @@
-#ifndef TIN_CORE_PLATFORM_HPP
-#define TIN_CORE_PLATFORM_HPP
+#pragma once
 
 // Platform detection
 
@@ -49,6 +48,4 @@
 	#endif
 #else
 	#error Unknown platform
-#endif
-
 #endif

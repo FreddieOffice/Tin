@@ -1,10 +1,7 @@
-#ifndef TIN_CORE_UTILS_HPP
-#define TIN_CORE_UTILS_HPP
+#pragma once
 
 #include <string>
 
 namespace Tin::Utils {
     [[nodiscard]] std::string ReadFile(const std::string& filepath);
 }
-
-#endif

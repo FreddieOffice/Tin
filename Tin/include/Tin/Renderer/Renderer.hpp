@@ -1,5 +1,4 @@
-#ifndef TIN_RENDERER_HPP
-#define TIN_RENDERER_HPP
+#pragma once
 
 #include "Tin/Core/Window.hpp"
 #include "Tin/Core/Logger.hpp"
@@ -77,5 +76,3 @@ namespace Tin {
         std::shared_ptr<Skybox> m_skybox = nullptr;
     };
 }
-
-#endif

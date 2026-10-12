@@ -1,5 +1,4 @@
-#ifndef TIN_RENDERER_OBJECTS_SKYBOX_HPP
-#define TIN_RENDERER_OBJECTS_SKYBOX_HPP
+#pragma once
 
 #include "Tin/Renderer/Resources/Shader.hpp"
 #include "Tin/Renderer/Objects/Camera.hpp"
@@ -32,5 +31,3 @@ namespace Tin {
         std::vector<std::string> m_faces;
     };
 }
-
-#endif

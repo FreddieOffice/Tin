@@ -1,5 +1,4 @@
-#ifndef TIN_RENDERER_DATASTRUCTURES_TRANSFORM_HPP
-#define TIN_RENDERER_DATASTRUCTURES_TRANSFORM_HPP
+#pragma once
 
 #include "glm/glm.hpp"
 
@@ -19,5 +18,3 @@ namespace Tin {
 		[[nodiscard]] glm::mat4 GetModelMatrix() const;
 	};
 }
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef TIN_SCENE_MANAGER_HPP
-#define TIN_SCENE_MANAGER_HPP
+#pragma once
 
 #include "Tin/Scene/Scene.hpp"
 
@@ -19,5 +18,3 @@ namespace Tin {
         //std::vector<std::shared_ptr<Scene>> m_sceneList;
     };
 }
-
-#endif

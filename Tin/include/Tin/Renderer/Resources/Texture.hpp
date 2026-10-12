@@ -1,5 +1,4 @@
-#ifndef TIN_RENDERER_RESOURCES_TEXTURE_HPP
-#define TIN_RENDERER_RESOURCES_TEXTURE_HPP
+#pragma once
 
 #include "Tin/Renderer/Resources/Shader.hpp"
 
@@ -46,5 +45,3 @@ namespace Tin {
 		uint32_t m_slot;
 	};
 }
-
-#endif

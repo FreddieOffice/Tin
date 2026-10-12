@@ -1,5 +1,4 @@
-#ifndef TIN_RENDERER_DATASTRUCTURES_VERTEX_HPP
-#define TIN_RENDERER_DATASTRUCTURES_VERTEX_HPP
+#pragma once
 
 #include "glm/glm.hpp"
 
@@ -14,5 +13,3 @@ namespace Tin {
         bool operator!=(const Vertex& other) const;
     };
 }
-
-#endif

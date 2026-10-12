@@ -1,5 +1,4 @@
-#ifndef TINEDITOR_APP_HPP
-#define TINEDITOR_APP_HPP
+#pragma once
 
 #include "Tin/Tin.hpp"
 
@@ -10,5 +9,3 @@ public:
 
     void Run() override;
 };
-
-#endif

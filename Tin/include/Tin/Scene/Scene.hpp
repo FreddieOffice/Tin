@@ -1,5 +1,4 @@
-#ifndef TIN_SCENE_HPP
-#define TIN_SCENE_HPP
+#pragma once
 
 #include "Tin/Renderer/Objects/Mesh.hpp"
 #include "Tin/Renderer/Objects/Camera.hpp"
@@ -47,5 +46,3 @@ namespace Tin {
         Shader m_basicShader;
     };
 }
-
-#endif

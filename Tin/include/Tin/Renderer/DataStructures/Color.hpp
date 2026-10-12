@@ -1,5 +1,4 @@
-#ifndef TIN_RENDERER_DATASTRUCTURES_COLOR_HPP
-#define TIN_RENDERER_DATASTRUCTURES_COLOR_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -71,5 +70,3 @@ namespace Tin {
         static Color Yellow;
     };
 }
-
-#endif

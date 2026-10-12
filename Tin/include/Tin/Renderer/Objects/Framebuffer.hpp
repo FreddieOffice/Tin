@@ -1,5 +1,4 @@
-#ifndef TIN_RENDERER_OBJECTS_FRAMEBUFFER_HPP
-#define TIN_RENDERER_OBJECTS_FRAMEBUFFER_HPP
+#pragma once
 
 #include "glm/glm.hpp"
 
@@ -30,5 +29,3 @@ namespace Tin {
         glm::ivec2 m_size;
     };
 }
-
-#endif

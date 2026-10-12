@@ -1,5 +1,4 @@
-#ifndef TIN_HPP
-#define TIN_HPP
+#pragma once
 
 // For use by Tin applications
 
@@ -7,6 +6,7 @@
 #include "Tin/Core/Application.hpp"
 #include "Tin/Core/InputHandler.hpp"
 #include "Tin/Core/Logger.hpp"
+#include "Tin/Core/Platform.hpp"
 #include "Tin/Core/Utils.hpp"
 #include "Tin/Core/Window.hpp"
 
@@ -32,5 +32,3 @@
 // Scene
 #include "Tin/Scene/Scene.hpp"
 #include "Tin/Scene/SceneManager.hpp"
-
-#endif

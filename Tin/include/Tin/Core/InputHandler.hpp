@@ -1,5 +1,4 @@
-#ifndef TIN_CORE_INPUTHANDLER_HPP
-#define TIN_CORE_INPUTHANDLER_HPP
+#pragma once
 
 #include "Tin/Core/Window.hpp"
 
@@ -179,5 +178,3 @@ namespace Tin {
         Enum::CursorState m_cursorState = Enum::CursorState::Normal;
 	};
 }
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef TIN_CORE_LOGGER_HPP
-#define TIN_CORE_LOGGER_HPP
+#pragma once
 
 #include <string>
 
@@ -14,5 +13,3 @@ namespace Tin {
         void Log(Level level, const std::string& location, const std::string& message);
     }
 }
-
-#endif

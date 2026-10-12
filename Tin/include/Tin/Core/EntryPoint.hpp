@@ -1,9 +1,9 @@
 // Entry point must be included only once
-#ifdef TIN_CORE_ENTRY_POINT_HPP
+#ifdef TIN_ENTRY_POINT
     #error Entry point already included!
 #endif
 
-#define TIN_CORE_ENTRY_POINT_HPP
+#define TIN_ENTRY_POINT
 
 #include "Tin/Core/Application.hpp"
 

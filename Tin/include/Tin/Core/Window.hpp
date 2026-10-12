@@ -1,5 +1,4 @@
-#ifndef TIN_CORE_WINDOW_HPP
-#define TIN_CORE_WINDOW_HPP
+#pragma once
 
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
@@ -82,5 +81,3 @@ namespace Tin {
         glm::ivec2 m_framebufferSize;
     };
 }
-
-#endif

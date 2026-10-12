@@ -1,5 +1,4 @@
-#ifndef TIN_PCH_HPP
-#define TIN_PCH_HPP
+#pragma once
 
 // Platform
 #include "Tin/Core/Platform.hpp"
@@ -50,5 +49,3 @@
 
 #include "stb/stb_image.h"
 #include "stb/stb_image_write.h"
-
-#endif
