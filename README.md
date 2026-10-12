@@ -1,6 +1,6 @@
 # Tin
 
-Tin Engine is a 3D OpenGL game engine written in C++17  
+Tin Engine is a 3D OpenGL game engine written in C++20  
 This is my 4th attempt at making a game engine, so there isnt much here right now  
 
 ## The engine uses
