@@ -4,16 +4,16 @@
 namespace Tin {
     namespace Logger {
         namespace {
-            uint8_t DarkGreen = 2;
-            uint8_t DarkRed = 4;
-            uint8_t DarkYellow = 6;
-            uint8_t Green = 10;
-            uint8_t Red = 12;
-            uint8_t Yellow = 14;
-            uint8_t White = 15;
+            constexpr uint8_t DarkGreen = 2;
+            constexpr uint8_t DarkRed = 4;
+            constexpr uint8_t DarkYellow = 6;
+            constexpr uint8_t Green = 10;
+            constexpr uint8_t Red = 12;
+            constexpr uint8_t Yellow = 14;
+            constexpr uint8_t White = 15;
 
-            std::array<uint8_t, 3> typeColors = {Green, Yellow, Red};
-            std::array<uint8_t, 3> messageColors = {DarkGreen, DarkYellow, DarkRed};
+            constexpr std::array<uint8_t, 3> typeColors = {Green, Yellow, Red};
+            constexpr std::array<uint8_t, 3> messageColors = {DarkGreen, DarkYellow, DarkRed};
 
             std::mutex logMutex;
 

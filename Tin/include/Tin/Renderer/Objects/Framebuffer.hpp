@@ -19,12 +19,12 @@ namespace Tin {
 
         // Returns the size of the framebuffer
         [[nodiscard]] glm::ivec2 GetSize() const;
-        // Returns the texture id
+        // Returns the texture ID
         [[nodiscard]] uint32_t GetTextureId() const;
     private:
-        uint32_t m_Id = 0;
+        uint32_t m_id = 0;
         uint32_t m_textureId = 0;
-        uint32_t m_Rbo = 0;
+        uint32_t m_rbo = 0;
 
         glm::ivec2 m_size;
     };

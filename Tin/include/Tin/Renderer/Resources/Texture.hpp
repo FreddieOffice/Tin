@@ -7,15 +7,13 @@
 #include <string>
 
 namespace Tin {
-	namespace Enum {
-		enum class TextureType {
-			ColorMap = 0,
-		};
-	}
+    enum class TextureType {
+        ColorMap = 0,
+    };
 
 	class Texture {
 	public:
-		Texture(const std::string& filename, Enum::TextureType type);
+		Texture(const std::string& filename, TextureType type);
 
 		// Binds the texture
 		void Bind() const;
@@ -34,14 +32,14 @@ namespace Tin {
 		[[nodiscard]] glm::ivec2 GetSize() const;
 		// Returns the textures channels
 		[[nodiscard]] int32_t GetChannels() const;
-		// Returns the texture id
+		// Returns the texture ID
 		[[nodiscard]] uint32_t GetId() const;
 	private:
 		std::string m_filename;
 		glm::ivec2 m_size;
 		int32_t m_channels;
 
-		uint32_t m_Id = 0;
+		uint32_t m_id = 0;
 		uint32_t m_slot;
 	};
 }

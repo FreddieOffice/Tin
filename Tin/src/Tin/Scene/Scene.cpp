@@ -5,15 +5,18 @@ namespace Tin {
     Scene::Scene(const std::string& name, const Shader& basicShader, const Environment& environment) : name(name), m_basicShader(basicShader), environment(environment) {}
 
     void Scene::Render(Renderer& renderer) {
+        renderer.SetClearColor(environment.solidColor);
+        renderer.Clear();
+
         // Submit meshes to the renderer
         for (Mesh& mesh : m_meshes) {
             renderer.Submit(mesh, *mesh.material, mesh.transform.GetModelMatrix(), m_basicShader);
         }
 
-        // Render the skybox last (if the sky type is skybox)
-        if (environment.type == Enum::SkyType::Skybox) {
+        // Submit the skybox last (if the sky type is skybox)
+        /*if (environment.type == SkyType::Skybox) {
             renderer.RenderSkybox();
-        }
+        }*/
     }
 
     void Scene::Destroy() {

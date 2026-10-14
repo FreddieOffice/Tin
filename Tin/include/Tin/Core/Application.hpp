@@ -8,12 +8,12 @@ namespace Tin {
         Application();
         virtual ~Application();
 
-        virtual void Run();
+        virtual void Run() = 0;
         // Processes all pending events
         void PollEvents() const;
 
         // Returns time passed since initialization in seconds
-        [[nodiscard]] float GetTime() const;
+        [[nodiscard]] double GetTime() const;
     };
 
     // To be defined in client

@@ -7,15 +7,13 @@
 #include <vector>
 
 namespace Tin {
-    namespace Enum {
-        enum class SkyType {
-            Skybox,
-            SolidColor
-        };
-    }
+    enum class SkyType {
+        Skybox,
+        SolidColor
+    };
 
     struct Environment {
-        Enum::SkyType type;
+        SkyType type;
         std::vector<std::string> skyboxFaces;
         Color solidColor;
     };

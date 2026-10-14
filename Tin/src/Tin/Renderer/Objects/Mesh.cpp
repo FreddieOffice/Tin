@@ -1,15 +1,13 @@
 #include "Tin/TinPCH.hpp"
 #include "Tin/Renderer/Objects/Mesh.hpp"
 
-#include "Tin/Core/Logger.hpp"
-
 namespace Tin {
-    Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Material& material) : material(&material), m_vertices(vertices), m_indices(indices), m_shape(Enum::Shape::Custom) {
+    Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Material& material) : material(&material), m_vertices(vertices), m_indices(indices), m_shape(Shape::Custom) {
         CreateBuffers();
     }
 
-	Mesh::Mesh(const Enum::Shape& shape, Material& material) : material(&material), m_shape(shape) {
-		if (shape == Enum::Shape::Custom) {
+	Mesh::Mesh(const Shape& shape, Material& material) : material(&material), m_shape(shape) {
+		if (shape == Shape::Custom) {
 			Logger::Log(Logger::Level::Warning, "Tin", "Cannot make a mesh with shape \"custom\", it is only for meshes that have custom mesh data");
 			return;
 		}
@@ -19,9 +17,9 @@ namespace Tin {
 	}
 
     void Mesh::Destroy() {
-        glDeleteVertexArrays(1, &m_Vao);
-		glDeleteBuffers(1, &m_Vbo);
-		glDeleteBuffers(1, &m_Ebo);
+        glDeleteVertexArrays(1, &m_vao);
+		glDeleteBuffers(1, &m_vbo);
+		glDeleteBuffers(1, &m_ebo);
         m_indices.clear();
         m_vertices.clear();
     }
@@ -29,12 +27,12 @@ namespace Tin {
     void Mesh::Reload(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices) {
         m_vertices = vertices;
         m_indices = indices;
-		m_shape = Enum::Shape::Custom;
+		m_shape = Shape::Custom;
         ReloadBuffers(vertices, indices);
     }
 
-	void Mesh::SetShape(const Enum::Shape& shape) {
-		if (shape == Enum::Shape::Custom) {
+	void Mesh::SetShape(const Shape& shape) {
+		if (shape == Shape::Custom) {
 			Logger::Log(Logger::Level::Warning, "Tin", "Cannot set shape of mesh to be \"custom\", it is only for meshes that have custom mesh data");
 			return;
 		}
@@ -60,29 +58,29 @@ namespace Tin {
 		return m_indices.size();
 	}
 
-	Enum::Shape Mesh::GetShape() const {
+	Shape Mesh::GetShape() const {
 		return m_shape;
 	}
 
 	uint32_t Mesh::GetVao() const {
-		return m_Vao;
+		return m_vao;
 	}
 
 	// Helper functions
 
     void Mesh::CreateBuffers() {
        // Creating the buffers
-		glGenVertexArrays(1, &m_Vao);
-		glGenBuffers(1, &m_Vbo);
-		glGenBuffers(1, &m_Ebo);
+		glGenVertexArrays(1, &m_vao);
+		glGenBuffers(1, &m_vbo);
+		glGenBuffers(1, &m_ebo);
 
 		// Binding the buffers and sending data
-		glBindVertexArray(m_Vao);
+		glBindVertexArray(m_vao);
 
-		glBindBuffer(GL_ARRAY_BUFFER, m_Vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 		glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(Vertex), m_vertices.data(), GL_STATIC_DRAW);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Ebo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(uint32_t), m_indices.data(), GL_STATIC_DRAW);
 
 		// Link attributes to the VAO
@@ -97,19 +95,19 @@ namespace Tin {
 
     void Mesh::ReloadBuffers(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices) {
         // VBO update
-		glBindBuffer(GL_ARRAY_BUFFER, m_Vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW); // Orphan the buffer
 		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), vertices.data());
 
 		// EBO update
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Ebo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), nullptr, GL_DYNAMIC_DRAW); // Orphan the buffer
 		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(uint32_t), indices.data());
     }
 
-	void Mesh::ChangeShape(Enum::Shape shape) {
+	void Mesh::ChangeShape(Shape shape) {
 		switch (shape) {
-		case Enum::Shape::Block:
+		case Shape::Block:
 			m_vertices = {
 				// Front face
 				Vertex(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f)),
@@ -158,7 +156,7 @@ namespace Tin {
 			};
 
 			break;
-		case Enum::Shape::Pyramid:
+		case Shape::Pyramid:
 			m_vertices = {
 				// Front face
 				Vertex(glm::vec3( 0.0f,  0.5f,  0.0f),  glm::vec2(0.5f, 1.0f)),

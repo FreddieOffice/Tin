@@ -6,16 +6,14 @@
 #include <string>
 
 namespace Tin {
-    namespace Enum {
-        enum class WindowAttribute  {
-            Vsync,
-            Maximized,
-            Visible,
-            Resizable,
-            Decorated,
-            Floating,
-        };
-    }
+    enum class WindowAttribute  {
+        Vsync,
+        Maximized,
+        Visible,
+        Resizable,
+        Decorated,
+        Floating,
+    };
 
     struct WindowConfig {
         std::string title;
@@ -50,7 +48,7 @@ namespace Tin {
         void Close() const;
 
         // Sets an attribute of the window (e.g. vsync, fullscreen, etc)
-        void SetAttribute(Enum::WindowAttribute attribute, bool value);
+        void SetAttribute(WindowAttribute attribute, bool value);
         // Sets the window icon
         // To remove the icon, filename should be ""
         void SetIcon(const std::string& filename);
@@ -62,7 +60,7 @@ namespace Tin {
         void SetPosition(const glm::ivec2& position);
 
         // Returns the selected attribute's value
-        [[nodiscard]] bool GetAttribute(Enum::WindowAttribute attribute) const;
+        [[nodiscard]] bool GetAttribute(WindowAttribute attribute) const;
         // Returns the icon file name
         [[nodiscard]] std::string GetIcon() const;
         // Returns the window title
@@ -76,7 +74,7 @@ namespace Tin {
         // Returns the GLFW window handle
         [[nodiscard]] GLFWwindow* GetGlfwHandle() const;
     private:
-        GLFWwindow* m_GlfwHandle = nullptr;
+        GLFWwindow* m_glfwHandle = nullptr;
         WindowConfig m_config;
         glm::ivec2 m_framebufferSize;
     };

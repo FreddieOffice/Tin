@@ -1,8 +1,6 @@
 #include "Tin/TinPCH.hpp"
 #include "Tin/Renderer/Objects/Skybox.hpp"
 
-#include "Tin/Core/Logger.hpp"
-
 namespace Tin {
     Skybox::Skybox(const std::vector<std::string>& faces) : m_faces(faces) {
         // Generate the cubemap texture

@@ -7,14 +7,12 @@
 #include "Tin/Renderer/Resources/Shader.hpp"
 
 namespace Tin {
-    namespace Enum {
-		enum class Shape {
-			Custom,
+    enum class Shape {
+        Custom,
 
-			Block,
-			Pyramid,
-		};
-	}
+        Block,
+        Pyramid,
+    };
 
     class Mesh {
     public:
@@ -23,7 +21,7 @@ namespace Tin {
 
         Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, Material& material);
 
-        Mesh(const Enum::Shape& shape, Material& material);
+        Mesh(const Shape& shape, Material& material);
 
         // Destroys the mesh
         void Destroy();
@@ -31,7 +29,7 @@ namespace Tin {
         // Changes the mesh data
         void Reload(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
         // Changes the mesh shape
-        void SetShape(const Enum::Shape& shape);
+        void SetShape(const Shape& shape);
 
         // Returns the mesh vertices
         [[nodiscard]] const std::vector<Vertex>& GetVertices() const;
@@ -42,25 +40,25 @@ namespace Tin {
         // Returns the amount of indices the mesh has
         [[nodiscard]] uint32_t GetIndicesCount() const;
         // Returns the mesh shape
-        [[nodiscard]] Enum::Shape GetShape() const;
+        [[nodiscard]] Shape GetShape() const;
         // Returns the mesh vertex array buffer object
         [[nodiscard]] uint32_t GetVao() const;
     private:
         // Buffer ids
-        uint32_t m_Vao = 0;
-        uint32_t m_Vbo = 0;
-        uint32_t m_Ebo = 0;
+        uint32_t m_vao = 0;
+        uint32_t m_vbo = 0;
+        uint32_t m_ebo = 0;
 
         // Mesh data
         std::vector<Vertex> m_vertices;
         std::vector<uint32_t> m_indices;
-        Enum::Shape m_shape;
+        Shape m_shape;
 
         // Helper function to create the VAO, VBO and EBO buffers
         void CreateBuffers();
         // Helper function to reload the buffers
         void ReloadBuffers(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
         // Helper function to change the shape
-		void ChangeShape(Enum::Shape shape);
+		void ChangeShape(Shape shape);
     };
 }

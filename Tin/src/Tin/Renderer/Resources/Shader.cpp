@@ -1,7 +1,6 @@
 #include "Tin/TinPCH.hpp"
 #include "Tin/Renderer/Resources/Shader.hpp"
 
-#include "Tin/Core/Logger.hpp"
 #include "Tin/Core/Utils.hpp"
 
 namespace Tin {
@@ -10,15 +9,15 @@ namespace Tin {
     }
 
     void Shader::Use() const {
-        glUseProgram(m_Id);
+        glUseProgram(m_id);
     }
 
     void Shader::Destroy() const {
-        glDeleteProgram(m_Id);
+        glDeleteProgram(m_id);
     }
 
     void Shader::Reload(const std::string& vertexShaderPath, const std::string& fragmentShaderPath) {
-        glDeleteProgram(m_Id);
+        glDeleteProgram(m_id);
         CreateProgram(vertexShaderPath, fragmentShaderPath);
     }
 
@@ -83,7 +82,7 @@ namespace Tin {
 	}
 
     uint32_t Shader::GetId() const {
-        return m_Id;
+        return m_id;
     }
 
     void Shader::CreateProgram(const std::string& vertexShaderSource, const std::string& fragmentShaderSource) {
@@ -91,35 +90,35 @@ namespace Tin {
         uint32_t fragmentShader = CreateShader(GL_FRAGMENT_SHADER, fragmentShaderSource.c_str());
 
         // Create the shader program
-        m_Id = glCreateProgram();
-        glAttachShader(m_Id, vertexShader);
-        glAttachShader(m_Id, fragmentShader);
-        glLinkProgram(m_Id);
+        m_id = glCreateProgram();
+        glAttachShader(m_id, vertexShader);
+        glAttachShader(m_id, fragmentShader);
+        glLinkProgram(m_id);
 
         // Detach and delete the shaders
-		glDetachShader(m_Id, vertexShader);
-		glDetachShader(m_Id, fragmentShader);
+		glDetachShader(m_id, vertexShader);
+		glDetachShader(m_id, fragmentShader);
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
 
 		// Check link status
 		int32_t linked;
-		glGetProgramiv(m_Id, GL_LINK_STATUS, &linked);
+		glGetProgramiv(m_id, GL_LINK_STATUS, &linked);
 
         if (!linked) {
             // Get info log length
 			int32_t length;
-			glGetProgramiv(m_Id, GL_INFO_LOG_LENGTH, &length);
+			glGetProgramiv(m_id, GL_INFO_LOG_LENGTH, &length);
 
             // Length-2 to remove the random blank lines
             std::vector<char> infoLog(length-2);
-            glGetProgramInfoLog(m_Id, length-2, nullptr, infoLog.data());
+            glGetProgramInfoLog(m_id, length-2, nullptr, infoLog.data());
 
             // Output the info log
-            Logger::Log(Logger::Level::Error, "Tin", ("Shader program with id " + std::to_string(m_Id) + " linking error:\n" + infoLog.data()));
+            Logger::Log(Logger::Level::Error, "Tin", ("Shader program with id " + std::to_string(m_id) + " linking error:\n" + infoLog.data()));
             return;
         } else {
-            Logger::Log(Logger::Level::Info, "Tin", ("Shader program with id " + std::to_string(m_Id) + " was successfully linked"));
+            Logger::Log(Logger::Level::Info, "Tin", ("Shader program with id " + std::to_string(m_id) + " was successfully linked"));
         }
     }
 
@@ -163,7 +162,7 @@ namespace Tin {
     }
 
     int32_t Shader::GetUniformLocation(const std::string& name) const {
-        int32_t location = glGetUniformLocation(m_Id, name.c_str());
+        int32_t location = glGetUniformLocation(m_id, name.c_str());
         if (location == -1) {
             Logger::Log(Logger::Level::Error, "Tin", ("Failed to get uniform location with name " + name));
         }

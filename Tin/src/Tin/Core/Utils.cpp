@@ -1,26 +1,21 @@
 #include "Tin/TinPCH.hpp"
 #include "Tin/Core/Utils.hpp"
 
-#include "Tin/Core/Logger.hpp"
-
 namespace Tin::Utils {
     std::string ReadFile(const std::string& filepath) {
-        std::ifstream in(filepath, std::ios::binary);
+        std::ifstream file(filepath, std::ios::binary | std::ios::ate);
 
-        if (in)
-        {
+        if (file) {
             std::string contents;
+            contents.resize(file.tellg());
 
-            in.seekg(0, std::ios::end);
-            contents.resize(in.tellg());
-            in.seekg(0, std::ios::beg);
-            in.read(&contents[0], contents.size());
-            in.close();
+            file.seekg(0, std::ios::beg);
+            file.read(&contents[0], contents.size());
+            file.close();
 
-            return(contents);
-        }
-        else {
-            Logger::Log(Logger::Level::Error, "Tin", ("Failed to get file " + filepath));
+            return contents;
+        } else {
+            Logger::Log(Logger::Level::Error, "Tin", ("Failed to read file " + filepath));
             return "";
         }
     }

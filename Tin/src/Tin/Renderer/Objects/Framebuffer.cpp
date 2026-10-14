@@ -1,13 +1,11 @@
 #include "Tin/TinPCH.hpp"
 #include "Tin/Renderer/Objects/Framebuffer.hpp"
 
-#include "Tin/Core/Logger.hpp"
-
 namespace Tin {
     Framebuffer::Framebuffer(const glm::ivec2& size) : m_size(size) {
 		// Create the framebuffer
-		glGenFramebuffers(1, &m_Id);
-		glBindFramebuffer(GL_FRAMEBUFFER, m_Id);
+		glGenFramebuffers(1, &m_id);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 
 		// Create the texture
 		glGenTextures(1, &m_textureId);
@@ -22,19 +20,19 @@ namespace Tin {
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_textureId, 0);
 
 		// Create the renderbuffer
-		glGenRenderbuffers(1, &m_Rbo);
-		glBindRenderbuffer(GL_RENDERBUFFER, m_Rbo);
+		glGenRenderbuffers(1, &m_rbo);
+		glBindRenderbuffer(GL_RENDERBUFFER, m_rbo);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, size.x, size.y);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_Rbo);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_rbo);
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 			Logger::Log(Logger::Level::Error, "Tin", "Failed to create framebuffer: framebuffer incomplete");
 
-			glDeleteFramebuffers(1, &m_Id);
+			glDeleteFramebuffers(1, &m_id);
 			glDeleteTextures(1, &m_textureId);
-			glDeleteRenderbuffers(1, &m_Rbo);
+			glDeleteRenderbuffers(1, &m_rbo);
 		} else {
-			Logger::Log(Logger::Level::Info, "Tin", "Framebuffer with id " + std::to_string(m_Id) + " successfully created");
+			Logger::Log(Logger::Level::Info, "Tin", "Framebuffer with id " + std::to_string(m_id) + " successfully created");
 		}
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -43,9 +41,9 @@ namespace Tin {
     }
 
     void Framebuffer::Bind() const {
-        glBindFramebuffer(GL_FRAMEBUFFER, m_Id);
+        glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 		glBindTexture(GL_TEXTURE_2D, m_textureId);
-		glBindRenderbuffer(GL_RENDERBUFFER, m_Rbo);
+		glBindRenderbuffer(GL_RENDERBUFFER, m_rbo);
     }
 
     void Framebuffer::Unbind() const {
@@ -55,9 +53,9 @@ namespace Tin {
     }
 
 	void Framebuffer::Destroy() {
-		glDeleteFramebuffers(1, &m_Id);
+		glDeleteFramebuffers(1, &m_id);
 		glDeleteTextures(1, &m_textureId);
-		glDeleteRenderbuffers(1, &m_Rbo);
+		glDeleteRenderbuffers(1, &m_rbo);
 	}
 
     void Framebuffer::Resize(const glm::ivec2& size) {
@@ -68,7 +66,7 @@ namespace Tin {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
 		// Resize renderbuffer
-		glBindRenderbuffer(GL_RENDERBUFFER, m_Rbo);
+		glBindRenderbuffer(GL_RENDERBUFFER, m_rbo);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, size.x, size.y);
 
         m_size = glm::ivec2(size.x, size.y);

@@ -47,10 +47,10 @@ namespace Tin {
         // Sets a mat4 uniform
 		void SetUniformMat4(const std::string& name, const glm::mat4& mat4) const;
 
-        // Returns the shader id
+        // Returns the shader ID
         [[nodiscard]] uint32_t GetId() const;
     private:
-        uint32_t m_Id = 0;
+        uint32_t m_id = 0;
 
         // Helper function to create a shader program
         void CreateProgram(const std::string& vertexShaderSource, const std::string& fragmentShaderSource);

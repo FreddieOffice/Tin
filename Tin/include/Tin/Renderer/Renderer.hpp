@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Tin/Core/Window.hpp"
-#include "Tin/Core/Logger.hpp"
 
 #include "Tin/Renderer/DataStructures/Color.hpp"
 #include "Tin/Renderer/DataStructures/Material.hpp"
@@ -27,7 +26,7 @@ namespace Tin {
 
     class Renderer {
     public:
-        explicit Renderer(const Window& window);
+        Renderer();
 
         // Destroys the renderer
         void Destroy();
@@ -72,7 +71,7 @@ namespace Tin {
         // Skybox related
         uint32_t m_skyboxVao = 0;
         uint32_t m_skyboxVbo = 0;
-        std::unique_ptr<Shader> m_skyboxShader = nullptr;
+        Shader m_skyboxShader;
         std::shared_ptr<Skybox> m_skybox = nullptr;
     };
 }

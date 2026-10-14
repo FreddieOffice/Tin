@@ -1,5 +1,8 @@
 #pragma once
 
+// Common engine stuff
+#include "Tin/Core/Logger.hpp"
+
 // Platform
 #include "Tin/Core/Platform.hpp"
 
@@ -12,7 +15,6 @@
 
 // Data types, containers
 #include <cstdint>
-#include <cstddef>
 #include <unordered_map>
 #include <array>
 #include <vector>
@@ -35,7 +37,6 @@
 // Time, system
 #include <chrono>
 #include <ctime>
-#include <filesystem>
 
 // Vendor
 #include "glad/gl.h"

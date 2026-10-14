@@ -4,7 +4,7 @@
 namespace Tin {
     namespace {
         // Cube vertices for skybox
-        const std::vector<float> skyboxVertices = {
+        constexpr std::array<float, 108> skyboxVertices = {
             -1.0f,  1.0f, -1.0f,
             -1.0f, -1.0f, -1.0f,
              1.0f, -1.0f, -1.0f,
@@ -57,8 +57,7 @@ namespace Tin {
             uniform mat4 CamProjection;
             uniform mat4 CamView;
 
-            void main()
-            {
+            void main() {
                 TexCoords = aPos;
                 vec4 pos = CamProjection * CamView * vec4(aPos, 1.0);
                 gl_Position = pos.xyww;
@@ -73,34 +72,14 @@ namespace Tin {
 
             uniform samplerCube skybox;
 
-            void main()
-            {
+            void main() {
                 FragColor = texture(skybox, TexCoords);
             }
         )";
     }
 
-    Renderer::Renderer(const Window& window) {
-        // Initialize an OpenGL context
-        glfwMakeContextCurrent(window.GetGlfwHandle());
-        int32_t version = gladLoadGL(glfwGetProcAddress);
-        if (version == 0) {
-            Logger::Log(Logger::Level::Error, "Tin", "Failed to create OpenGL context!");
-            return;
-        }
-
-        Logger::Log(Logger::Level::Info, "Tin", "OpenGL context created successfully");
-
-        // Print OpenGL info
-		Logger::Log(Logger::Level::Info, "OpenGL", ("OpenGL version: "  + std::string(reinterpret_cast<const char*>(glGetString(GL_VERSION)))));
-		Logger::Log(Logger::Level::Info, "OpenGL", ("GLSL version: "    + std::string(reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION)))));
-		Logger::Log(Logger::Level::Info, "OpenGL", ("OpenGL vendor: "   + std::string(reinterpret_cast<const char*>(glGetString(GL_VENDOR)))));
-		Logger::Log(Logger::Level::Info, "OpenGL", ("OpenGL renderer: " + std::string(reinterpret_cast<const char*>(glGetString(GL_RENDERER)))));
-
+    Renderer::Renderer() : m_skyboxShader(skyboxVertShader, skyboxFragShader) {
         // Set up some OpenGL stuff
-        glm::ivec2 size = window.GetFramebufferSize();
-        glViewport(0, 0, size.x, size.y);
-
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         // Enable essentials
@@ -111,9 +90,6 @@ namespace Tin {
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
         glFrontFace(GL_CCW);
-
-        // Create skybox shader
-        m_skyboxShader = std::make_unique<Shader>(skyboxVertShader, skyboxFragShader);
 
         // Create skybox cube mesh
         glGenVertexArrays(1, &m_skyboxVao);
@@ -131,7 +107,7 @@ namespace Tin {
     void Renderer::Destroy() {
         glDeleteVertexArrays(1, &m_skyboxVao);
         glDeleteBuffers(1, &m_skyboxVbo);
-        m_skyboxShader->Destroy();
+        m_skyboxShader.Destroy();
         m_skybox->Destroy();
     }
 
@@ -238,9 +214,9 @@ namespace Tin {
 
         glDepthFunc(GL_LEQUAL);
 
-        m_skyboxShader->Use();
-        m_skyboxShader->SetUniformMat4("CamProjection", m_projectionMatrix);
-        m_skyboxShader->SetUniformMat4("CamView", glm::mat4(glm::mat3(m_viewMatrix))); // Remove translation
+        m_skyboxShader.Use();
+        m_skyboxShader.SetUniformMat4("CamProjection", m_projectionMatrix);
+        m_skyboxShader.SetUniformMat4("CamView", glm::mat4(glm::mat3(m_viewMatrix))); // Remove translation
 
         // Bind the cubemap
         glActiveTexture(GL_TEXTURE0);
